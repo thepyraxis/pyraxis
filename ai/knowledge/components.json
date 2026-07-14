@@ -1,0 +1,427 @@
+{
+  "components": [
+    {
+      "name": "Header",
+      "location": "components/navigation/Header.tsx",
+      "purpose": "Sticky site nav with scrolled-state style.",
+      "dependencies": [
+        "lib/utils/cn"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "components/hero/Hero.tsx"
+      ],
+      "relatedSections": [
+        "Hero"
+      ]
+    },
+    {
+      "name": "CustomCursor",
+      "location": "components/common/CustomCursor.tsx",
+      "purpose": "Custom cursor treatment.",
+      "dependencies": [],
+      "status": "complete",
+      "usedBy": [
+        "app/layout.tsx"
+      ],
+      "relatedSections": []
+    },
+    {
+      "name": "Hero",
+      "location": "components/hero/Hero.tsx",
+      "purpose": "Phase 05 scene shell: layered lighting, noise, mounts HeroAmbientParticles/HeroLogo/HeroText/HeroButtons/Header.",
+      "dependencies": [
+        "HeroAmbientParticles",
+        "HeroLogo",
+        "HeroText",
+        "HeroButtons",
+        "Header"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "app/page.tsx"
+      ],
+      "relatedSections": [
+        "Hero"
+      ]
+    },
+    {
+      "name": "HeroAmbientParticles",
+      "location": "components/hero/HeroAmbientParticles.tsx",
+      "purpose": "Hero-wide dust field; a minority of particles carry/leak toward or away from the logo instead of pure random drift.",
+      "dependencies": [],
+      "status": "complete",
+      "usedBy": [
+        "components/hero/Hero.tsx"
+      ],
+      "relatedSections": [
+        "Hero"
+      ]
+    },
+    {
+      "name": "HeroLogo",
+      "location": "components/hero/HeroLogo.tsx",
+      "purpose": "Sizes/positions the logo mark, applies the breathing-glow class.",
+      "dependencies": [
+        "HeroLogoCanvas"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "components/hero/Hero.tsx"
+      ],
+      "relatedSections": [
+        "Hero"
+      ]
+    },
+    {
+      "name": "HeroLogoCanvas",
+      "location": "components/hero/HeroLogoCanvas.tsx",
+      "purpose": "Logo story arc: scatter -> assemble (staggered convergence) -> settle flash -> hold, plus continuous ambient + hover-driven erosion/return trickle.",
+      "dependencies": [],
+      "status": "complete",
+      "usedBy": [
+        "components/hero/HeroLogo.tsx"
+      ],
+      "relatedSections": [
+        "Hero"
+      ]
+    },
+    {
+      "name": "HeroText",
+      "location": "components/hero/HeroText.tsx",
+      "purpose": "Two-tier headline, founder line, subtext, trust indicator. Single GSAP entrance reveal only.",
+      "dependencies": [
+        "gsap"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "components/hero/Hero.tsx"
+      ],
+      "relatedSections": [
+        "Hero"
+      ]
+    },
+    {
+      "name": "HeroButtons",
+      "location": "components/hero/HeroButtons.tsx",
+      "purpose": "Primary/secondary CTA pair.",
+      "dependencies": [],
+      "status": "complete",
+      "usedBy": [
+        "components/hero/Hero.tsx"
+      ],
+      "relatedSections": [
+        "Hero"
+      ]
+    },
+    {
+      "name": "HeroScrollIndicator",
+      "location": "components/hero/HeroScrollIndicator.tsx",
+      "purpose": "Scroll-cue affordance. Not currently mounted by Hero.tsx.",
+      "dependencies": [],
+      "status": "complete",
+      "usedBy": [],
+      "relatedSections": [
+        "Hero"
+      ]
+    },
+    {
+      "name": "Problem",
+      "location": "components/problem/Problem.tsx",
+      "purpose": "Phase 07 scene (Experience Blueprint \u00a710). 70vh, cooler/harsher lighting than Hero, mounts ProblemHeadline + ProblemIcons.",
+      "dependencies": [
+        "ProblemHeadline",
+        "ProblemIcons"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "app/page.tsx"
+      ],
+      "relatedSections": [
+        "Problem"
+      ]
+    },
+    {
+      "name": "ProblemHeadline",
+      "location": "components/problem/ProblemHeadline.tsx",
+      "purpose": "Eyebrow + headline + subline (subline reused verbatim from Product Bible \u00a702). Single GSAP entrance reveal.",
+      "dependencies": [
+        "gsap"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "components/problem/Problem.tsx"
+      ],
+      "relatedSections": [
+        "Problem"
+      ]
+    },
+    {
+      "name": "ProblemIcons",
+      "location": "components/problem/ProblemIcons.tsx",
+      "purpose": "Server-side data + layout for the four symptom cards; passes serializable icon ids across the server/client boundary.",
+      "dependencies": [
+        "ProblemIconCanvas"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "components/problem/Problem.tsx"
+      ],
+      "relatedSections": [
+        "Problem"
+      ]
+    },
+    {
+      "name": "ProblemIconCanvas",
+      "location": "components/problem/ProblemIconCanvas.tsx",
+      "purpose": "Generic scroll-driven assemble/disassemble particle canvas (IntersectionObserver-gated), with a sparse lost/interrupted flicker while settled.",
+      "dependencies": [
+        "components/problem/icons.tsx"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "components/problem/ProblemIcons.tsx"
+      ],
+      "relatedSections": [
+        "Problem"
+      ]
+    },
+    {
+      "name": "icons",
+      "location": "components/problem/icons.tsx",
+      "purpose": "Four manufactured (stroke-only, no fill) icon draw functions.",
+      "dependencies": [],
+      "status": "complete",
+      "usedBy": [
+        "components/problem/ProblemIconCanvas.tsx"
+      ],
+      "relatedSections": [
+        "Problem"
+      ]
+    },
+    {
+      "name": "ProblemTransitionParticles",
+      "location": "components/problem/ProblemTransitionParticles.tsx",
+      "purpose": "Stopgap visual continuity for the Hero -> Problem cut: sparse Hero-palette dust confined to Problem's top band, drifting down and fading. Not the real Phase 06 particle hand-off.",
+      "dependencies": [],
+      "status": "complete",
+      "usedBy": [
+        "components/problem/Problem.tsx"
+      ],
+      "relatedSections": [
+        "Problem"
+      ]
+    },
+    {
+      "name": "GrowthSystem",
+      "location": "components/growth-system/GrowthSystem.tsx",
+      "purpose": "Scene 03: eight engines on a circular layout; ambient particles travel between them via the global ParticleProvider; hover/focus redirects nearby particles.",
+      "dependencies": [
+        "ParticleProvider",
+        "AnimationProvider"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "app/page.tsx"
+      ],
+      "relatedSections": [
+        "Growth System"
+      ]
+    },
+    {
+      "name": "GrowthNode",
+      "location": "components/growth-system/GrowthNode.tsx",
+      "purpose": "One node button in the circular layout; hover/focus toggles focusedIndex fed back into the particle instruction.",
+      "dependencies": [],
+      "status": "complete",
+      "usedBy": [
+        "components/growth-system/GrowthSystem.tsx"
+      ],
+      "relatedSections": [
+        "Growth System"
+      ]
+    },
+    {
+      "name": "GrowthEngines",
+      "location": "components/growth-engines/GrowthEngines.tsx",
+      "purpose": "Scene 04: six reusable engine cards (Website, Lead, Booking, WhatsApp, Review, AI Assistant - see decisions.md D-014), horizontal row on desktop / vertical two-column stack on mobile, wired to the global ParticleProvider.",
+      "dependencies": [
+        "ParticleProvider",
+        "AnimationProvider"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "app/page.tsx"
+      ],
+      "relatedSections": [
+        "Growth Engines"
+      ]
+    },
+    {
+      "name": "GrowthEnginesHeadline",
+      "location": "components/growth-engines/GrowthEnginesHeadline.tsx",
+      "purpose": "Section headline/subline with a genuine scroll-triggered (IntersectionObserver) GSAP reveal.",
+      "dependencies": [
+        "gsap",
+        "AnimationProvider"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "components/growth-engines/GrowthEngines.tsx"
+      ],
+      "relatedSections": [
+        "Growth Engines"
+      ]
+    },
+    {
+      "name": "GrowthEngineCard",
+      "location": "components/growth-engines/GrowthEngineCard.tsx",
+      "purpose": "The one reusable card used for all six engines; local cursor-tracked hover glow, keyboard-focusable, lifts and lights on hover/focus.",
+      "dependencies": [],
+      "status": "complete",
+      "usedBy": [
+        "components/growth-engines/GrowthEngines.tsx"
+      ],
+      "relatedSections": [
+        "Growth Engines"
+      ]
+    },
+    {
+      "name": "GrowthEngineIconCanvas",
+      "location": "components/growth-engines/GrowthEngineIconCanvas.tsx",
+      "purpose": "Per-engine particle-assembly icon canvas, generalized from ProblemIconCanvas; local micro-canvas by design, not routed through the global ambient engine.",
+      "dependencies": [
+        "AnimationProvider"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "components/growth-engines/GrowthEngineCard.tsx"
+      ],
+      "relatedSections": [
+        "Growth Engines"
+      ]
+    },
+    {
+      "name": "icons (growth-engines)",
+      "location": "components/growth-engines/icons.tsx",
+      "purpose": "Six manufactured stroke-only icon draw functions consumed by GrowthEngineIconCanvas.",
+      "dependencies": [],
+      "status": "complete",
+      "usedBy": [
+        "components/growth-engines/GrowthEngineIconCanvas.tsx"
+      ],
+      "relatedSections": [
+        "Growth Engines"
+      ]
+    },
+    {
+      "name": "Portfolio",
+      "location": "components/portfolio/Portfolio.tsx",
+      "purpose": "Phase 11 scene: data-driven horizontal scroll-scrub rail of real shipped systems.",
+      "dependencies": [
+        "ProjectCard",
+        "providers/ParticleProvider",
+        "providers/AnimationProvider",
+        "lib/gsap"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "app/page.tsx"
+      ],
+      "relatedSections": [
+        "Portfolio"
+      ]
+    },
+    {
+      "name": "ProjectCard",
+      "location": "components/portfolio/ProjectCard.tsx",
+      "purpose": "Single portfolio card: hover/focus lift, glow, click-anywhere activation for built projects.",
+      "dependencies": [],
+      "status": "complete",
+      "usedBy": [
+        "components/portfolio/Portfolio.tsx"
+      ],
+      "relatedSections": [
+        "Portfolio"
+      ]
+    },
+    {
+      "name": "Process",
+      "location": "components/process/Process.tsx",
+      "purpose": "Phase 12 scene: fixed five-stage vertical progression (Discovery to Scale) with scroll-linked traveling signal marker and accelerating exit handoff.",
+      "dependencies": [
+        "providers/ParticleProvider",
+        "providers/AnimationProvider",
+        "lib/gsap"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "app/page.tsx"
+      ],
+      "relatedSections": [
+        "Process"
+      ]
+    },
+    {
+      "name": "FutureProofSystems",
+      "location": "components/future-proof-systems/FutureProofSystems.tsx",
+      "purpose": "Phase 13 scene: cinematic climax (Blueprint \u00a716, \"Intelligence Core\"). Three concurrent particle-engine instructions (scattered network, rotating earth-illusion ring, orbital ring) create the globe/network spectacle entirely via Canvas2D particle choreography, no Three.js/WebGL. Converges into an Earth shape on exit, handing off into CTA.",
+      "dependencies": [
+        "providers/ParticleProvider",
+        "providers/MouseProvider",
+        "providers/AnimationProvider"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "app/page.tsx"
+      ],
+      "relatedSections": [
+        "Future-Proof Systems"
+      ]
+    },
+    {
+      "name": "CTA",
+      "location": "components/cta/CTA.tsx",
+      "purpose": "Phase 14 scene: conversion moment, continues Future-Proof Systems earth-illusion ring, one primary/one secondary link, particle-construct entry beat.",
+      "dependencies": [
+        "providers/ParticleProvider",
+        "providers/AnimationProvider",
+        "components/future-proof-systems/layout",
+        "lib/gsap"
+      ],
+      "status": "complete",
+      "usedBy": [
+        "app/page.tsx"
+      ],
+      "relatedSections": [
+        "CTA"
+      ]
+    }
+  ],
+  "note": "Portfolio and Process entries added this pass \u2014 both were missing from this file despite being built (Portfolio) or just-built (Process); see ai/state.json for the fuller history. Hero and Problem's particle canvases are currently self-contained per-section rather than global-engine-owned \u2014 see ai/memory/known-issues.md.",
+  "schema": {
+    "name": "string",
+    "location": "string (path)",
+    "purpose": "string",
+    "dependencies": [
+      "string"
+    ],
+    "status": "not-started | in-progress | complete",
+    "usedBy": [
+      "string"
+    ],
+    "relatedSections": [
+      "string"
+    ]
+  },
+  "exampleDecomposition": {
+    "Hero": [
+      "HeroLogo",
+      "HeroCanvas",
+      "HeroParticles",
+      "HeroContent",
+      "HeroButtons",
+      "HeroTransition"
+    ]
+  }
+}

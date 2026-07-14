@@ -1,0 +1,28 @@
+{
+  "timelines": [],
+  "note": "UNKNOWN - no GSAP timelines implemented yet. Schema and known transition map below, sourced from Experience Blueprint.",
+  "schema": {
+    "name": "string",
+    "trigger": "string (e.g. ScrollTrigger section id)",
+    "dependencies": ["string"],
+    "performanceNotes": "string"
+  },
+  "transitionMap": [
+    { "from": "Hero", "to": "Problem", "transform": "logo matter becomes problem icons" },
+    { "from": "Problem", "to": "Growth System", "transform": "icons become signal paths" },
+    { "from": "Growth System", "to": "Growth Engines", "transform": "signal paths become engine cards" },
+    { "from": "Growth Engines", "to": "Portfolio", "transform": "cards become screens" },
+    { "from": "Portfolio", "to": "Process", "transform": "screens become energy" },
+    { "from": "Process", "to": "Future-Proof Systems", "transform": "energy becomes neural network" },
+    { "from": "Future-Proof Systems", "to": "CTA", "transform": "network becomes Earth" },
+    { "from": "CTA", "to": "Footer", "transform": "Earth becomes drifting particles" }
+  ],
+  "timingScale": {
+    "micro": "120-250ms",
+    "hover": "250-400ms",
+    "sectionAnimation": "800-1400ms",
+    "cinematicTransformation": "1500-3000ms"
+  },
+  "prohibitedPatterns": ["fade", "pop", "slide", "zoom", "bounce", "random spin"],
+  "preferredPatterns": ["construct", "manufacture", "flow", "morph", "merge/split", "assemble/disassemble"]
+}

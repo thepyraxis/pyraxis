@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  background: #020205;
+  color: #f5f5f7;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes scrollDot {
+  0% { transform: translateY(0); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(14px); opacity: 0; }
+}
+
+/* Hero logo — crisp mark, no glow/shine (matches original: flat drawImage,
+   no filter/drop-shadow). */
+.hero-logo-mark {
+  will-change: filter;
+}
+
+/* Growth System — small particle traveling along the arrow into the
+   active node, reinforcing "the customer moves through the system"
+   rather than a static illuminated line. */
+@keyframes growth-node-travel {
+  0% { transform: translate(0, -50%); opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translate(24px, -50%); opacity: 0; }
+}
+/* Hide scrollbar on snap-scroll rails (e.g. Infrastructure Modules card
+   carousel) while keeping native scroll/keyboard/touch behavior intact. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

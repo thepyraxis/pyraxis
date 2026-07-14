@@ -1,0 +1,29 @@
+{
+  "name": "PYRAXIS",
+  "type": "marketing website + growth infrastructure brand",
+  "framework": "Next.js 15+ (App Router)",
+  "language": "TypeScript (strict)",
+  "styling": "Tailwind CSS",
+  "animation": ["GSAP", "ScrollTrigger", "Framer Motion (limited use)"],
+  "smoothScroll": "Lenis",
+  "threeD": "Three.js + React Three Fiber + Drei",
+  "stateLocal": "React Context",
+  "stateGlobal": "Zustand (only if complexity demands)",
+  "packageManager": "pnpm",
+  "status": "UNKNOWN - no implementation exists, documentation only",
+  "deployment": "UNKNOWN - not specified in source manuals",
+  "version": "1.0 (documentation baseline)",
+  "sourceManuals": [
+    "00-master-index.md",
+    "01-brand-bible.md",
+    "02-product-bible.md",
+    "03-design-system.md",
+    "04-technical-architecture.md",
+    "05-experience-blueprint.md"
+  ],
+  "mission": "PYRAXIS builds digital infrastructure that helps businesses grow - not websites, not automation, not AI as a category.",
+  "notWebsiteAgency": true,
+  "notAIAgency": true,
+  "notAutomationAgency": true,
+  "notFreelanceService": true
+}

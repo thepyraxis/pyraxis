@@ -1,0 +1,211 @@
+{
+  "sections": [
+    {
+      "id": "hero",
+      "name": "Hero",
+      "height": "100vh",
+      "emotion": [
+        "Wonder",
+        "Confidence",
+        "Calm"
+      ],
+      "intensity": "Medium",
+      "purpose": "Create curiosity, establish premium positioning, introduce the living particle system.",
+      "status": "complete",
+      "components": [
+        "Hero",
+        "HeroText",
+        "HeroButtons",
+        "HeroLogo",
+        "HeroLogoCanvas",
+        "HeroAmbientParticles"
+      ],
+      "dependencies": [
+        "ParticleProvider",
+        "ScrollManager",
+        "MouseManager"
+      ],
+      "progress": 100
+    },
+    {
+      "id": "problem",
+      "name": "The Problem",
+      "height": "70vh",
+      "emotion": [
+        "Urgency",
+        "Recognition"
+      ],
+      "intensity": "High",
+      "purpose": "Surface broken business systems; make visitor feel recognized.",
+      "status": "complete",
+      "components": [
+        "Problem",
+        "ProblemHeadline",
+        "ProblemIcons",
+        "ProblemIconCanvas",
+        "ProblemTransitionParticles"
+      ],
+      "dependencies": [
+        "hero"
+      ],
+      "progress": 100
+    },
+    {
+      "id": "growth-system",
+      "name": "Growth System",
+      "height": "120vh",
+      "emotion": [
+        "Understanding",
+        "Confidence"
+      ],
+      "intensity": "High",
+      "purpose": "Reveal the PYRAXIS ecosystem as one connected whole.",
+      "status": "complete",
+      "components": [
+        "GrowthSystem",
+        "GrowthNode"
+      ],
+      "dependencies": [
+        "problem"
+      ],
+      "progress": 100
+    },
+    {
+      "id": "growth-engines",
+      "name": "Growth Engines",
+      "height": "140vh",
+      "emotion": [
+        "Discovery",
+        "Capability"
+      ],
+      "intensity": "High",
+      "purpose": "Explain each engine in depth via one reusable Engine component.",
+      "status": "complete",
+      "components": [
+        "GrowthEngines",
+        "GrowthEnginesHeadline",
+        "GrowthEngineCard",
+        "GrowthEngineIconCanvas"
+      ],
+      "dependencies": [
+        "growth-system"
+      ],
+      "progress": 100
+    },
+    {
+      "id": "why-pyraxis",
+      "name": "Why PYRAXIS",
+      "height": "80vh",
+      "emotion": [
+        "Calm",
+        "Human Connection"
+      ],
+      "intensity": "Low",
+      "purpose": "Build trust through authenticity, not claims; intentional visual rest beat.",
+      "status": "complete",
+      "components": [
+        "WhyPyraxis"
+      ],
+      "dependencies": [
+        "growth-engines"
+      ],
+      "progress": 100
+    },
+    {
+      "id": "portfolio",
+      "name": "Portfolio / Deployments",
+      "height": "120vh",
+      "emotion": [
+        "Trust"
+      ],
+      "intensity": "Medium",
+      "purpose": "Show real work only, constructed live in view.",
+      "status": "built",
+      "components": [
+        "Portfolio.tsx",
+        "ProjectCard.tsx",
+        "motion.ts",
+        "projects.ts"
+      ],
+      "dependencies": [
+        "why-pyraxis"
+      ],
+      "progress": 100
+    },
+    {
+      "id": "process",
+      "name": "Process",
+      "height": "90vh",
+      "emotion": [
+        "Clarity"
+      ],
+      "intensity": "Medium",
+      "purpose": "Reduce uncertainty; show Discovery to Scale journey via traveling signal.",
+      "status": "built",
+      "components": [
+        "Process.tsx",
+        "motion.ts",
+        "content.ts"
+      ],
+      "dependencies": [
+        "portfolio"
+      ],
+      "progress": 100
+    },
+    {
+      "id": "future-proof-systems",
+      "name": "Future-Proof Systems",
+      "height": "130vh",
+      "emotion": [
+        "Wonder",
+        "Spectacle"
+      ],
+      "intensity": "Very High",
+      "purpose": "Cinematic climax; PYRAXIS as living infrastructure at scale.",
+      "status": "built",
+      "components": [
+        "FutureProofSystems"
+      ],
+      "dependencies": [
+        "process"
+      ],
+      "progress": 100
+    },
+    {
+      "id": "cta",
+      "name": "CTA",
+      "height": "100vh",
+      "emotion": [
+        "Confidence",
+        "Decision"
+      ],
+      "intensity": "Medium",
+      "purpose": "Conversion moment; Earth rises, one primary button.",
+      "status": "built",
+      "components": [
+        "CTA"
+      ],
+      "dependencies": [
+        "future-proof-systems"
+      ],
+      "progress": 100
+    },
+    {
+      "id": "footer",
+      "name": "Footer",
+      "height": "40vh",
+      "emotion": [
+        "Silence",
+        "Calm"
+      ],
+      "intensity": "Very Low",
+      "purpose": "Peaceful closure; experience exhales.",
+      "status": "not-started",
+      "components": [],
+      "dependencies": [
+        "cta"
+      ],
+      "progress": 0
+    }
+  ]
+}

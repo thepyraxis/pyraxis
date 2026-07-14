@@ -1,0 +1,83 @@
+{
+ "decisions": [
+  {
+   "id": "D-001",
+   "title": "Centralized global engines (Particle, Scroll, Mouse)",
+   "reasoning": "Prevents duplicate/inconsistent per-section implementations; enforces one living system.",
+   "source": "Technical Architecture 06, 08, 09"
+  },
+  {
+   "id": "D-002",
+   "title": "Token-only design system",
+   "reasoning": "Allows changing entire site personality via token files alone; enforces Less-but-better philosophy.",
+   "source": "Design System 01, 26"
+  },
+  {
+   "id": "D-003",
+   "title": "Sequential single-phase build order",
+   "reasoning": "Parallel section development tends to reinvent particle/scroll/mouse systems, breaking D-001.",
+   "source": "Technical Architecture 22"
+  },
+  {
+   "id": "D-004",
+   "title": "No fake social proof",
+   "reasoning": "Brand trust built on visible craft, not claims; fabrication is a durable reputational risk.",
+   "source": "Brand Bible 08, Product Bible 09"
+  },
+  {
+   "id": "D-005",
+   "title": "Standardize scene name on Future-Proof Systems (not Intelligence Core)",
+   "reasoning": "Physical folder/spec file already used the new name; cheaper to fix 6 stray mentions than rename scaffolded artifacts.",
+   "source": "ai/memory/decisions.md D-005"
+  },
+  {
+   "id": "D-006",
+   "title": "Flag (not resolve) duplicate utils/ vs lib/utils/ folders",
+   "reasoning": "Resolving requires deleting/merging a real folder, out of scope for docs-only session.",
+   "source": "ai/memory/decisions.md D-006"
+  },
+  {
+   "id": "D-007",
+   "title": "Removed orphaned infrastructure-modules.md spec; created growth-engines.md spec",
+   "reasoning": "Orphaned file had zero content/references; growth-engines was a genuine missing spec.",
+   "source": "ai/memory/decisions.md D-007"
+  },
+  {
+   "id": "D-008",
+   "title": "Add AI-native status-tracking layer (bootstrap, state.json, scripts, checkpoints, root status files)",
+   "reasoning": "Faster/machine-friendlier session bootstrap; additive only, ai/memory/ stays authoritative.",
+   "source": "ai/memory/decisions.md D-008"
+  },
+  {
+   "id": "D-009",
+   "title": "Rejected renaming ai/knowledge/ to ai/indexes/ or ai/database/",
+   "reasoning": "Would collide with existing differently-purposed ai/indexes/ folder; rename is a structural change outside doc-only session authorization.",
+   "source": "ai/memory/decisions.md D-009"
+  },
+  {
+   "id": "D-010",
+   "title": "Add AI.md root pointer for non-Claude AI tools",
+   "reasoning": "Several tools look for AI.md before CLAUDE.md; a pointer file costs nothing and can't drift out of sync.",
+   "source": "ai/memory/decisions.md D-010"
+  },
+  {
+   "id": "D-011",
+   "title": "Add real automated validators under root scripts/",
+   "reasoning": "Documentation-consistency rules don't scale to 500+ components enforced by human/AI judgment alone; pass/fail scripts turn drift into a fast, repeatable check.",
+   "source": "ai/memory/decisions.md D-011"
+  },
+  {
+   "id": "D-012",
+   "title": "Build Phases 01-04, 06, 08 (infra + Growth System) as Canvas2D particle engine, not Three.js",
+   "reasoning": "Growth System (Phase 08) can't legitimately build without its prerequisite chain; resolving the chain was cheaper than a third build-order violation. Canvas2D matches the existing Hero/Problem canvas pattern already in production.",
+   "source": "ai/memory/decisions.md D-012"
+  },
+  {
+   "id": "D-013",
+   "title": "Package manager finalized as npm; Section Completion Gate extended; remaining phases prioritized into tiers",
+   "reasoning": "Converting a stable npm project to pnpm this late has no upside; the completion gate was missing console-error/CLS checks a renders-fine section can still fail; tiering matches sales/credibility weight of remaining sections.",
+   "source": "ai/memory/decisions.md D-013"
+  }
+ ],
+ "note": "Mirror of ai/memory/decisions.md - update both together."
+}

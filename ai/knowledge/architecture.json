@@ -1,0 +1,120 @@
+{
+ "projectStructure": [
+  "app/",
+  "components/common/",
+  "components/layout/",
+  "components/navigation/",
+  "components/hero/",
+  "components/problem/",
+  "components/growth-system/",
+  "components/growth-engines/",
+  "components/why-pyraxis/",
+  "components/portfolio/",
+  "components/process/",
+  "components/future-proof-systems/",
+  "components/cta/",
+  "components/footer/",
+  "components/three/",
+  "components/particles/",
+  "components/animations/",
+  "hooks/",
+  "providers/",
+  "lib/utils/",
+  "styles/tokens/",
+  "public/",
+  "types/",
+  "utils/",
+  "scripts/",
+  ".github/workflows/"
+ ],
+ "globalProviders": [
+  "ThemeProvider",
+  "ParticleProvider",
+  "MouseProvider",
+  "ScrollProvider",
+  "PerformanceProvider",
+  "AnimationProvider"
+ ],
+ "globalManagers": {
+  "ParticleManager": {
+   "responsibilities": [
+    "creation and pooling",
+    "lifetime and recycling",
+    "velocity/attraction/repulsion",
+    "morph targets",
+    "mouse interaction",
+    "scroll interaction",
+    "color/glow/depth",
+    "performance LOD and instancing"
+   ]
+  },
+  "ScrollManager": {
+   "responsibilities": [
+    "current section tracking",
+    "scroll progress and velocity",
+    "direction detection",
+    "transition timing",
+    "particle state triggers",
+    "camera movement coordination"
+   ]
+  },
+  "MouseManager": {
+   "responsibilities": [
+    "cursor position and velocity",
+    "hover targets",
+    "distance and depth",
+    "repulsion field radius 120-240px",
+    "particle influence zones"
+   ]
+  }
+ },
+ "componentHierarchy": [
+  "Page",
+  "Section",
+  "Layout",
+  "Component",
+  "Subcomponent",
+  "Primitive"
+ ],
+ "renderingStrategy": {
+  "serverComponents": "all static content (default)",
+  "clientComponents": "animation, interaction, canvas, tracking"
+ },
+ "stateDecisionTree": {
+  "local": "useState",
+  "sharedFewComponents": "React Context",
+  "globalComplex": "Zustand"
+ },
+ "buildPhases": [
+  "01 Foundation + project structure",
+  "02 Design System + tokens",
+  "03 Global Providers",
+  "04 Global Particle Engine",
+  "05 Hero",
+  "06 Hero to Problem transition",
+  "07 Problem",
+  "08 Growth System",
+  "09 Growth Engines",
+  "10 Why PYRAXIS",
+  "11 Portfolio",
+  "12 Process",
+  "13 Future-Proof Systems",
+  "14 CTA",
+  "15 Footer",
+  "16 Performance optimization",
+  "17 Final polish + QA"
+ ],
+ "performanceTargets": {
+  "fpsDesktop": 60,
+  "fpsMobile": "45-60",
+  "lighthousePerformance": "90+",
+  "lighthouseAccessibility": "95+",
+  "lighthouseBestPractices": "95+",
+  "lighthouseSEO": "95+",
+  "LCP": "<2.5s",
+  "INP": "<200ms",
+  "CLS": "<0.1"
+ },
+ "status": "UNKNOWN - no implementation exists",
+ "projectStructureNote": "UNKNOWN-flagged duplicate: both lib/utils/ and root utils/ exist as scaffolded placeholders. No source manual or context file specifies two utility locations. Unresolved pending a decision entry (see ai/memory/known-issues.md and D-006 in ai/memory/decisions.md) before Phase 01 utility code is written."
+}

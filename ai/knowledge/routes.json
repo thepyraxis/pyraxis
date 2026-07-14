@@ -1,0 +1,7 @@
+{
+  "routes": [],
+  "note": "UNKNOWN - no Next.js routes exist yet. Source manuals describe the site as a single continuous scroll experience (one route, ten scenes) rather than a multi-page site; additional routes (e.g. legal pages) are not specified.",
+  "expectedMinimum": [
+    { "path": "/", "purpose": "single-page cinematic scroll experience containing all 10 scenes" }
+  ]
+}
