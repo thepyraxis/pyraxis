@@ -1,0 +1,22 @@
+{
+  "documentation": 100,
+  "aiOperatingSystem": 100,
+  "foundationProjectStructure": 0,
+  "designTokens": 0,
+  "globalProviders": 0,
+  "particleEngine": 0,
+  "heroScene": 0,
+  "problemScene": 0,
+  "growthSystemScene": 0,
+  "growthEnginesScene": 0,
+  "whyPyraxisScene": 0,
+  "portfolioScene": 0,
+  "processScene": 0,
+  "intelligenceCoreScene": 0,
+  "ctaScene": 0,
+  "footerScene": 0,
+  "performanceOptimization": 0,
+  "finalPolishQA": 0,
+  "overallImplementation": 0,
+  "note": "UNKNOWN/0 fields reflect no code in repository at generation time. Update alongside ai/memory/progress.md."
+}

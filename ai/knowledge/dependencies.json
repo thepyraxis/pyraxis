@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "next": "15+",
+    "typescript": "strict mode",
+    "tailwindcss": "unpinned - not yet installed",
+    "gsap": "unpinned - not yet installed",
+    "framer-motion": "unpinned - limited use only, prefer GSAP",
+    "lenis": "unpinned - not yet installed",
+    "three": "unpinned - not yet installed",
+    "@react-three/fiber": "unpinned - not yet installed",
+    "@react-three/drei": "unpinned - not yet installed",
+    "zustand": "unpinned - only if complex global state needed"
+  },
+  "packageManager": "pnpm",
+  "explicitlyRejected": ["jQuery", "Bootstrap", "CDN-only imports"],
+  "status": "UNKNOWN - no package.json exists yet, no versions pinned"
+}

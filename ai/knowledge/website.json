@@ -1,0 +1,22 @@
+{
+  "productFlow": ["Website", "Lead", "Booking", "Follow-up", "Retention", "Review", "Referral", "Intelligence"],
+  "signalJourney": ["Visitor", "Lead", "Booking", "Customer", "Review", "Referral", "Lifetime Value", "Intelligence"],
+  "customerJourneyPhases": ["Awareness", "Capture", "Conversion", "Delivery", "Scale", "Intelligence"],
+  "deploymentPhases": ["Discovery", "Strategy", "Build", "Launch", "Scale"],
+  "scalabilityStages": {
+    "Launch": ["Website", "Lead Engine"],
+    "Growth": ["Booking Engine", "Follow-up Engine"],
+    "Retention": ["Review Engine", "Referral Engine"],
+    "Scale": ["Intelligence Layer"],
+    "Enterprise": ["Full ecosystem", "Custom engines"]
+  },
+  "pricingPhilosophy": "No listed prices. Value framed as delta between cost of broken system and output of working system.",
+  "portfolioPhilosophy": "Only real work. No fake case studies or stock screenshots.",
+  "notThis": [
+    "A website agency",
+    "An AI agency",
+    "An automation agency",
+    "A freelance service"
+  ],
+  "status": "UNKNOWN - conceptual spec only, no implementation"
+}
