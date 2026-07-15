@@ -1,14 +1,5 @@
-import { futureProofHeadline, futureProofPillars, type FutureProofIcon } from "./content";
-import type React from "react";
-import { SpreadsheetIcon, BrainIcon, HandshakeHeartIcon, ConvergeIcon, ChartUpIcon } from "@/components/common/LineIcons";
-
-const ICONS: Record<FutureProofIcon, React.ComponentType<{ className?: string }>> = {
-  data: SpreadsheetIcon,
-  brain: BrainIcon,
-  heart: HandshakeHeartIcon,
-  converge: ConvergeIcon,
-  growth: ChartUpIcon,
-};
+import { futureProofHeadline, futureProofPillars } from "./content";
+import PillarCard from "./PillarCard";
 
 /**
  * Scene 08 — Future-Proof Systems / "After Launch". Headline + CTA on the
@@ -50,19 +41,9 @@ export default function FutureProofSystems() {
 
         <div className="mt-12 flex flex-col items-stretch gap-4 lg:flex-row lg:items-start lg:gap-3">
           {futureProofPillars.map((pillar, index) => {
-            const Icon = ICONS[pillar.icon];
             return (
               <div key={pillar.id} className="flex flex-1 items-start lg:min-w-0">
-                <div className="flex w-full min-w-0 flex-col rounded-[24px] border border-border/70 bg-card/40 p-6 shadow-[0_0_16px_rgba(139,92,246,0.06)]">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-purple-500/40">
-                    <Icon className="h-5 w-5 text-purple-400" />
-                  </span>
-                  <span className="mt-4 font-sans text-[11px] uppercase tracking-[0.2em] text-purple-400">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <h3 className="mt-1 font-display text-base font-semibold text-ink-100">{pillar.title}</h3>
-                  <p className="mt-2 font-display text-[15px] leading-relaxed text-ink-300">{pillar.description}</p>
-                </div>
+                <PillarCard index={index} title={pillar.title} description={pillar.description} icon={pillar.icon} />
                 {index < futureProofPillars.length - 1 && (
                   <span aria-hidden="true" className="mt-16 hidden shrink-0 px-1 text-purple-500/60 lg:block">
                     →
