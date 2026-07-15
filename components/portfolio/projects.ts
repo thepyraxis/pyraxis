@@ -40,17 +40,28 @@ export interface ProjectData {
    * dropped into /public; no other file needs to change.
    */
   previewSrc?: string;
+  /** Live site URL. When set, a clickable preview image links out to it —
+   *  the card's "View Live Website" action. */
+  liveUrl?: string;
+  /** Public repo URL, if the project has one to show. Left undefined
+   *  (not a dead link) for client projects with no public repo. */
+  githubUrl?: string;
 }
 
 export const projects: ProjectData[] = [
   {
-    id: "luxe-dental-clinic",
-    name: "Luxe Dental Clinic",
-    category: "Web Design & Automation",
-    statValue: "+42%",
-    statLabel: "More Bookings",
+    id: "eateria",
+    name: "Eateria",
+    category: "Restaurant Website & Digital Ordering",
+    problem: "No online ordering or reservation flow to match the dine-in experience.",
+    solution: "Premium Pan-Asian site with online ordering, reservations, cinematic UI.",
+    statValue: "Live Website",
+    statLabel: "Premium restaurant experience with online ordering, reservations, responsive design, and cinematic animations.",
     accent: "#8b5cf6",
     previewIcon: "gear",
+    previewSrc: "/projects/eateria.webp",
+    liveUrl: "https://thepyraxis.github.io/eateria",
+    githubUrl: "https://github.com/thepyraxis/eateria",
   },
   {
     id: "servicepro-ai-agent",

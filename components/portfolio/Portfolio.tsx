@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { gsap } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { projects } from "./projects";
 import ProjectCard from "./ProjectCard";
 import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
-import { SCROLL_EASE, TABLET_MEDIA_QUERY, MOBILE_MEDIA_QUERY } from "./motion";
+import { SCROLL_EASE, SCROLL_DISTANCE_MULTIPLIER, TABLET_MEDIA_QUERY, MOBILE_MEDIA_QUERY } from "./motion";
 
 type LayoutMode = "desktop" | "tablet" | "mobile";
 
@@ -34,9 +34,6 @@ export default function Portfolio() {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const reducedMotion = usePrefersReducedMotion();
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("desktop");
-  // Deterministic initial state (spec §Initial viewport state): card 0 is
-  // active before any scroll/measurement has run, never left undefined.
-  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const tabletMql = window.matchMedia(TABLET_MEDIA_QUERY);
@@ -67,7 +64,9 @@ export default function Portfolio() {
   // Horizontal scroll-scrub rail — desktop/tablet only, skipped entirely
   // under reduced motion (spec: rail becomes a static scrollable list).
   useEffect(() => {
-    if (layoutMode === "mobile" || reducedMotion) return;
+    if (layoutMode === "mobile" || reducedMotion) {
+      return;
+    }
     const wrapper = wrapperRef.current;
     const track = trackRef.current;
     const section = sectionRef.current;
@@ -78,7 +77,9 @@ export default function Portfolio() {
       const wrapperPaddingX = parseFloat(wrapperStyle.paddingLeft || "0") + parseFloat(wrapperStyle.paddingRight || "0");
       const visibleTrackWidth = wrapper.clientWidth - wrapperPaddingX;
       const scrollLength = Math.max(0, track.scrollWidth - visibleTrackWidth);
-      if (scrollLength === 0) return;
+      if (scrollLength === 0) {
+        return;
+      }
 
       gsap.set(track, { x: 0 });
 
@@ -88,18 +89,24 @@ export default function Portfolio() {
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: () => `+=${scrollLength}`,
+          end: () => `+=${scrollLength * SCROLL_DISTANCE_MULTIPLIER}`,
           scrub: true,
           pin: true,
           anticipatePin: 1,
-          onUpdate: (self) => {
-            const nextIndex = Math.round(self.progress * (projects.length - 1));
-            setActiveIndex((prev) => (prev === nextIndex ? prev : nextIndex));
-          },
+          invalidateOnRefresh: true,
         },
       });
 
+      // Force one real re-measure once everything (images, fonts, other
+      // sections' heights) has settled, so the pin's start/end reflect
+      // actual page layout rather than an early, possibly-wrong snapshot.
+      const refresh = () => ScrollTrigger.refresh();
+      window.addEventListener("load", refresh);
+      const refreshTimeout = window.setTimeout(refresh, 300);
+
       return () => {
+        window.removeEventListener("load", refresh);
+        window.clearTimeout(refreshTimeout);
         tween.scrollTrigger?.kill();
         tween.kill();
       };
@@ -158,7 +165,7 @@ export default function Portfolio() {
           >
             {projects.map((project, index) => (
               <div key={project.id} className={railStatic ? "snap-start" : ""}>
-                <ProjectCard project={project} index={index} isActive={!railStatic && activeIndex === index} />
+                <ProjectCard project={project} index={index} />
               </div>
             ))}
           </div>
