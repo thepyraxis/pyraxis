@@ -29,7 +29,7 @@ const syne = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://pyraxis.com"),
+  metadataBase: new URL("https://thepyraxis.vercel.app"),
   title: "PYRAXIS — Digital Growth Systems",
   description:
     "Websites, automation, and AI systems that work 24/7 to bring leads, book customers, and drive growth.",

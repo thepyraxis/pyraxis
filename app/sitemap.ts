@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = "https://pyraxis.com";
+const BASE_URL = "https://thepyraxis.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
