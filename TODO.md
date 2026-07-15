@@ -16,12 +16,12 @@ Quick checklist. Full detail: [`ai/memory/roadmap.md`](ai/memory/roadmap.md) (17
 - [x] Problem *(built out of sequential order — Phases 01-04, 06 skipped; see `ai/memory/known-issues.md`)*
 - [x] Growth System *(spec `ai/specs/growth-system.md` still unfilled — built from manuals directly, see D-012)*
 - [x] Growth Engines *(six engines, not the original seven — see `ai/memory/decisions.md` D-014)*
-- [ ] Why PYRAXIS *(code complete, `tsc`/`eslint`/`build` clean — never reviewed in a real browser, no animation/responsive/console check on record)*
-- [x] Portfolio *(user reviewed live via screenshots; 2 real bugs found and fixed — see `ai/checkpoints/phase11.md`)*
-- [ ] Process *(code complete, automated checks only — a real visible bug, CTA button stretching full-width instead of hugging its text, shipped past those checks and was only caught by direct user report; fixed, but no full browser re-check done since)*
-- [x] Future-Proof Systems *(user manually confirmed layout/60fps/CLS in browser; 1 real bug found and fixed — see `ai/checkpoints/phase13.md`. Note: numeric FPS/CLS/Lighthouse still not run, no tooling available)*
-- [x] CTA *(user manually confirmed layout/perf in browser; 1 real bug found and fixed — see `ai/checkpoints/phase14.md`. Note: numeric FPS/CLS/Lighthouse still not run, no tooling available)*
-- [ ] Footer *(code fully implemented, `components/footer/Footer.tsx` — but its own checkpoint still says "Phase 15 not started," zero acceptance criteria checked, no QA of any kind done)*
+- [ ] Why PYRAXIS
+- [ ] Portfolio
+- [ ] Process
+- [ ] Future-Proof Systems (climax — manuals call this "Intelligence Core", see `ai/memory/decisions.md` D-005)
+- [ ] CTA *(implementation complete this session — `components/cta/`; box stays unchecked pending the full Section Completion Gate in a real browser: breakpoint/60fps/Lighthouse pass, `ai/rules/architecture.md` #7 — same outstanding-QA status as Why PYRAXIS/Portfolio/Process/Future-Proof Systems above)*
+- [ ] Footer
 
 **Priority order for the above (D-013):** Tier 1 — Growth Engines, Why PYRAXIS, Portfolio (sell the service). Tier 2 — Process, Future-Proof Systems (credibility). Tier 3 — CTA, Footer (depend on everything above).
 
