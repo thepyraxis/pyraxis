@@ -2,7 +2,6 @@
 import type React from "react";
 
 import { useEffect, useRef, useState } from "react";
-import InfinityGlyph from "@/components/common/InfinityGlyph";
 import { gsap } from "@/lib/gsap";
 import { whyPyraxisHeadline, whyPyraxisPoints, type WhyPyraxisIcon } from "./content";
 import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
@@ -16,9 +15,8 @@ const ICONS: Record<WhyPyraxisIcon, React.ComponentType<{ className?: string }>>
 };
 
 /**
- * Scene 05 — Why PYRAXIS. Headline + CTA left, static InfinityGlyph
- * right, four-icon approach row spanning full width beneath — matches
- * the reference design.
+ * Scene 05 — Why PYRAXIS. Centered headline + CTA, four-icon approach
+ * row spanning full width beneath. InfinityGlyph removed per request.
  */
 export default function WhyPyraxis() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -61,7 +59,7 @@ export default function WhyPyraxis() {
       className="relative z-0 overflow-hidden px-[clamp(1.5rem,5vw,3.75rem)] py-24"
     >
       <div className="relative z-10 mx-auto w-full max-w-[1240px]">
-        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-split">
+        <div className="grid grid-cols-1 items-center gap-10">
           <div>
             <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-purple-400">
               {whyPyraxisHeadline.eyebrow}
@@ -85,10 +83,6 @@ export default function WhyPyraxis() {
               {whyPyraxisHeadline.cta}
               <span aria-hidden="true">→</span>
             </a>
-          </div>
-
-          <div data-reveal>
-            <InfinityGlyph className="h-[clamp(280px,32vw,440px)] w-full" />
           </div>
         </div>
 
