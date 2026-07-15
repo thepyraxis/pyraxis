@@ -28,6 +28,20 @@ export const HOVER_DURATION_MS = motionDuration("hover");
 export const SCROLL_EASE = "power1.inOut";
 export const ENTRY_EASE = "power2.out";
 
+/**
+ * Scroll distance the pin consumes, as a multiple of the raw horizontal
+ * overflow (`track.scrollWidth - visibleTrackWidth`). Cards are equal
+ * width, so the overflow itself is small (roughly one card's width worth
+ * of travel for 3 cards) — a single wheel/trackpad tick can cover nearly
+ * all of it, which drives `self.progress` from 0 to ~1 in one scroll
+ * event. The active-index math is correct either way, but a middle card's
+ * "active" window then has no scroll room to ever register a rendered
+ * frame — it reads as skipped even though it briefly was active. This
+ * stretches the pinned scroll range so every card gets real dwell room;
+ * the tween's actual x-translate distance is untouched.
+ */
+export const SCROLL_DISTANCE_MULTIPLIER = 1.6;
+
 /** Breakpoints — matches Tailwind's sm/lg, mirrors growth-engines/GrowthEngines.tsx. */
 export const TABLET_MEDIA_QUERY = "(min-width: 640px) and (max-width: 1023px)";
 export const MOBILE_MEDIA_QUERY = "(max-width: 639px)";

@@ -17,7 +17,6 @@ const PREVIEW_ICONS: Record<ProjectPreviewIcon, React.ComponentType<{ className?
 interface ProjectCardProps {
   project: ProjectData;
   index: number;
-  isActive: boolean;
 }
 
 /**
@@ -38,7 +37,7 @@ interface ProjectCardProps {
  * available — no changes needed here when that happens (see the
  * conditional render below).
  */
-export default function ProjectCard({ project, index, isActive }: ProjectCardProps) {
+export default function ProjectCard({ project, index }: ProjectCardProps) {
   const cardRef = useRef<HTMLDivElement | null>(null);
   const [glow, setGlow] = useState({ x: 50, y: 50 });
   const [hovered, setHovered] = useState(false);
@@ -53,7 +52,7 @@ export default function ProjectCard({ project, index, isActive }: ProjectCardPro
     });
   }, []);
 
-  const lifted = hovered || isActive;
+  const lifted = hovered;
   const PreviewIcon = PREVIEW_ICONS[project.previewIcon];
 
   return (
@@ -73,7 +72,7 @@ export default function ProjectCard({ project, index, isActive }: ProjectCardPro
         transform: lifted ? `translateY(-${CARD_HOVER_LIFT_PX}px) scale(${CARD_HOVER_SCALE})` : undefined,
         transitionTimingFunction: CARD_HOVER_EASE,
       }}
-      className={`group relative flex w-[92vw] shrink-0 flex-col overflow-hidden rounded-[24px] border bg-card/60 backdrop-blur-md transition-[border-color,box-shadow,transform] duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 sm:w-[78vw] lg:w-[380px] ${
+      className={`group relative flex h-[480px] w-[92vw] shrink-0 flex-col overflow-hidden rounded-[28px] border bg-card/60 backdrop-blur-md transition-[border-color,box-shadow,transform] duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 sm:w-[78vw] lg:w-[400px] ${
         lifted
           ? "border-purple-500 shadow-[0_0_1px_rgba(139,92,246,0.9),0_0_20px_rgba(139,92,246,0.45),0_0_48px_rgba(139,92,246,0.25)]"
           : "border-border/70 shadow-[0_0_16px_rgba(139,92,246,0.06)]"
@@ -87,14 +86,18 @@ export default function ProjectCard({ project, index, isActive }: ProjectCardPro
         }}
       />
 
-      <div className="p-6 pb-0">
-        <span className="font-sans text-[11px] uppercase tracking-[0.25em] text-ink-400">
-          {String(index + 1).padStart(2, "0")}
-        </span>
-        <h3 className="mt-2 font-display text-lg font-semibold text-ink-100">{project.name}</h3>
-        <p className="mt-1 font-display text-[15px] text-ink-300">{project.category}</p>
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute left-[22px] top-[10px] z-0 select-none font-display text-[40px] font-semibold italic leading-none text-purple-400/[0.16]"
+      >
+        {String(index + 1).padStart(2, "0")}
+      </span>
+
+      <div className="relative z-10 px-7 pb-0 pt-[60px]">
+        <h3 className="font-display text-xl font-semibold text-ink-100">{project.name}</h3>
+        <p className="mt-1.5 font-display text-[15px] text-ink-300">{project.category}</p>
         {project.industry && (
-          <span className="mt-2 inline-flex w-fit items-center rounded-full border border-purple-500/25 bg-purple-500/[0.08] px-2.5 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.14em] text-purple-300">
+          <span className="mt-3 inline-flex w-fit items-center rounded-full border border-purple-500/25 bg-purple-500/[0.08] px-2.5 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.14em] text-purple-300">
             {project.industry}
           </span>
         )}
@@ -111,12 +114,35 @@ export default function ProjectCard({ project, index, isActive }: ProjectCardPro
           // Real asset path — fills in cleanly once a project has one,
           // with zero changes needed anywhere else. next/image (fill mode),
           // matching the Image usage pattern used elsewhere in the codebase.
-          <Image
-            src={project.previewSrc}
-            alt={`${project.name} preview`}
-            fill
-            className="object-cover"
-          />
+          // Wrapped in a link to the live site when one exists — the
+          // screenshot itself becomes the "View Live Website" action,
+          // with no new button element added to the card.
+          project.liveUrl ? (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View live website: ${project.name}`}
+              onClick={(e) => e.stopPropagation()}
+              className="absolute inset-0 z-20 block"
+            >
+              <Image
+                src={project.previewSrc}
+                alt={`${project.name} preview`}
+                fill
+                className="object-cover"
+                style={{ objectPosition: "50% 15%" }}
+              />
+            </a>
+          ) : (
+            <Image
+              src={project.previewSrc}
+              alt={`${project.name} preview`}
+              fill
+              className="object-cover"
+              style={{ objectPosition: "50% 15%" }}
+            />
+          )
         ) : project.problem && project.solution ? (
           // Confirmed client copy exists — carries the two rungs of the
           // story a screenshot would otherwise show at a glance.
@@ -184,10 +210,24 @@ export default function ProjectCard({ project, index, isActive }: ProjectCardPro
         )}
       </div>
 
-      <div className="relative z-10 p-6">
-        <p className="font-display text-3xl font-semibold" style={{ color: project.accent }}>
-          {project.statValue}
-        </p>
+      <div className="relative z-10 mt-6 border-t border-border/40 px-7 pb-7 pt-6">
+        {project.liveUrl ? (
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`View live website: ${project.name}`}
+            onClick={(e) => e.stopPropagation()}
+            className="font-display text-3xl font-semibold underline decoration-transparent underline-offset-4 transition-colors hover:decoration-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-400"
+            style={{ color: project.accent }}
+          >
+            {project.statValue}
+          </a>
+        ) : (
+          <p className="font-display text-3xl font-semibold" style={{ color: project.accent }}>
+            {project.statValue}
+          </p>
+        )}
         <p className="mt-1 font-display text-[15px] text-ink-300">{project.statLabel}</p>
       </div>
     </div>
