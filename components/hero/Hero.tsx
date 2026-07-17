@@ -95,8 +95,8 @@ export default function Hero() {
               sits above particles/noise/glow, still decorative/background
               (pointer-events-none on the shell; the logo asset itself can
               still be interactive if it needs to be). */}
-          <div className="absolute inset-0 z-[3] flex items-center justify-center pr-0 opacity-35 sm:opacity-45 md:justify-end md:pr-[8%] md:opacity-70 lg:pr-[12%] lg:opacity-100">
-            <div className="pointer-events-auto aspect-[5986/3384] w-[clamp(200px,50vw,660px)] md:w-[clamp(320px,38vw,660px)]">
+          <div className="absolute inset-0 z-[3] flex items-center justify-center pr-0 opacity-[0.08] sm:opacity-[0.12] md:justify-end md:pr-[8%] md:opacity-70 lg:pr-[12%] lg:opacity-100">
+            <div className="pointer-events-auto aspect-[5986/3384] w-[clamp(140px,32vw,660px)] md:w-[clamp(320px,38vw,660px)]">
               <HeroLogo />
             </div>
           </div>
