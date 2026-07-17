@@ -57,7 +57,7 @@ export default function GrowthSystemPanel({ activeIndex }: GrowthSystemPanelProp
 
   return (
     <div className="relative mt-8 flex h-[132px] w-full items-start justify-center">
-      <div className="flex w-[320px] flex-col items-center text-center">
+      <div className="flex w-full max-w-[320px] flex-col items-center text-center px-4">
         {/* Small connective pointer — only meaningful once a node is active. */}
         <span
           aria-hidden="true"
