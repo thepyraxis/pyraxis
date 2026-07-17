@@ -93,8 +93,13 @@ export default function GrowthSystem() {
         </div>
 
         <div className="flex flex-col">
+          {/* Mobile (<sm): vertical journey — Step 1 -> Step 2 -> ... ->
+              Result, stacked and centered, connected by a down arrow
+              instead of the desktop row's rightward one. Whole sequence
+              is visible by scrolling the page, no horizontal drag needed.
+              sm and up: unchanged horizontal scroll-rail row. */}
           <div
-            className="no-scrollbar -mx-24 -my-24 flex items-start justify-start gap-1 overflow-x-auto px-24 py-24"
+            className="no-scrollbar -my-24 flex flex-col items-center justify-start gap-0 py-24 sm:-mx-24 sm:flex-row sm:items-start sm:justify-start sm:gap-1 sm:overflow-x-auto sm:px-24"
           >
             {growthNodes.map((node, index) => (
               <GrowthNode

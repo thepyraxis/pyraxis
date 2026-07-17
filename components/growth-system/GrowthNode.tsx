@@ -47,7 +47,7 @@ interface GrowthNodeProps {
  */
 export default function GrowthNode({ node, index, isFocused, isLast, onFocus, onBlur }: GrowthNodeProps) {
   return (
-    <div className="flex shrink-0 items-start">
+    <div className="flex shrink-0 flex-col items-center sm:flex-row sm:items-start">
       <div className="flex w-[92px] shrink-0 flex-col items-center">
         <button
           type="button"
@@ -124,22 +124,36 @@ export default function GrowthNode({ node, index, isFocused, isLast, onFocus, on
       </div>
 
       {!isLast && (
-        <span aria-hidden="true" className="relative mx-3 hidden h-20 w-6 shrink-0 items-center justify-center sm:flex">
-          <span
-            className={`block text-center transition-colors duration-500 ${
-              isFocused ? "text-purple-300" : "text-purple-500/40"
-            }`}
-          >
-            →
-          </span>
-          {isFocused && (
+        <>
+          {/* Mobile: vertical connector between stacked steps. */}
+          <span aria-hidden="true" className="flex h-6 w-20 shrink-0 items-center justify-center sm:hidden">
             <span
-              key={index}
-              className="absolute left-0 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-purple-300/80 shadow-[0_0_5px_rgba(192,132,252,0.6)]"
-              style={{ animation: "growth-node-travel 900ms ease-out infinite" }}
-            />
-          )}
-        </span>
+              className={`block text-center transition-colors duration-500 ${
+                isFocused ? "text-purple-300" : "text-purple-500/40"
+              }`}
+            >
+              ↓
+            </span>
+          </span>
+
+          {/* sm+: original horizontal connector, unchanged. */}
+          <span aria-hidden="true" className="relative mx-3 hidden h-20 w-6 shrink-0 items-center justify-center sm:flex">
+            <span
+              className={`block text-center transition-colors duration-500 ${
+                isFocused ? "text-purple-300" : "text-purple-500/40"
+              }`}
+            >
+              →
+            </span>
+            {isFocused && (
+              <span
+                key={index}
+                className="absolute left-0 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-purple-300/80 shadow-[0_0_5px_rgba(192,132,252,0.6)]"
+                style={{ animation: "growth-node-travel 900ms ease-out infinite" }}
+              />
+            )}
+          </span>
+        </>
       )}
     </div>
   );
