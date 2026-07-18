@@ -6,6 +6,8 @@ import { gsap } from "@/lib/gsap";
 import { whyPyraxisHeadline, whyPyraxisPoints, type WhyPyraxisIcon } from "./content";
 import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
 import { TargetIcon, PerformBarsIcon, GearIcon, HandshakeHeartIcon } from "@/components/common/LineIcons";
+import Section from "@/components/layout/Section";
+import SectionContent from "@/components/layout/SectionContent";
 
 const ICONS: Record<WhyPyraxisIcon, React.ComponentType<{ className?: string }>> = {
   target: TargetIcon,
@@ -52,13 +54,8 @@ export default function WhyPyraxis() {
   }, [isVisible, reducedMotion]);
 
   return (
-    <section
-      ref={sectionRef}
-      id="why-pyraxis"
-      aria-label="Why PYRAXIS"
-      className="relative z-0 overflow-hidden px-header py-24"
-    >
-      <div className="relative z-10 mx-auto w-full max-w-container">
+    <Section ref={sectionRef} id="why-pyraxis" aria-label="Why PYRAXIS" className="z-0 overflow-hidden">
+      <SectionContent>
         <div className="grid grid-cols-1 items-center gap-10">
           <div>
             <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-purple-400">
@@ -102,7 +99,7 @@ export default function WhyPyraxis() {
             );
           })}
         </div>
-      </div>
-    </section>
+      </SectionContent>
+    </Section>
   );
 }

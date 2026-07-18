@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { growthEngines } from "./engines";
 import GrowthEngineCard from "./GrowthEngineCard";
 import GrowthEnginesHeadline from "./GrowthEnginesHeadline";
+import SectionContent from "@/components/layout/SectionContent";
 
 const CARD_COUNT = growthEngines.length;
 // How much extra vertical scroll room the section reserves for stepping
@@ -148,7 +149,7 @@ export default function GrowthEngines() {
       className="relative z-0"
       style={{ height: `${PIN_HEIGHT_VH}vh` }}
     >
-      <div className="sticky top-0 flex min-h-screen flex-col justify-center overflow-hidden px-header py-24">
+      <div className="sticky top-0 flex min-h-screen flex-col justify-center overflow-hidden px-header py-section-y">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 -z-10"
@@ -157,7 +158,7 @@ export default function GrowthEngines() {
           }}
         />
 
-        <div className="relative z-10 mx-auto w-full max-w-container">
+        <SectionContent padded={false}>
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-split lg:items-center lg:gap-10">
             <GrowthEnginesHeadline activeIndex={activeIndex} />
 
@@ -199,7 +200,7 @@ export default function GrowthEngines() {
               </div>
             </div>
           </div>
-        </div>
+        </SectionContent>
       </div>
     </section>
   );

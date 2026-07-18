@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { growthNodes } from "./nodes";
 import GrowthNode from "./GrowthNode";
 import GrowthSystemPanel from "./GrowthSystemPanel";
+import Section from "@/components/layout/Section";
+import SectionContent from "@/components/layout/SectionContent";
 
 const BLUR_RESET_MS = 250;
 
@@ -68,12 +70,12 @@ export default function GrowthSystem() {
   useEffect(() => clearPendingReset, []);
 
   return (
-    <section
+    <Section
       id="growth-system"
       aria-label="The PYRAXIS growth system"
-      className="relative z-0 flex min-h-[80vh] w-full flex-col items-center justify-center overflow-x-clip px-header py-24"
+      className="z-0 flex min-h-[80vh] w-full flex-col items-center justify-center overflow-x-clip"
     >
-      <div className="relative z-10 mx-auto grid w-full max-w-container grid-cols-1 items-center gap-12 lg:grid-cols-[240px_1fr] lg:gap-8">
+      <SectionContent className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[240px_1fr] lg:gap-8">
         <div>
           <p className="text-[11px] uppercase tracking-[0.3em] text-purple-400">The Solution</p>
           <h2 className="mt-6 font-display text-[clamp(30px,4.8vw,44px)] font-semibold leading-[1.15] text-ink-100">
@@ -115,7 +117,7 @@ export default function GrowthSystem() {
           </div>
           <GrowthSystemPanel activeIndex={activeIndex} />
         </div>
-      </div>
-    </section>
+      </SectionContent>
+    </Section>
   );
 }

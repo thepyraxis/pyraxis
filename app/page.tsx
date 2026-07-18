@@ -26,8 +26,8 @@ export default function Home() {
       <main id="main">
         <Hero />
         <Problem />
-        <GrowthSystem />
         <MarqueeTicker />
+        <GrowthSystem />
         <GrowthEngines />
         <WhyPyraxis />
         <Portfolio />

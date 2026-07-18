@@ -20,7 +20,7 @@ interface LegalPageProps {
  */
 export default function LegalPage({ title, lastUpdated, sections }: LegalPageProps) {
   return (
-    <main className="min-h-screen bg-[#020205] px-header py-24">
+    <main className="min-h-screen bg-[#020205] px-header py-section-y">
       <div className="mx-auto w-full max-w-[800px]">
         <Link
           href="/"

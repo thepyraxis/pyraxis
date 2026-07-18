@@ -15,6 +15,8 @@ const ICON_SRC: Record<ProcessIcon, string> = {
   chart: "/icons/measure-grow.webp",
 };
 import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
+import Section from "@/components/layout/Section";
+import SectionContent from "@/components/layout/SectionContent";
 
 const STAGE_COUNT = processStages.length;
 const PIN_HEIGHT_VH = STAGE_COUNT * STEP_VH;
@@ -174,8 +176,8 @@ export default function Process() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="process" aria-label="Process" className="relative z-0 px-header py-24">
-      <div className="relative z-10 mx-auto w-full max-w-container">
+    <Section ref={sectionRef} id="process" aria-label="Process" className="z-0">
+      <SectionContent>
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[40%_60%] lg:gap-16">
           {/* Left — sticky headline, stays in place while the stack scrolls
               past. Explicit JS-computed height (not CSS Grid stretch, not
@@ -378,7 +380,7 @@ export default function Process() {
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </SectionContent>
+    </Section>
   );
 }

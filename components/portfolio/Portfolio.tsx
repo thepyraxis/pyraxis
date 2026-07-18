@@ -6,6 +6,8 @@ import { projects } from "./projects";
 import ProjectCard from "./ProjectCard";
 import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
 import { SCROLL_EASE, SCROLL_DISTANCE_MULTIPLIER, TABLET_MEDIA_QUERY, MOBILE_MEDIA_QUERY } from "./motion";
+import Section from "@/components/layout/Section";
+import SectionContent from "@/components/layout/SectionContent";
 
 type LayoutMode = "desktop" | "tablet" | "mobile";
 
@@ -118,13 +120,11 @@ export default function Portfolio() {
   const railStatic = layoutMode === "mobile" || reducedMotion;
 
   return (
-    <section
+    <Section
       ref={sectionRef}
       id="portfolio"
       aria-label="Portfolio"
-      className={`relative z-0 px-header py-24 ${
-        railStatic ? "min-h-fit" : "min-h-[100vh]"
-      }`}
+      className={`z-0 ${railStatic ? "min-h-fit" : "min-h-[100vh]"}`}
     >
       <div
         aria-hidden="true"
@@ -134,7 +134,7 @@ export default function Portfolio() {
         }}
       />
 
-      <div className="relative z-10 mx-auto w-full max-w-container">
+      <SectionContent>
         <span className="font-sans text-[11px] uppercase tracking-[0.3em] text-purple-400">Recent Deployments</span>
         <h2 className="mt-2 font-display text-[clamp(28px,4vw,40px)] font-semibold text-ink-100">
           Real systems.
@@ -170,7 +170,7 @@ export default function Portfolio() {
             ))}
           </div>
         </div>
-      </div>
-    </section>
+      </SectionContent>
+    </Section>
   );
 }

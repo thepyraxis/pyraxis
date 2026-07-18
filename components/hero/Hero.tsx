@@ -104,7 +104,7 @@ export default function Hero() {
       </div>
 
       {/* .hero-content — normal flow, not absolute, not shared with the logo */}
-      <div className="relative z-10 w-full max-w-[800px] pt-[100px]">
+      <div className="relative z-10 w-full max-w-[800px] pt-[clamp(3.5rem,10vw,6.25rem)]">
         <HeroText />
         <HeroButtons />
       </div>
