@@ -52,7 +52,7 @@ export default function Hero() {
       ref={sectionRef}
       id="hero"
       aria-label="Hero"
-      className="relative z-20 flex min-h-screen items-center bg-[#020205] px-[clamp(1.5rem,5vw,3.75rem)]"
+      className="relative z-20 flex min-h-screen items-center bg-[#020205] px-header"
     >
       {/* Particle field — backmost layer, same slot the original occupied,
           confined to exactly Hero's own box (absolute inset-0 of a

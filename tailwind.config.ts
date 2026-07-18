@@ -1,8 +1,20 @@
 import type { Config } from "tailwindcss";
+import { typography } from "./styles/tokens/typography";
+import { spacing } from "./styles/tokens/spacing";
+import { layout, breakpoints } from "./styles/tokens/layout";
 
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
   theme: {
+    screens: {
+      xs: `${breakpoints.xs}px`,
+      sm: `${breakpoints.sm}px`,
+      md: `${breakpoints.md}px`,
+      lg: `${breakpoints.lg}px`,
+      xl: `${breakpoints.xl}px`,
+      "2xl": `${breakpoints["2xl"]}px`,
+      "3xl": `${breakpoints["3xl"]}px`,
+    },
     extend: {
       colors: {
         bg: "#020205",
@@ -27,6 +39,28 @@ const config: Config = {
       fontFamily: {
         display: ["var(--font-display)", "serif"],
         sans: ["var(--font-sans)", "Syne", "sans-serif"],
+      },
+      fontSize: {
+        display: typography.display,
+        h1: typography.h1,
+        h2: typography.h2,
+        h3: typography.h3,
+        body: typography.body,
+        small: typography.small,
+        "nav-mobile": layout.navMobileLinkSize,
+        "hero-headline": typography.heroHeadline,
+      },
+      spacing: {
+        "section-y": spacing.sectionY,
+        "gap-sm": spacing.gapSm,
+        "gap-md": spacing.gapMd,
+        "gap-lg": spacing.gapLg,
+        inset: spacing.inset,
+        "margin-fluid": spacing.margin,
+        header: layout.headerPaddingX,
+      },
+      maxWidth: {
+        container: layout.containerMaxWidth,
       },
       gridTemplateColumns: {
         split: "380px 1fr",

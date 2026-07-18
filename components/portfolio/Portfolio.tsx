@@ -122,7 +122,7 @@ export default function Portfolio() {
       ref={sectionRef}
       id="portfolio"
       aria-label="Portfolio"
-      className={`relative z-0 px-[clamp(1.5rem,5vw,3.75rem)] py-24 ${
+      className={`relative z-0 px-header py-24 ${
         railStatic ? "min-h-fit" : "min-h-[100vh]"
       }`}
     >
@@ -134,7 +134,7 @@ export default function Portfolio() {
         }}
       />
 
-      <div className="relative z-10 mx-auto w-full max-w-[1240px]">
+      <div className="relative z-10 mx-auto w-full max-w-container">
         <span className="font-sans text-[11px] uppercase tracking-[0.3em] text-purple-400">Recent Deployments</span>
         <h2 className="mt-2 font-display text-[clamp(28px,4vw,40px)] font-semibold text-ink-100">
           Real systems.

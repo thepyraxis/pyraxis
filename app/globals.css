@@ -41,6 +41,14 @@ body {
   85% { opacity: 1; }
   100% { transform: translate(24px, -50%); opacity: 0; }
 }
+
+/* Marquee ticker — infinite scroll, seamless loop via duplicated content
+   (see components/marquee/MarqueeTicker.tsx). Paused by the global
+   prefers-reduced-motion rule above, same as every other animation. */
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 /* Hide scrollbar on snap-scroll rails (e.g. Infrastructure Modules card
    carousel) while keeping native scroll/keyboard/touch behavior intact. */
 .no-scrollbar {
