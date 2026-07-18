@@ -12,7 +12,7 @@ import { ctaActions } from "@/lib/config/contact";
 export default function HeroButtons() {
   return (
     <div data-reveal>
-      <div className="mt-10 flex flex-wrap items-center gap-4">
+      <div className="mt-10 flex flex-wrap items-center gap-8">
         <a
           href={ctaActions.secondary.href}
           target="_blank"

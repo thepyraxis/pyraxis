@@ -1,5 +1,7 @@
 import { futureProofHeadline, futureProofPillars } from "./content";
 import PillarCard from "./PillarCard";
+import Section from "@/components/layout/Section";
+import SectionContent from "@/components/layout/SectionContent";
 
 /**
  * Scene 08 — Future-Proof Systems / "After Launch". Headline + CTA on the
@@ -15,12 +17,8 @@ import PillarCard from "./PillarCard";
  */
 export default function FutureProofSystems() {
   return (
-    <section
-      id="future-proof-systems"
-      aria-label="After Launch"
-      className="relative z-0 overflow-hidden px-header py-24"
-    >
-      <div className="relative z-10 mx-auto w-full max-w-container">
+    <Section id="future-proof-systems" aria-label="After Launch" className="z-0 overflow-hidden">
+      <SectionContent>
         <div>
           <p className="text-[11px] uppercase tracking-[0.3em] text-purple-400">{futureProofHeadline.eyebrow}</p>
           <h2 className="mt-6 font-display text-[clamp(28px,4.4vw,44px)] font-semibold leading-[1.15] text-ink-100">
@@ -53,7 +51,7 @@ export default function FutureProofSystems() {
             );
           })}
         </div>
-      </div>
-    </section>
+      </SectionContent>
+    </Section>
   );
 }

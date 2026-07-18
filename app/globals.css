@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Fluid spacing scale — single source of truth, mirrors
+     styles/tokens/spacing.ts. Tailwind utilities (gap-xs, p-sm, mt-lg,
+     py-section-y, ...) read from the same values via tailwind.config.ts;
+     these vars exist so inline styles, keyframes, and future non-Tailwind
+     code inherit the same rhythm instead of hardcoding new clamp()s. */
+  --space-xs: clamp(0.5rem, 1vw, 0.75rem);
+  --space-sm: clamp(0.75rem, 1.2vw, 1.25rem);
+  --space-md: clamp(1rem, 2vw, 3rem);
+  --space-lg: clamp(1.5rem, 3vw, 4rem);
+  --space-xl: clamp(2rem, 5vw, 6rem);
+  --space-section-y: clamp(5rem, 8vw, 10rem);
+}
+
 html {
   scroll-behavior: auto;
 }

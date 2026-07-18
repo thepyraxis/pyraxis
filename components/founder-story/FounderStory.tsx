@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { founderStoryContent } from "./content";
 import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
+import Section from "@/components/layout/Section";
+import SectionContent from "@/components/layout/SectionContent";
 
 const initials = founderStoryContent.founderName
   .split(" ")
@@ -57,13 +59,8 @@ export default function FounderStory() {
   }, [isVisible, reducedMotion]);
 
   return (
-    <section
-      ref={sectionRef}
-      id="founder-story"
-      aria-label="Founder Story"
-      className="relative z-0 px-header py-24"
-    >
-      <div className="relative z-10 mx-auto w-full max-w-container">
+    <Section ref={sectionRef} id="founder-story" aria-label="Founder Story" className="z-0">
+      <SectionContent>
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_260px]">
           <div>
             <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-purple-400">
@@ -116,7 +113,7 @@ export default function FounderStory() {
             </span>
           </div>
         </div>
-      </div>
-    </section>
+      </SectionContent>
+    </Section>
   );
 }

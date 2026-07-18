@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils/cn";
 import { ctaHeadline } from "./content";
 import { ctaActions } from "@/lib/config/contact";
 import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
+import Section from "@/components/layout/Section";
+import SectionContent from "@/components/layout/SectionContent";
 
 /**
  * Scene — CTA.
@@ -68,11 +70,11 @@ export default function CTA() {
   }, [isSectionVisible, reducedMotion]);
 
   return (
-    <section
+    <Section
       ref={sectionRef}
       id="cta"
       aria-label="Get Started"
-      className="relative z-0 flex min-h-screen items-center overflow-hidden bg-[#020205] px-header py-24"
+      className="z-0 flex min-h-screen items-center overflow-hidden bg-[#020205]"
     >
       {/* Subtle radial purple glow behind the content — calm, not decorative. */}
       <div
@@ -84,7 +86,7 @@ export default function CTA() {
         }}
       />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-container flex-col items-start text-left lg:max-w-none">
+      <SectionContent className="flex flex-col items-start text-left lg:max-w-none">
         <div className="w-full max-w-[680px]">
           <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-purple-400">
             {ctaHeadline.eyebrow}
@@ -154,7 +156,7 @@ export default function CTA() {
             <span className="absolute -bottom-1 left-0 h-px w-0 bg-purple-400 transition-all duration-300 ease-out group-hover:w-full" />
           </a>
         </div>
-      </div>
-    </section>
+      </SectionContent>
+    </Section>
   );
 }

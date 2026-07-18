@@ -51,12 +51,12 @@ const config: Config = {
         "hero-headline": typography.heroHeadline,
       },
       spacing: {
+        xs: spacing.xs,
+        sm: spacing.sm,
+        md: spacing.md,
+        lg: spacing.lg,
+        xl: spacing.xl,
         "section-y": spacing.sectionY,
-        "gap-sm": spacing.gapSm,
-        "gap-md": spacing.gapMd,
-        "gap-lg": spacing.gapLg,
-        inset: spacing.inset,
-        "margin-fluid": spacing.margin,
         header: layout.headerPaddingX,
       },
       maxWidth: {
