@@ -56,9 +56,9 @@ export default function WhyPyraxis() {
       ref={sectionRef}
       id="why-pyraxis"
       aria-label="Why PYRAXIS"
-      className="relative z-0 overflow-hidden px-[clamp(1.5rem,5vw,3.75rem)] py-24"
+      className="relative z-0 overflow-hidden px-header py-24"
     >
-      <div className="relative z-10 mx-auto w-full max-w-[1240px]">
+      <div className="relative z-10 mx-auto w-full max-w-container">
         <div className="grid grid-cols-1 items-center gap-10">
           <div>
             <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-purple-400">

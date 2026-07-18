@@ -174,8 +174,8 @@ export default function Process() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="process" aria-label="Process" className="relative z-0 px-6 py-24 lg:px-[60px]">
-      <div className="relative z-10 mx-auto w-full max-w-[1240px]">
+    <section ref={sectionRef} id="process" aria-label="Process" className="relative z-0 px-header py-24">
+      <div className="relative z-10 mx-auto w-full max-w-container">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[40%_60%] lg:gap-16">
           {/* Left — sticky headline, stays in place while the stack scrolls
               past. Explicit JS-computed height (not CSS Grid stretch, not

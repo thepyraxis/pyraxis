@@ -67,7 +67,7 @@ export default function Header() {
           : "bg-transparent"
       )}
     >
-      <div className="flex items-center justify-between px-[clamp(1.5rem,5vw,3.75rem)]">
+      <div className="flex items-center justify-between px-header">
         <Link href="/" aria-label="PYRAXIS" className="relative z-[1] flex min-h-[48px] items-center" onClick={closeMenu}>
           <Image
             src="/pyraxis-wordmark.svg"
@@ -149,7 +149,7 @@ export default function Header() {
               onClick={closeMenu}
               style={{ transitionDelay: menuOpen ? `${80 + index * 45}ms` : "0ms" }}
               className={cn(
-                "min-h-[48px] py-3 font-display text-[clamp(28px,8vw,40px)] font-semibold text-ink-200 transition-all duration-300 ease-out hover:text-purple-300",
+                "min-h-[48px] py-3 font-display text-nav-mobile font-semibold text-ink-200 transition-all duration-300 ease-out hover:text-purple-300",
                 menuOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
               )}
             >

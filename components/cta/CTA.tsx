@@ -72,7 +72,7 @@ export default function CTA() {
       ref={sectionRef}
       id="cta"
       aria-label="Get Started"
-      className="relative z-0 flex min-h-screen items-center overflow-hidden bg-[#020205] px-[clamp(1.5rem,5vw,3.75rem)] py-24"
+      className="relative z-0 flex min-h-screen items-center overflow-hidden bg-[#020205] px-header py-24"
     >
       {/* Subtle radial purple glow behind the content — calm, not decorative. */}
       <div
@@ -84,7 +84,7 @@ export default function CTA() {
         }}
       />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1240px] flex-col items-start text-left lg:max-w-none">
+      <div className="relative z-10 mx-auto flex w-full max-w-container flex-col items-start text-left lg:max-w-none">
         <div className="w-full max-w-[680px]">
           <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-purple-400">
             {ctaHeadline.eyebrow}

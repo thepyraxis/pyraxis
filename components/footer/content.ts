@@ -26,6 +26,13 @@ export const footerContact = {
   },
 };
 
+/** Legal page links — real routes at /privacy and /terms (ported from the
+ *  original HTML site's privacy.html/terms.html), not external/social. */
+export const footerLegal = [
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Terms of Service", href: "/terms" },
+];
+
 /** Spec §Component Specification #4 — exact year sourced at render time, not hardcoded. */
 export function footerCopyright(year: number = new Date().getFullYear()): string {
   return `© ${year} PYRAXIS. All rights reserved.`;

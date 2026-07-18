@@ -36,16 +36,16 @@ export default function HeroText() {
   return (
     <div ref={rootRef}>
       <h1 data-reveal className="font-display leading-[1.15]">
-        <span className="block bg-gradient-to-br from-[#e8e8f8] to-[#888898] bg-clip-text pb-[0.05em] text-[clamp(34px,8vw,78px)] font-semibold text-transparent">
+        <span className="block bg-gradient-to-br from-[#e8e8f8] to-[#888898] bg-clip-text pb-[0.05em] text-hero-headline font-semibold text-transparent">
           Websites,
         </span>
-        <span className="block bg-gradient-to-br from-[#e8e8f8] to-[#888898] bg-clip-text pb-[0.05em] text-[clamp(34px,8vw,78px)] font-semibold text-transparent">
+        <span className="block bg-gradient-to-br from-[#e8e8f8] to-[#888898] bg-clip-text pb-[0.05em] text-hero-headline font-semibold text-transparent">
           Automation &amp; AI Systems
         </span>
-        <em className="block bg-gradient-to-br from-[#6D28D9] to-[#8B5CF6] bg-clip-text pb-[0.05em] text-[clamp(34px,8vw,78px)] font-semibold italic text-transparent">
+        <em className="block bg-gradient-to-br from-[#6D28D9] to-[#8B5CF6] bg-clip-text pb-[0.05em] text-hero-headline font-semibold italic text-transparent">
           That Turn
         </em>
-        <em className="block bg-gradient-to-br from-[#6D28D9] to-[#8B5CF6] bg-clip-text pb-[0.05em] text-[clamp(34px,8vw,78px)] font-semibold italic text-transparent">
+        <em className="block bg-gradient-to-br from-[#6D28D9] to-[#8B5CF6] bg-clip-text pb-[0.05em] text-hero-headline font-semibold italic text-transparent">
           Leads Into Customers
         </em>
       </h1>

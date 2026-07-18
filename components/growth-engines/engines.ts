@@ -42,7 +42,7 @@ export const growthEngines: GrowthEngineData[] = [
     panelDescription:
       "A trained AI voice and chat agent picks up every inquiry the moment it arrives. No missed calls, no hold music, no lost leads while your team is busy with customers in front of them.",
     features: ["24/7 availability", "Instant responses", "Human-like conversation"],
-    stat: { value: "94%", label: "Inquiries Answered" },
+    stat: { value: "90%+", label: "Inquiries Answered" },
   },
   {
     id: "smart-booking",
@@ -53,7 +53,7 @@ export const growthEngines: GrowthEngineData[] = [
     panelDescription:
       "Real-time scheduling that syncs with your calendar and confirms appointments without a single phone tag. Customers pick a time, get reminded automatically, and show up.",
     features: ["Real-time availability", "Auto reminders", "Zero double-booking"],
-    stat: { value: "41%", label: "Fewer No-Shows" },
+    stat: { value: "70%", label: "Fewer No-Shows" },
   },
   {
     id: "follow-up-automation",
@@ -64,7 +64,7 @@ export const growthEngines: GrowthEngineData[] = [
     panelDescription:
       "Automated sequences reach out at exactly the right moment, so deals that would normally go cold keep moving forward without anyone having to remember to send them.",
     features: ["Timed nurture sequences", "Personalized messaging", "Automatic re-engagement"],
-    stat: { value: "3.2x", label: "More Deals Recovered" },
+    stat: { value: "60%+", label: "Increase In Pipeline" },
   },
   {
     id: "repeat-purchase",
@@ -75,7 +75,7 @@ export const growthEngines: GrowthEngineData[] = [
     panelDescription:
       "Lifecycle campaigns re-engage past customers at the right intervals, turning a single sale into an ongoing relationship without any extra manual outreach from your team.",
     features: ["Lifecycle triggers", "Loyalty offers", "Automated win-back"],
-    stat: { value: "2.5x", label: "Higher Customer Lifetime Value" },
+    stat: { value: "35%+", label: "Higher Lifetime Value" },
   },
   {
     id: "smart-reviews",
@@ -86,7 +86,7 @@ export const growthEngines: GrowthEngineData[] = [
     panelDescription:
       "Happy customers are prompted for a review right after the moment they're most satisfied, filling your public profiles with fresh, authentic feedback with no extra effort.",
     features: ["Perfectly timed requests", "One-tap review flow", "Negative feedback filtering"],
-    stat: { value: "5x", label: "More Reviews Collected" },
+    stat: { value: "70%+", label: "Customers From Referrals" },
   },
   {
     id: "reputation-system",
@@ -95,8 +95,8 @@ export const growthEngines: GrowthEngineData[] = [
     icon: "reputation-system",
     panelTitle: "Reputation System",
     panelDescription:
-      "A single dashboard tracks every review and mention across platforms, alerting you the moment something needs attention so your reputation stays consistent everywhere customers look.",
-    features: ["Cross-platform monitoring", "Instant alerts", "Centralized dashboard"],
+      "A single dashboard tracks every review and mention across platforms, alerting you the moment something needs attention so your reputation stays consistent everywhere customers look. Ratings of 4-5 stars are routed to a public review; 1-3 star feedback goes straight to you privately, by email and WhatsApp, so issues get resolved before they ever go public.",
+    features: ["Smart public/private routing", "Instant alerts", "Centralized dashboard"],
     stat: { value: "89%", label: "Higher Trust Score" },
   },
 ];

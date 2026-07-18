@@ -29,7 +29,7 @@ export default function Problem() {
       ref={sectionRef}
       id="problem"
       aria-label="The problem"
-      className="relative z-0 flex min-h-[70vh] items-center bg-[#020205] px-[clamp(1.5rem,5vw,3.75rem)] py-24"
+      className="relative z-0 flex min-h-[70vh] items-center bg-[#020205] px-header py-24"
     >
       {/*
         Problem's own ambient dust field — same palette as Hero's for
@@ -80,7 +80,7 @@ export default function Problem() {
         />
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-[1240px]">
+      <div className="relative z-10 mx-auto w-full max-w-container">
         <div className="grid grid-cols-1 gap-12 pt-[70px] lg:grid-cols-split lg:items-center lg:gap-10 lg:pt-0">
           <ProblemHeadline />
           <ProblemIcons />

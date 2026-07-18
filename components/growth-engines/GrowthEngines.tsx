@@ -148,7 +148,7 @@ export default function GrowthEngines() {
       className="relative z-0"
       style={{ height: `${PIN_HEIGHT_VH}vh` }}
     >
-      <div className="sticky top-0 flex min-h-screen flex-col justify-center overflow-hidden px-[clamp(1.5rem,5vw,3.75rem)] py-24">
+      <div className="sticky top-0 flex min-h-screen flex-col justify-center overflow-hidden px-header py-24">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 -z-10"
@@ -157,7 +157,7 @@ export default function GrowthEngines() {
           }}
         />
 
-        <div className="relative z-10 mx-auto w-full max-w-[1240px]">
+        <div className="relative z-10 mx-auto w-full max-w-container">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-split lg:items-center lg:gap-10">
             <GrowthEnginesHeadline activeIndex={activeIndex} />
 

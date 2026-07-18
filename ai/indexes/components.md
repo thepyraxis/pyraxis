@@ -114,6 +114,12 @@ Keep this file and `ai/knowledge/components.json` in sync — this is the human-
 - Status: complete
 - Used by: `components/growth-system/GrowthSystem.tsx`
 
+### MarqueeTicker
+- Location: `components/marquee/MarqueeTicker.tsx`
+- Purpose: Scrolling service ticker between Growth System and Growth Engines — ported from the original HTML site's `.marquee-section`; pure CSS `marquee-scroll` keyframe animation (app/globals.css), reuses GrowthEngines' own titles as content, no client component needed.
+- Status: complete
+- Used by: `app/page.tsx`
+
 ### GrowthEngines
 - Location: `components/growth-engines/GrowthEngines.tsx`
 - Purpose: Scene 04 — six reusable engine cards (Website, Lead, Booking, WhatsApp, Review, AI Assistant — six, not the spec's original seven, see `ai/memory/decisions.md` D-014); horizontal row on desktop, vertical two-column stack on mobile; wires hover/focus into the global `ParticleProvider` the same way `GrowthSystem` does.
@@ -186,6 +192,12 @@ Keep this file and `ai/knowledge/components.json` in sync — this is the human-
 - Status: complete
 - Used by: `components/portfolio/Portfolio.tsx`
 
+### FounderStory
+- Location: `components/founder-story/FounderStory.tsx`
+- Purpose: Founder-story scene between Portfolio and Process — responsive `grid-cols-1 lg:grid-cols-[1fr_260px]` layout, circular avatar image/placeholder.
+- Status: complete
+- Used by: `app/page.tsx`
+
 ### Process
 - Location: `components/process/Process.tsx`
 - Purpose: Phase 12 scene (`ai/specs/process.md`) — fixed five-stage vertical progression with a scroll-linked traveling signal dot; ambient particles bias toward the active stage via `focusIndex`.
@@ -204,9 +216,17 @@ Keep this file and `ai/knowledge/components.json` in sync — this is the human-
 - Status: complete
 - Used by: `app/page.tsx`
 
-## Expected next (Phase 15+, see `ai/memory/roadmap.md`)
+### Footer
+- Location: `components/footer/Footer.tsx`
+- Purpose: Phase 15 scene — site footer, `min-h-[40vh]`, wordmark + links, now also Privacy/Terms legal links (no social — none exist for this business).
+- Status: complete
+- Used by: `app/page.tsx`
 
-- Footer scene (Phase 15)
+### LegalPage
+- Location: `components/legal/LegalPage.tsx`
+- Purpose: Shared static layout for `/privacy` and `/terms` routes — no particle engine/GSAP, dark theme matching the rest of the site, content ported verbatim from the original HTML site's `privacy.html`/`terms.html`.
+- Status: complete
+- Used by: `app/privacy/page.tsx`, `app/terms/page.tsx`
 
 ## Related
 

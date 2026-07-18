@@ -7,7 +7,7 @@ import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
 // Reused from Header, not duplicated (spec §Component Specification #2 —
 // "one idea, one location"). See Header.tsx's export comment.
 import { LINKS } from "@/components/navigation/Header";
-import { footerContact, footerCopyright } from "./content";
+import { footerContact, footerCopyright, footerLegal } from "./content";
 import { FOOTER_NAV_ARIA_LABEL, FOOTER_CONTENT_MAX_WIDTH_PX } from "./layout";
 import { ENTRY_Y_OFFSET_PX, ENTRY_DURATION_S, ENTRY_STAGGER_S, ENTRY_EASE, ENTRY_THRESHOLD } from "./motion";
 import Image from "next/image";
@@ -82,7 +82,7 @@ export default function Footer() {
     <footer
       ref={sectionRef}
       id="footer"
-      className="relative z-0 flex min-h-[40vh] flex-col items-center justify-center gap-10 overflow-hidden bg-[#020205] px-[clamp(1.5rem,5vw,3.75rem)] py-16"
+      className="relative z-0 flex min-h-[40vh] flex-col items-center justify-center gap-10 overflow-hidden bg-[#020205] px-header py-16"
     >
       <div
         className="relative z-10 flex w-full flex-col items-center gap-8 text-center"
@@ -137,6 +137,21 @@ export default function Footer() {
             {footerContact.email.label}
             <span className="absolute -bottom-1 left-0 h-px w-0 bg-purple-400 transition-all duration-300 ease-out group-hover:w-full" />
           </a>
+        </div>
+
+        {/* Legal — real /privacy and /terms routes (ported from the
+            original site), not new content. */}
+        <div data-reveal className="flex items-center gap-6">
+          {footerLegal.map(({ label, href }) => (
+            <Link
+              key={label}
+              href={href}
+              className="group relative text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-400 transition-colors hover:text-ink-100 focus-visible:text-ink-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+            >
+              {label}
+              <span className="absolute -bottom-1 left-0 h-px w-0 bg-purple-400 transition-all duration-300 ease-out group-hover:w-full" />
+            </Link>
+          ))}
         </div>
 
         {/* Copyright — single small line, year sourced at render time (spec §Component Specification #4). */}

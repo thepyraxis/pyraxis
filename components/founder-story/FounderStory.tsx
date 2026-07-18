@@ -61,9 +61,9 @@ export default function FounderStory() {
       ref={sectionRef}
       id="founder-story"
       aria-label="Founder Story"
-      className="relative z-0 px-6 py-24 lg:px-[60px]"
+      className="relative z-0 px-header py-24"
     >
-      <div className="relative z-10 mx-auto w-full max-w-[1240px]">
+      <div className="relative z-10 mx-auto w-full max-w-container">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_260px]">
           <div>
             <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-purple-400">

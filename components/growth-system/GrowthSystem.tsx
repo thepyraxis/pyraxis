@@ -71,9 +71,9 @@ export default function GrowthSystem() {
     <section
       id="growth-system"
       aria-label="The PYRAXIS growth system"
-      className="relative z-0 flex min-h-[80vh] w-full flex-col items-center justify-center overflow-x-clip px-[clamp(1.5rem,5vw,3.75rem)] py-24"
+      className="relative z-0 flex min-h-[80vh] w-full flex-col items-center justify-center overflow-x-clip px-header py-24"
     >
-      <div className="relative z-10 mx-auto grid w-full max-w-[1240px] grid-cols-1 items-center gap-12 lg:grid-cols-[240px_1fr] lg:gap-8">
+      <div className="relative z-10 mx-auto grid w-full max-w-container grid-cols-1 items-center gap-12 lg:grid-cols-[240px_1fr] lg:gap-8">
         <div>
           <p className="text-[11px] uppercase tracking-[0.3em] text-purple-400">The Solution</p>
           <h2 className="mt-6 font-display text-[clamp(30px,4.8vw,44px)] font-semibold leading-[1.15] text-ink-100">
