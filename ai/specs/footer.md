@@ -112,7 +112,7 @@ Semantic `<footer>` element. Nav links use a real `<nav aria-label="Footer">` (d
 - [ ] Real-browser visual QA pass (this project's established substitute for automated Lighthouse/CLS, since Playwright is unavailable in this sandbox — see `ai/state.json` and `ai/checkpoints/phase13.md`/`phase14.md`)
 
 ## Status
-**Locked.** Component code has not been written yet, per the project's established discipline (spec first, locked, then build — Phases 11-14). Next step: build Footer per this spec.
+**Implementation Complete, Runtime QA Pending.** `components/footer/{Footer.tsx, content.ts, layout.ts, motion.ts}` built against this spec and wired into `app/page.tsx` via `next/dynamic`. Full Section Completion Gate (real-browser breakpoints/60fps/Lighthouse/CLS, `ai/rules/architecture.md` #7) not yet run — same standing tooling gap as Phases 13/14 (Playwright unavailable in this sandbox). This line was stale (still said "not written yet") until corrected during a docs-sync pass — see `ai/memory/known-issues.md`.
 
 ## Notes
 - Source: `manuals/05-experience-blueprint.md` §18 (Scene 10 — Footer), §19 (Visual Rhythm Map), §21 (Lighting Behavior); `manuals/03-design-system.md` §20 (Signal Component — "Dispersing calmly"); `manuals/01-brand-bible.md` §11 (Emotional tone table — "Silence · Closure"); `manuals/04-technical-architecture.md` (Phase 15, `components/footer/` directory already scaffolded).
