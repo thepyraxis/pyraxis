@@ -1,6 +1,6 @@
 # Progress
 
-Percentage complete per major area. Documentation is complete; Phases 01-14 are real, checkpoint-passing code; everything from Phase 15 onward is still 0%. (This table was found badly out of sync with the actual codebase during the Growth Engines session — see `ai/memory/decisions.md` D-014 — and corrected again here after Phases 10-14 shipped without matching updates; see `ai/memory/changelog.md` v1.6.1-v1.7 and `ai/state.json`.)
+Percentage complete per major area. Documentation is complete; Phases 01-15 are real, checkpoint-passing code (Footer's row was found stale this pass — said "not started" while `components/footer/` was already built and wired — corrected below); Phase 16 (Performance Optimization) is in progress; Phase 17 is not started. (This table was found badly out of sync with the actual codebase during the Growth Engines session — see `ai/memory/decisions.md` D-014 — and corrected again here after Phases 10-15 shipped without matching updates; see `ai/memory/changelog.md` v1.6.1-v1.7 and `ai/state.json`.)
 
 | Area | Progress | Notes |
 |---|---|---|
@@ -20,7 +20,7 @@ Percentage complete per major area. Documentation is complete; Phases 01-14 are 
 | Process scene | 100% | Phase 12, complete — see `ai/checkpoints/phase12.md` |
 | Future-Proof Systems scene | 100% | Phase 13, complete (manual browser QA, no automated Lighthouse/CLS numbers) — see `ai/checkpoints/phase13.md` |
 | CTA scene | 100% | Phase 14, complete (manual browser QA, no automated Lighthouse/CLS numbers) — see `ai/checkpoints/phase14.md` |
-| Footer scene | 0% | Phase 15, not started — `ai/specs/footer.md` unfilled |
+| Footer scene | 100% | Phase 15, implementation complete (`components/footer/`, wired into `app/page.tsx`) — runtime QA pending, same gap as Phases 13/14. Row was stale (said "not started"); corrected in docs-sync pass. |
 | Performance optimization | 0% | Phase 16, not started |
 | Final polish + QA | 0% | Phase 17, not started |
 
