@@ -69,7 +69,7 @@ export default function NextStepGlobe({ sectionRef, className }: NextStepGlobePr
     textureLoader.crossOrigin = "anonymous";
     const earthTexture = textureLoader.load("https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg");
 
-    const globeGeo = new THREE.SphereGeometry(1.6, 48, 48);
+    const globeGeo = new THREE.SphereGeometry(1.9, 48, 48);
     const globeMat = new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
@@ -130,7 +130,7 @@ export default function NextStepGlobe({ sectionRef, className }: NextStepGlobePr
     const globe = new THREE.Mesh(globeGeo, globeMat);
     scene.add(globe);
 
-    const atmGeo = new THREE.SphereGeometry(1.85, 48, 48);
+    const atmGeo = new THREE.SphereGeometry(2.15, 48, 48);
     const atmMat = new THREE.ShaderMaterial({
       uniforms: { uColor: { value: new THREE.Color(OUTER_GLOW) } },
       vertexShader: `

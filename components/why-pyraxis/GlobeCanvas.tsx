@@ -76,7 +76,7 @@ export default function GlobeCanvas({ sectionRef, className }: GlobeCanvasProps)
     textureLoader.crossOrigin = "anonymous";
     const earthTexture = textureLoader.load("https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg");
 
-    const globeGeo = new THREE.SphereGeometry(1.6, segments, segments);
+    const globeGeo = new THREE.SphereGeometry(1.9, segments, segments);
     const globeMat = new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
@@ -138,7 +138,7 @@ export default function GlobeCanvas({ sectionRef, className }: GlobeCanvasProps)
     const globe = new THREE.Mesh(globeGeo, globeMat);
     scene.add(globe);
 
-    const atmGeo = new THREE.SphereGeometry(1.85, segments, segments);
+    const atmGeo = new THREE.SphereGeometry(2.15, segments, segments);
     const atmMat = new THREE.ShaderMaterial({
       uniforms: { uColor: { value: new THREE.Color(OUTER_GLOW) } },
       vertexShader: `
