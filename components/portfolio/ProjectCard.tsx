@@ -72,7 +72,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         transform: lifted ? `translateY(-${CARD_HOVER_LIFT_PX}px) scale(${CARD_HOVER_SCALE})` : undefined,
         transitionTimingFunction: CARD_HOVER_EASE,
       }}
-      className={`group relative flex h-[480px] w-[92vw] shrink-0 flex-col overflow-hidden rounded-[28px] border bg-card/60 backdrop-blur-md transition-[border-color,box-shadow,transform] duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 sm:w-[78vw] lg:w-[400px] ${
+      className={`group relative flex h-[480px] w-full flex-col overflow-hidden rounded-[28px] border bg-card/60 backdrop-blur-md transition-[border-color,box-shadow,transform] duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 ${
         lifted
           ? "border-purple-500 shadow-[0_0_1px_rgba(139,92,246,0.9),0_0_20px_rgba(139,92,246,0.45),0_0_48px_rgba(139,92,246,0.25)]"
           : "border-border/70 shadow-[0_0_16px_rgba(139,92,246,0.06)]"
