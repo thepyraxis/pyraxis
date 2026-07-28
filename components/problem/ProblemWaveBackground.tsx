@@ -59,7 +59,7 @@ export default function ProblemWaveBackground({ sectionRef, className }: Problem
     const clock = new THREE.Clock();
 
     const size = 300;
-    const res = 120;
+    const res = 200;
 
     const terrainGeo = new THREE.PlaneGeometry(size, size, res - 1, res - 1);
     terrainGeo.rotateX(-Math.PI / 2);
