@@ -232,7 +232,7 @@ A rendered sphere-projection with connected nodes, rotating continuously at a ne
 - `centerpiece`: Canvas2D initially (draw projected nodes/arcs per frame, still cheap — a sphere's worth of nodes is a few dozen points, not a particle field)
 
 ### Canvas2D vs WebGL Decision
-**Canvas2D for all three variants, including `centerpiece`, at least for the first implementation.** A "globe" here is a projection of a few dozen nodes onto an ellipse — this is well within Canvas2D's comfort zone and matches every other system in this document. WebGL/Three.js should only be considered later, and only if `centerpiece` needs true 3D depth (parallax-correct occlusion as it rotates) that a 2D projection can't fake convincingly — that's a real possibility worth flagging for Future-Proof Systems specifically, but it should be evaluated after a Canvas2D version ships and is judged insufficient, not assumed upfront. This keeps the project from repeating its one prior WebGL-adjacent risk (the original lag/hang) on a system that's supposed to be the site's climax.
+`centerpiece` variant (Future-Proof Systems) now real WebGL/Three.js — genuine sphere geometry, mesh rotation, true depth. Canvas2D still used for the other two variants (nav-strip, footer-mini).
 
 ### Performance Budget
 - `horizon`/`corner`: effectively free (no JS per frame, already proven in production)

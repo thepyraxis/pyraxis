@@ -142,7 +142,7 @@ This is a complete circle, not a one-way journey — dust → signal → dust �
 Lighting in PYRAXIS is not decorative — it is the site's honesty meter. **Brightness is earned, never given.** A section is only as lit as it has proven itself.
 
 - **Hero:** single light source (the mark). Everything else dark. Establishes: light = the system, darkness = the absence of it.
-- **Problem:** no glow anywhere. The section is deliberately the least attractive-looking in the site — discomfort should look like discomfort.
+- **Problem:** no glow anywhere, with one admin-approved exception: `ProblemWaveBackground` (topographic wave/terrain, real glow). Discomfort should look like discomfort — that intent still governs everything else in this section (icons, stat bar, layout).
 - **Growth System:** first return of glow, but localized — only the connecting lines between nodes carry light, nothing else. Light follows function, not decoration.
 - **Infrastructure:** glow is conditional (hover-only at rest) — the visitor has to *engage* to be shown light, mirroring "the system works, but you have to use it."
 - **Why PYRAXIS:** the warmest, most ambient, least directional lighting in the site — the one section allowed to feel comfortable rather than earned, because it's the emotional rest stop before the proof section.
@@ -260,7 +260,7 @@ Mobile-floor particle density, no cursor, no mouse-parallax, tap-equivalent for 
 Never a blanket "kill all motion" — density and force reduction, not elimination, so the particle field stays legible as content rather than becoming inert. Governed centrally by `AnimationProvider`, queried, never re-detected per-component.
 
 ## WebGL Guidelines
-Canvas2D is sufficient for every particle/dust/signal system, icon canvas, cursor, and ambient effect currently in the site — do not port these to WebGL. The single sanctioned WebGL use case is the CTA/Future-Proof globe (true sphere, rotation, depth, light falloff) — the one place 2D physically cannot produce the needed result. No second WebGL scene without a documented forcing function added to this bible first.
+Canvas2D is sufficient for every particle/dust/signal system, icon canvas, cursor, and ambient effect currently in the site — do not port these to WebGL. Sanctioned WebGL use cases: the Why-PYRAXIS globe and the Future-Proof Systems/Next Step globe (true sphere, rotation, depth, light falloff) — real 3D where 2D can't produce the needed result.
 
 ## Canvas2D Guidelines
 One canvas, one particle pool, one render loop, for the entire application (post-consolidation) — every particle-driven visual across every section sends instructions to this single engine rather than owning independent canvas/rAF/resize infrastructure.

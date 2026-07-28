@@ -228,7 +228,16 @@ export default function HeroAmbientParticles({
 
     const unsubscribeMouse = subscribeAmbientPointer();
     window.addEventListener("resize", resize);
-    window.addEventListener("scroll", updateRect, { passive: true });
+    let scrollScheduled = false;
+    const onScroll = () => {
+      if (scrollScheduled) return;
+      scrollScheduled = true;
+      requestAnimationFrame(() => {
+        scrollScheduled = false;
+        updateRect();
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -347,7 +356,7 @@ export default function HeroAmbientParticles({
       cancelAnimationFrame(raf);
       unsubscribeMouse();
       window.removeEventListener("resize", resize);
-      window.removeEventListener("scroll", updateRect);
+      window.removeEventListener("scroll", onScroll);
       observer.disconnect();
     };
     // `variant` picks particle count/spawn-mode (front vs back) at setup

@@ -8,19 +8,16 @@ import { ctaActions } from "@/lib/config/contact";
 import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
 import Section from "@/components/layout/Section";
 import SectionContent from "@/components/layout/SectionContent";
+import NextStepGlobe from "./NextStepGlobe";
 
 /**
- * Scene — CTA.
+ * Scene — CTA ("The Next Step").
  *
- * No decorative globe or static illustration here — the shared
- * ParticleEngine's ambient field is the section's atmospheric language,
- * consistent with the rest of the page, plus the existing static CSS glow
- * layer. A prior version ran concurrent shared-ParticleEngine rAF
- * instructions for a rotating "earth" ring + orbit ring, which contributed
- * to a reported lag/hang; that per-frame work is not reintroduced here.
- * An additional CSS-only ambient drift-particle layer was removed in the
- * final polish pass (ai/specs — Task 8): it was purely decorative and
- * didn't communicate anything the radial glow doesn't already carry.
+ * Real WebGL globe (NextStepGlobe.tsx) anchors the section — rotating
+ * sphere, custom shader, own canvas/IntersectionObserver, same isolated-
+ * canvas pattern as the Why-PYRAXIS globe. A prior particle-based "earth"
+ * ring was removed for lag; this is a fresh, real 3D implementation, not
+ * a revival of that approach.
  */
 export default function CTA() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -84,6 +81,11 @@ export default function CTA() {
           background: "radial-gradient(circle, rgba(139,92,246,0.14), transparent 70%)",
           filter: "blur(40px)",
         }}
+      />
+
+      <NextStepGlobe
+        sectionRef={sectionRef}
+        className="absolute right-[8%] top-1/2 hidden h-[780px] w-[780px] -translate-y-1/2 lg:block xl:right-[12%] xl:h-[880px] xl:w-[880px]"
       />
 
       <SectionContent className="flex flex-col items-start text-left lg:max-w-none">
