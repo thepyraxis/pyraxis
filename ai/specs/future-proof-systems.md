@@ -13,7 +13,7 @@ Wonder, Spectacle — **Very High** intensity, the single highest point on the V
 ## Technical Constraint
 The Future-Proof Systems visuals described in Manual §16 are implemented as cinematic 2D approximations using the existing Canvas2D particle engine (`components/three/ParticleEngine.tsx`). There is no Three.js/WebGL renderer in this codebase — `three` is not in `package.json`, and this is a logged, open item (`ai/memory/known-issues.md`, D-012), not an oversight to silently fix here. This limitation is architectural, not conceptual: the choreography defined in this specification is independent of the rendering backend.
 
-The current implementation creates the illusion of a digital Earth, orbital paths, neural systems, a rotating globe, and depth using particle targets (`ParticleInstruction.targets`, normalized 0–1 viewport coordinates), motion choreography (`stepParticle` physics), and layered animation — never a real 3D mesh, sphere geometry, or depth buffer. `ParticleShape` is one of `scatter | circle | nodes | none`; there is no `globe` or `sphere` shape variant, and this spec does not invent one.
+Superseded: this section now uses a real WebGL globe (Three.js mesh + shader), not a particle illusion. Canvas2D-only constraint lifted for this section.
 
 This is the scene D-012's known-issue note flags as "the likely forcing function" for revisiting Three.js — revisiting it is out of scope for this spec (see Future Upgrade Path).
 
@@ -58,10 +58,10 @@ Network fills the frame; Earth silhouette forms as a distinct, denser particle c
 The busiest, most alive motion on the page — nodes responding to hover, signals rerouting, the globe illusion slowly rotating (§16 "Mouse interaction"). Still governed by `ai/rules/animation.md`: construct/flow/morph, never random pop/spin; camera-equivalent motion (parallax, rotation-illusion) stays in the "slow zoom, gentle orbit, soft parallax" register (#4), even at this section's higher density — "most interactive" (§16) is not license to violate the "should go unnoticed consciously" camera-subtlety rule.
 
 ### Forbidden visuals
-Per the Phase 13 brief's "Do Not Lie" constraint, this spec and any resulting build copy/comments must not describe the implementation using: **true 3D globe, sphere renderer, volumetric rendering, orbital simulation, globe mesh**. Use instead: **globe illusion, 2.5D Earth silhouette, orbital motion illusion, particle target choreography, layered depth illusion.** No cards. No grid layout. No literal line-drawn network diagram (the network must read as particles/signals, not an infographic).
+Vocabulary restriction lifted — real WebGL globe now in use, call it what it is. No cards. No grid layout. No literal line-drawn network diagram (the network must read as particles/signals, not an infographic).
 
 ## Scene Specification
-- **Earth illusion**: A denser, roughly-circular cluster of particles (shape `circle`, `targets` distributed around a normalized-coordinate ring per the existing `resolveTarget` node-jitter pattern in `ParticleEngine.tsx`) reads as a globe silhouette. "Rotation" is illusion-only — achieved by cycling which targets are active/brightest over time or by slow angular offset of the target ring, not a mesh transform.
+- **Earth**: real WebGL globe (Three.js mesh, custom shader), see `components/future-proof-systems/NextStepGlobe.tsx`. Rotation is a real mesh transform, not illusion.
 - **Network**: Surrounding particles (shape `nodes`, `particleType: "network"`) form persistent anchor points across the viewport, analogous to Growth System's node ecosystem but denser and full-viewport rather than a bounded circle.
 - **Orbital illusion**: A subset of particles traces slow, roughly-elliptical paths around the Earth cluster by cycling `targets` over time — genuine orbital *motion*, not an orbital physics simulation; paths are choreographed, not calculated from gravitational mechanics.
 - **Particle choreography**: Signals (`particleType: "signal"`) travel node-to-node across the network, reusing Process's single-traveling-signal visual language but instantiated as many concurrent signals, consistent with §16 describing this as infrastructure operating "at scale."
@@ -145,7 +145,7 @@ If/when that migration happens, it resolves the open `ai/memory/known-issues.md`
 ✓ Lint passes
 ✓ No console errors or warnings
 ✓ No `three`/WebGL dependency introduced — Canvas2D only, per Technical Constraint
-✓ No forbidden-vocabulary terms (true 3D globe, sphere renderer, volumetric rendering, orbital simulation, globe mesh) appear in code comments, copy, or docs for this section
+✓ (n/a — vocabulary restriction lifted, real globe in use)
 ✓ No cards, no grid layout, at any breakpoint
 ✓ Mobile layout complete (reduced density, touch replaces hover, no horizontal-scroll usability regression)
 ✓ Tablet and desktop verified at correct scale and particle density per §20

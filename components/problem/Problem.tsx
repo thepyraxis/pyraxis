@@ -5,6 +5,7 @@ import ProblemHeadline from "./ProblemHeadline";
 import ProblemIcons from "./ProblemIcons";
 import ProblemStatBar from "./ProblemStatBar";
 import ProblemAmbientParticles from "./ProblemAmbientParticles";
+import ProblemWaveBackground from "./ProblemWaveBackground";
 import { useEdgeFadeOpacity } from "@/hooks/useEdgeFadeOpacity";
 import Section from "@/components/layout/Section";
 import SectionContent from "@/components/layout/SectionContent";
@@ -49,22 +50,17 @@ export default function Problem() {
       </div>
 
       {/*
-        MASTER_MOTION_BIBLE Part A §4 / Part B "Lighting Rules": Problem is
-        the one section that earns zero glow — "no glow anywhere... the
-        section is deliberately the least attractive-looking in the site."
-        The previous version had a purple/indigo-tinted radial gradient
-        here, which read as a colored light source and softened the
-        "discomfort" beat this section exists to deliver. Replaced with a
-        neutral, colorless vignette — depth is preserved (this is not a
-        flat section), but nothing here is lit. Noise texture kept as-is;
-        grain reads as grit/texture, not light.
-
-        The ambient dust field above doesn't reopen that rule: it's plain
-        filled arcs with no shadowBlur/glow (same technique as Hero's
-        field), kept at a lower count and only ever reaching full opacity
-        once Hero has fully faded — a quiet atmosphere continuing, not a
-        new light source.
+        MASTER_MOTION_BIBLE Part A §4 / Part B "Lighting Rules" previously
+        called for zero glow in this section. Admin-approved, explicit
+        exception: ProblemWaveBackground (topographic wave/terrain, real
+        glow, additive blending) is now the section's background layer —
+        added on direct instruction, overriding that rule for this one
+        visual. Noise texture below kept as-is underneath it.
       */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        <ProblemWaveBackground sectionRef={sectionRef} />
+      </div>
+
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
         <div
           className="absolute inset-0 opacity-[0.02]"
