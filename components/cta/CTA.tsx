@@ -85,7 +85,7 @@ export default function CTA() {
 
       <NextStepGlobe
         sectionRef={sectionRef}
-        className="absolute right-[8%] top-1/2 hidden h-[780px] w-[780px] -translate-y-1/2 lg:block xl:right-[12%] xl:h-[880px] xl:w-[880px]"
+        className="absolute right-[3%] top-1/2 hidden h-[780px] w-[780px] -translate-y-1/2 lg:block xl:right-[6%] xl:h-[880px] xl:w-[880px]"
       />
 
       <SectionContent className="flex flex-col items-start text-left lg:max-w-none">
