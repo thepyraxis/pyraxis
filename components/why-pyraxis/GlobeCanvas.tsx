@@ -24,11 +24,11 @@ import { usePerformanceTier } from "@/providers/PerformanceProvider";
  * headline — reach this canvas.
  */
 
-const MAIN = 0x403090; // globe base
-const MID = 0x5040b0; // mid-tone
-const HIGHLIGHT = 0x7860f0; // highlight
-const OUTER_GLOW = 0x8a6bff; // atmosphere/rim
-const SHADOW = 0x181830; // dark shadow (not pure black — keeps form readable)
+const MAIN = 0x7b61ff; // globe base (uColor)
+const MID = 0x7b61ff; // mid-tone
+const HIGHLIGHT = 0x7b61ff; // highlight
+const OUTER_GLOW = 0x7b61ff; // atmosphere/rim (uColor)
+const SHADOW = 0x030305; // near-black void, ~vec3(0.01,0.01,0.02)
 
 type GlobeCanvasProps = {
   /** Section element to watch for scroll progress + visibility. */
@@ -115,7 +115,7 @@ export default function GlobeCanvas({ sectionRef, className }: GlobeCanvasProps)
           float luminance = (mapColor.r + mapColor.g + mapColor.b) / 3.0;
           float landMask = smoothstep(0.15, 0.4, luminance);
 
-          vec3 col = mix(uShadow, uMain, landMask);
+          vec3 col = mix(vec3(0.01, 0.01, 0.02), uMain, landMask);
 
           vec3 lightDir = normalize(vec3(0.5, 0.3, 1.0));
           float lit = max(dot(vNormal, lightDir), 0.0);
