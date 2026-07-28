@@ -21,10 +21,10 @@ import * as THREE from "three";
  *   Background #000000  -> page background behind canvas (canvas is alpha:true)
  */
 
-const MAIN = 0x403090;
-const HIGHLIGHT = 0x7860f0;
-const OUTER_GLOW = 0x8a6bff;
-const SHADOW = 0x181830;
+const MAIN = 0x7b61ff;
+const HIGHLIGHT = 0x7b61ff;
+const OUTER_GLOW = 0x7b61ff;
+const SHADOW = 0x030305;
 
 type NextStepGlobeProps = {
   sectionRef: React.RefObject<HTMLElement | null>;
@@ -106,7 +106,7 @@ export default function NextStepGlobe({ sectionRef, className }: NextStepGlobePr
           float luminance = (mapColor.r + mapColor.g + mapColor.b) / 3.0;
           float landMask = smoothstep(0.15, 0.4, luminance);
 
-          vec3 darkVoid = uShadow;
+          vec3 darkVoid = vec3(0.01, 0.01, 0.02);
           vec3 landGlow = uColor * 0.45 + vec3(0.05, 0.05, 0.1);
           vec3 col = mix(darkVoid, landGlow, landMask);
 
