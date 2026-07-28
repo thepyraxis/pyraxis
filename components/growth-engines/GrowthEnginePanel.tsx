@@ -73,7 +73,17 @@ export default function GrowthEnginePanel({ activeIndex }: GrowthEnginePanelProp
         {engine.panelTitle}
       </h3>
 
-      <p style={base(DESC_DELAY_MS)} className="mt-3 font-display text-[15px] leading-relaxed text-ink-300">
+      {/* Fixed 3-line cap. Without this, longer copy (e.g. Reputation
+          System's description, nearly 2x the others) grows this column,
+          which grows the shared grid row height (`lg:items-center`),
+          which recenters the card rail in the OTHER column — visible as
+          the whole rail dropping down while that card is active, then
+          springing back when you move off it. Capping height here is
+          what keeps the row height constant across every card. */}
+      <p
+        style={base(DESC_DELAY_MS)}
+        className="mt-3 line-clamp-3 min-h-[72px] font-display text-[15px] leading-relaxed text-ink-300"
+      >
         {engine.panelDescription}
       </p>
 

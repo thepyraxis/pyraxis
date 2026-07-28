@@ -13,6 +13,12 @@ const CARD_COUNT = growthEngines.length;
 // scroll distance without making the page absurdly long.
 const STEP_VH = 55;
 const PIN_HEIGHT_VH = 100 + (CARD_COUNT - 1) * STEP_VH;
+// Single constant ease for the whole rail — every card gets the exact
+// same glide speed, first to last. No edge cases, no distance-to-edge
+// branching. That variable easing (fast near the ends, slow in the
+// middle) was what produced the visible jerk/snap on the last couple
+// cards — uniform weighting removes it outright.
+const LERP = 0.15;
 
 /**
  * Scene 04 — Infrastructure Modules. A true scroll-jacked, pinned rail:
@@ -70,44 +76,22 @@ export default function GrowthEngines() {
       setIsSectionVisible(rect.top < window.innerHeight && rect.bottom > 0);
 
       if (total > 0) {
-        const scrolledPast = -rect.top;
-        const progress = Math.max(0, Math.min(1, scrolledPast / total));
-        const idx = Math.round(progress * (CARD_COUNT - 1));
-        setActiveIndex((prev) => (prev === idx ? prev : idx));
-
+        // Straight linear map: how far scrolled through the pinned range
+        // is exactly how far across the rail we should be. No buffers,
+        // no split offsets — one formula for the whole range.
+        const progress = Math.max(0, Math.min(1, -rect.top / total));
         const target = progress * maxScrollLeft;
 
-        // Bug fix: the section's pin/release is governed by native CSS
-        // `position: sticky`, tied directly to raw scroll position — it
-        // releases the instant `progress` reaches 1 (or returns to 0
-        // going the other way), with no easing of its own. The rail's
-        // horizontal position, on the other hand, is deliberately eased
-        // (lerped) toward `target` for a smooth glide. Those two were
-        // previously running on separate clocks: a fast scroll (wheel
-        // flick, trackpad fling, "End"/"Home" key) can carry scrollY past
-        // a release point in a single frame, at which point `progress`
-        // clamps to 1 (or 0) and the pin releases immediately, while
-        // `currentScrollLeft` — only ever 15%-per-frame closer to its
-        // target — is still short of it. For the interior transitions
-        // this was invisible: there's always more pinned scroll distance
-        // ahead (or behind) for the ease to finish catching up in. At
-        // the two ends there's none — release and catch-up were racing
-        // each other, and release usually won, so the section let go
-        // vertically while the first/last card was still visibly
-        // sliding into place. Snapping to the exact target the instant
-        // progress hits either bound guarantees the card is already at
-        // rest before that same instant unpins the section — no more
-        // scroll distance, no slower animation, just no residual lag at
-        // the two points where there's no room left to hide it.
-        if (progress >= 1) {
-          currentScrollLeft = maxScrollLeft;
-        } else if (progress <= 0) {
-          currentScrollLeft = 0;
-        } else {
-          currentScrollLeft += (target - currentScrollLeft) * 0.15;
-          if (Math.abs(target - currentScrollLeft) < 0.4) currentScrollLeft = target;
-        }
+        // Same ease, every card, every frame. This is what keeps card-to-
+        // card motion feeling identical instead of speeding up near either
+        // end of the rail.
+        currentScrollLeft += (target - currentScrollLeft) * LERP;
+        if (Math.abs(target - currentScrollLeft) < 0.5) currentScrollLeft = target;
         rail.scrollLeft = currentScrollLeft;
+
+        const eased = maxScrollLeft > 0 ? currentScrollLeft / maxScrollLeft : 0;
+        const idx = Math.round(eased * (CARD_COUNT - 1));
+        setActiveIndex((prev) => (prev === idx ? prev : idx));
       }
 
       raf = requestAnimationFrame(tick);

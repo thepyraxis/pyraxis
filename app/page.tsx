@@ -2,8 +2,8 @@ import dynamic from "next/dynamic";
 import Header from "@/components/navigation/Header";
 import Hero from "@/components/hero/Hero";
 import Problem from "@/components/problem/Problem";
-import GrowthSystem from "@/components/growth-system/GrowthSystem";
 import MarqueeTicker from "@/components/marquee/MarqueeTicker";
+import GrowthSystem from "@/components/growth-system/GrowthSystem";
 import WhyPyraxis from "@/components/why-pyraxis/WhyPyraxis";
 
 // Below-the-fold sections: not needed for the critical render path.
@@ -25,8 +25,8 @@ export default function Home() {
       <Header />
       <main id="main">
         <Hero />
-        <Problem />
         <MarqueeTicker />
+        <Problem />
         <GrowthSystem />
         <GrowthEngines />
         <WhyPyraxis />
