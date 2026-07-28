@@ -38,9 +38,10 @@ export default function GrowthEngineCard({ engine, index, isFocused, onFocus }: 
       onFocus={() => onFocus(index)}
       className={`relative flex h-[288px] w-[244px] shrink-0 flex-col overflow-hidden rounded-[24px] border bg-card/40 px-6 pb-6 pt-7 text-left transition-[border-color,box-shadow,transform] duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 ${
         isFocused
-          ? "-translate-y-1 border-purple-500 shadow-[0_0_1px_rgba(139,92,246,0.9),0_0_14px_rgba(139,92,246,0.45),0_0_34px_rgba(139,92,246,0.25)]"
+          ? "border-purple-500 shadow-[0_0_1px_rgba(139,92,246,0.9),0_0_14px_rgba(139,92,246,0.45),0_0_34px_rgba(139,92,246,0.25)]"
           : "border-border/70 shadow-[0_0_16px_rgba(139,92,246,0.06)]"
       }`}
+      style={{ transform: isFocused ? "translateY(-4px)" : "translateY(0)" }}
     >
       {/* Decorative module number — large, italic, low opacity, anchored
           into the top-left corner and rendered behind the content stack.
