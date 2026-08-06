@@ -28,13 +28,7 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
   useEffect(() => {
     const canvasEl = canvasRef.current;
     if (!canvasEl) return;
-    // No `willReadFrequently` here: that hint forces the browser onto a
-    // software (non-GPU-accelerated) rendering path for the WHOLE
-    // context, not just the one-time getImageData() call below. Every
-    // per-frame clearRect+drawImage (plus the hover glow/particles) was
-    // paying that software-rasterization tax forever — the real source of
-    // the animation feeling like it hangs/janks under mouse movement.
-    const lctxEl = canvasEl.getContext("2d");
+    const lctxEl = canvasEl.getContext("2d", { willReadFrequently: true });
     if (!lctxEl) return;
     const canvas = canvasEl;
     const lctx = lctxEl;
@@ -56,6 +50,7 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
     });
 
     const logoImg = new Image();
+    logoImg.src = logoSrc;
 
     let logoData: ImageData | null = null;
 
@@ -201,13 +196,6 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
       console.warn("Logo image failed to load. Erosion effect disabled.");
       canvas.style.display = "none";
     };
-
-    // Handlers must be attached BEFORE `.src` is set. Cached images can
-    // fire `load` synchronously (or on the very next microtask, before
-    // this function even returns) — if `.src` was assigned first, that
-    // fire-and-miss meant `onload` never ran, `animateLogo()` was never
-    // called, and the mark just sat blank forever (looked "hung").
-    logoImg.src = logoSrc;
 
     function animateLogo() {
       if (destroyed) return;
