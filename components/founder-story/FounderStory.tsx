@@ -55,13 +55,7 @@ export default function FounderStory() {
   }, [isVisible, reducedMotion]);
 
   return (
-    <Section
-      ref={sectionRef}
-      id="founder-story"
-      aria-label="Founder Story"
-      className="z-0"
-      style={{ paddingBottom: "clamp(2rem, 4vw, 4rem)" }}
-    >
+    <Section ref={sectionRef} id="founder-story" aria-label="Founder Story" className="z-0">
       <SectionContent>
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_360px]">
           <div>

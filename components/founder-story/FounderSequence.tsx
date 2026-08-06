@@ -11,42 +11,32 @@ const FRAME_PATH = (i: number) => `/founder-sequence/frame-${String(i).padStart(
 const HIGH_PRIORITY_FRAMES = 30;
 
 /**
- * Module-scope cache: survives remounts (dynamic-import strict-mode
- * remounts, route changes) so frames are never re-downloaded. Unlike
- * before, the 150 requests do NOT fire the instant this module is
- * evaluated — that competed with the hero/above-fold assets for
- * bandwidth on every page load even though this section is far below
- * the fold. Downloading is deferred to `startLoadingFrames()`, which
- * the component below only calls once the section is actually
- * approaching the viewport (see IntersectionObserver + rootMargin).
+ * Module-scope cache: the fetch kicks off the instant this file is
+ * evaluated (page load), not when FounderStory happens to mount/scroll
+ * into place — and it survives remounts (dynamic-import strict-mode
+ * remounts, route changes) so frames are never re-downloaded.
  */
 let sharedFrames: HTMLImageElement[] | null = null;
-let loadingStarted = false;
-
 function getFrames(): HTMLImageElement[] {
   if (sharedFrames) return sharedFrames;
   const images: HTMLImageElement[] = new Array(FRAME_COUNT);
   for (let i = 1; i <= FRAME_COUNT; i += 1) {
-    images[i - 1] = new Image();
-  }
-  sharedFrames = images;
-  return images;
-}
-
-function startLoadingFrames(): HTMLImageElement[] {
-  const images = getFrames();
-  if (loadingStarted) return images;
-  loadingStarted = true;
-  for (let i = 1; i <= FRAME_COUNT; i += 1) {
-    const img = images[i - 1];
-    if (!img) continue;
+    const img = new Image();
     img.decoding = "async";
     // fetchPriority hint keeps the visible-soon frames off the network's low bucket.
     (img as HTMLImageElement & { fetchPriority?: string }).fetchPriority =
       i <= HIGH_PRIORITY_FRAMES ? "high" : "low";
     img.src = FRAME_PATH(i);
+    images[i - 1] = img;
   }
+  sharedFrames = images;
   return images;
+}
+if (typeof window !== "undefined") {
+  // Warm the cache as soon as this module is imported, independent of any
+  // component mounting — by the time the visitor scrolls this far the
+  // frames have had the whole page-load lifetime to arrive.
+  getFrames();
 }
 
 type FounderSequenceProps = {
@@ -79,30 +69,6 @@ export default function FounderSequence({ className }: FounderSequenceProps) {
 
     let destroyed = false;
     const images = getFrames();
-
-    // Kick off the actual downloads only once the section is getting close
-    // to the viewport, not the instant the component mounts — keeps this
-    // from competing with hero/above-fold network priority on page load.
-    // rootMargin gives it a head start (starts loading ~1 viewport early)
-    // so frames are still ready well before the visitor scrolls to them.
-    const loadObserver =
-      "IntersectionObserver" in window
-        ? new IntersectionObserver(
-            (entries) => {
-              if (entries.some((entry) => entry.isIntersecting)) {
-                startLoadingFrames();
-                loadObserver?.disconnect();
-              }
-            },
-            { rootMargin: "100% 0px 100% 0px" }
-          )
-        : null;
-    if (loadObserver) {
-      loadObserver.observe(wrapper);
-    } else {
-      // No IntersectionObserver support — fall back to loading immediately.
-      startLoadingFrames();
-    }
 
     function draw() {
       const frame = currentFrameRef.current;
@@ -226,7 +192,6 @@ export default function FounderSequence({ className }: FounderSequenceProps) {
       wrapper.removeEventListener("pointermove", onPointerMove);
       wrapper.removeEventListener("pointerup", endDrag);
       wrapper.removeEventListener("pointercancel", endDrag);
-      loadObserver?.disconnect();
       st?.kill();
     };
   }, [reducedMotion]);

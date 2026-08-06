@@ -176,13 +176,7 @@ export default function Process() {
   }, []);
 
   return (
-    <Section
-      ref={sectionRef}
-      id="process"
-      aria-label="Process"
-      className="z-0"
-      style={{ paddingTop: "clamp(2rem, 4vw, 4rem)" }}
-    >
+    <Section ref={sectionRef} id="process" aria-label="Process" className="z-0">
       <SectionContent>
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[40%_60%] lg:gap-16">
           {/* Left — sticky headline, stays in place while the stack scrolls
