@@ -186,7 +186,7 @@ export default function Process() {
               entire scroll, since grid-stretch + sticky descendants
               proved unreliable here. */}
           <div style={isDesktop ? { height: `${PIN_HEIGHT_VH}vh` } : undefined}>
-            <div data-reveal className="lg:sticky lg:top-0 lg:flex lg:min-h-screen lg:flex-col lg:justify-center">
+            <div data-reveal className="lg:sticky lg:top-0 lg:flex lg:min-h-screen lg:flex-col lg:justify-center lg:-mt-[18vh]">
               <p className="text-[11px] uppercase tracking-[0.3em] text-purple-400">{processHeadline.eyebrow}</p>
               <h2 className="mt-6 font-display text-[clamp(28px,4.4vw,44px)] font-semibold leading-[1.15] text-ink-100">
                 {processHeadline.heading}
