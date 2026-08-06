@@ -50,7 +50,6 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
     });
 
     const logoImg = new Image();
-    logoImg.src = logoSrc;
 
     let logoData: ImageData | null = null;
 
@@ -196,6 +195,13 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
       console.warn("Logo image failed to load. Erosion effect disabled.");
       canvas.style.display = "none";
     };
+
+    // Handlers must be attached BEFORE `.src` is set. Cached images can
+    // fire `load` synchronously (or on the very next microtask, before
+    // this function even returns) — if `.src` was assigned first, that
+    // fire-and-miss meant `onload` never ran, `animateLogo()` was never
+    // called, and the mark just sat blank forever (looked "hung").
+    logoImg.src = logoSrc;
 
     function animateLogo() {
       if (destroyed) return;
