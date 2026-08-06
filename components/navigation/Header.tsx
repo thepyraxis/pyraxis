@@ -63,7 +63,16 @@ export default function Header() {
       className={cn(
         "fixed inset-x-0 top-0 z-30 py-7 transition-[border-color] duration-300 ease-out",
         scrolled || menuOpen
-          ? "border-b border-border bg-bg/85 backdrop-blur-[20px]"
+          ? // NOTE on blur radius: this header is `fixed`, sitting directly
+            // on top of Hero's animated particle canvas (100 particles
+            // redrawn every rAF tick) for most of the scroll range. A
+            // `backdrop-filter: blur()` has to resample whatever's behind
+            // it EVERY frame that content changes — so a heavy blur here
+            // was effectively re-blurring a moving canvas 60x/sec, which
+            // is what caused the hang even after the logo-canvas fix.
+            // Dropped 20px -> 10px: still reads as a frosted glass header,
+            // ~4x cheaper (cost scales roughly with radius squared).
+            "border-b border-border bg-bg/85 backdrop-blur-[10px]"
           : "bg-transparent"
       )}
     >
