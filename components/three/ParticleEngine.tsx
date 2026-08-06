@@ -230,6 +230,21 @@ export default function ParticleEngine({ instructionStore }: Props) {
       const mouse = mouseStore.getSnapshot();
       const snapshot = instructionStore.getSnapshot();
       reconcile(snapshot);
+
+      // PERF: nobody in this codebase currently calls sendInstruction()
+      // (grep confirms it), so in practice this engine idles at 0 active
+      // particles and 0 instructions on every page load — but was still
+      // doing a full-window clearRect + iterating all 8000 pool slots +
+      // scanning for connections every single frame, forever, for
+      // literally nothing rendered. That's a constant, invisible
+      // main-thread cost on top of everything else on the page. Skip the
+      // whole draw pass when there's truly nothing to show; still keep
+      // ticking (cheap) so a future instruction wakes it up next frame.
+      if (pool.activeCount === 0 && snapshot.size === 0) {
+        rafId = requestAnimationFrame(loop);
+        return;
+      }
+
       for (let i = 0; i < pool.capacity; i++) {
         if (pool.active[i] === 1) stepParticle(pool, i, dt, mouse.x, mouse.y, mouse.active, reducedMotion);
       }
