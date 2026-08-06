@@ -11,42 +11,32 @@ const FRAME_PATH = (i: number) => `/founder-sequence/frame-${String(i).padStart(
 const HIGH_PRIORITY_FRAMES = 30;
 
 /**
- * Module-scope cache: images are created once and survive remounts
- * (dynamic-import strict-mode remounts, route changes) so frames are
- * never re-downloaded. Unlike before, the actual network fetch is NOT
- * kicked off at module-evaluation time — 150 requests firing the moment
- * the page loads competed with hero/above-fold assets and made the whole
- * page feel slow, even though the visitor might never scroll this far.
- * `startLoading()` below is only called once the section is actually
- * near the viewport.
+ * Module-scope cache: the fetch kicks off the instant this file is
+ * evaluated (page load), not when FounderStory happens to mount/scroll
+ * into place — and it survives remounts (dynamic-import strict-mode
+ * remounts, route changes) so frames are never re-downloaded.
  */
 let sharedFrames: HTMLImageElement[] | null = null;
-let loadingStarted = false;
-
 function getFrames(): HTMLImageElement[] {
   if (sharedFrames) return sharedFrames;
   const images: HTMLImageElement[] = new Array(FRAME_COUNT);
   for (let i = 1; i <= FRAME_COUNT; i += 1) {
     const img = new Image();
     img.decoding = "async";
+    // fetchPriority hint keeps the visible-soon frames off the network's low bucket.
+    (img as HTMLImageElement & { fetchPriority?: string }).fetchPriority =
+      i <= HIGH_PRIORITY_FRAMES ? "high" : "low";
+    img.src = FRAME_PATH(i);
     images[i - 1] = img;
   }
   sharedFrames = images;
   return images;
 }
-
-function startLoading() {
-  if (loadingStarted) return;
-  loadingStarted = true;
-  const images = getFrames();
-  for (let i = 1; i <= FRAME_COUNT; i += 1) {
-    const img = images[i - 1];
-    if (!img) continue;
-    // fetchPriority hint keeps the visible-soon frames off the network's low bucket.
-    (img as HTMLImageElement & { fetchPriority?: string }).fetchPriority =
-      i <= HIGH_PRIORITY_FRAMES ? "high" : "low";
-    img.src = FRAME_PATH(i);
-  }
+if (typeof window !== "undefined") {
+  // Warm the cache as soon as this module is imported, independent of any
+  // component mounting — by the time the visitor scrolls this far the
+  // frames have had the whole page-load lifetime to arrive.
+  getFrames();
 }
 
 type FounderSequenceProps = {
@@ -79,20 +69,6 @@ export default function FounderSequence({ className }: FounderSequenceProps) {
 
     let destroyed = false;
     const images = getFrames();
-
-    // Kick off the real network fetch only once this section is close to
-    // the viewport (generous rootMargin so frames still have a head start
-    // before the user actually scrolls into the scrub range).
-    const loadObserver = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          startLoading();
-          loadObserver.disconnect();
-        }
-      },
-      { rootMargin: "800px 0px" }
-    );
-    loadObserver.observe(wrapper);
 
     function draw() {
       const frame = currentFrameRef.current;
@@ -211,7 +187,6 @@ export default function FounderSequence({ className }: FounderSequenceProps) {
 
     return () => {
       destroyed = true;
-      loadObserver.disconnect();
       window.removeEventListener("resize", onResize);
       wrapper.removeEventListener("pointerdown", onPointerDown);
       wrapper.removeEventListener("pointermove", onPointerMove);
