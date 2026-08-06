@@ -28,7 +28,13 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
   useEffect(() => {
     const canvasEl = canvasRef.current;
     if (!canvasEl) return;
-    const lctxEl = canvasEl.getContext("2d", { willReadFrequently: true });
+    // No `willReadFrequently` here: that hint forces the browser onto a
+    // software (non-GPU-accelerated) rendering path for the WHOLE
+    // context, not just the one-time getImageData() call below. Every
+    // per-frame clearRect+drawImage (plus the hover glow/particles) was
+    // paying that software-rasterization tax forever — the real source of
+    // the animation feeling like it hangs/janks under mouse movement.
+    const lctxEl = canvasEl.getContext("2d");
     if (!lctxEl) return;
     const canvas = canvasEl;
     const lctx = lctxEl;
