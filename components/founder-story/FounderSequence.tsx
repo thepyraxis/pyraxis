@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { ScrollTrigger } from "@/lib/gsap";
 import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
 
-const FRAME_COUNT = 150;
+const FRAME_COUNT = 50;
 const FRAME_PATH = (i: number) => `/founder-sequence/frame-${String(i).padStart(3, "0")}.webp`;
 // First N frames fetched at high priority so *something* is always paintable
 // fast; the tail trickles in at low priority behind hero/above-fold assets.
