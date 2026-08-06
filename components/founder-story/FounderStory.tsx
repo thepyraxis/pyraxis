@@ -6,11 +6,7 @@ import { founderStoryContent } from "./content";
 import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
 import Section from "@/components/layout/Section";
 import SectionContent from "@/components/layout/SectionContent";
-
-const initials = founderStoryContent.founderName
-  .split(" ")
-  .map((part) => part[0])
-  .join("");
+import FounderSequence from "./FounderSequence";
 
 /**
  * Scene — Founder Story. Sits between Portfolio (Proof) and Process (How
@@ -61,7 +57,7 @@ export default function FounderStory() {
   return (
     <Section ref={sectionRef} id="founder-story" aria-label="Founder Story" className="z-0">
       <SectionContent>
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_260px]">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_360px]">
           <div>
             <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-purple-400">
               {founderStoryContent.eyebrow}
@@ -90,27 +86,8 @@ export default function FounderStory() {
             </div>
           </div>
 
-          {/* Portrait placeholder — no fabricated photo, a plain initials
-              mark instead. Quiet: a border only, no glow, no motion of
-              its own beyond the shared fade-up.
-
-              TODO(production): replace this <span> with a real photo of
-              Aman Deep Sharma before launch. Swap it for:
-                <Image
-                  src="/founder-portrait.jpg"   // drop the file in /public
-                  alt="Aman Deep Sharma, Founder of PYRAXIS"
-                  width={260}
-                  height={260}
-                  className="h-[220px] w-[220px] rounded-full border border-border/60 object-cover lg:h-[260px] lg:w-[260px]"
-                />
-              Keep the same `data-reveal` wrapper div and the same
-              220px/260px sizing so no other spacing/layout in this
-              section needs to change. No AI-generated artwork — a real
-              photo only. */}
           <div data-reveal className="flex justify-center lg:justify-end">
-            <span className="flex h-[220px] w-[220px] items-center justify-center rounded-full border border-border/60 font-display text-4xl font-semibold text-ink-500 lg:h-[260px] lg:w-[260px]">
-              {initials}
-            </span>
+            <FounderSequence className="h-[280px] w-[280px] select-none rounded-full border border-border/60 lg:h-[340px] lg:w-[340px]" />
           </div>
         </div>
       </SectionContent>
