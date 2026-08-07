@@ -36,11 +36,10 @@ export function useEdgeFadeOpacity(
   fadeDistance = 520
 ) {
   useEffect(() => {
-    let scheduled = false;
+    let raf = 0;
     let destroyed = false;
 
-    function apply() {
-      scheduled = false;
+    function tick() {
       if (destroyed) return;
       const section = sectionRef.current;
       const target = targetRef.current;
@@ -54,29 +53,13 @@ export function useEdgeFadeOpacity(
             : Math.max(0, Math.min(1, 1 - raw));
         target.style.opacity = opacity.toFixed(3);
       }
+      raf = requestAnimationFrame(tick);
     }
-
-    // Was: an unconditional requestAnimationFrame loop calling
-    // getBoundingClientRect (forces a synchronous layout read) every
-    // single frame for the entire page lifetime, even miles past this
-    // section. Scroll position only changes on scroll/resize, so drive
-    // this off those events instead — rAF-batched so bursts of scroll
-    // events collapse to one layout read per frame, same pattern as
-    // ProblemWaveBackground's own onScroll handler.
-    function onScrollOrResize() {
-      if (scheduled) return;
-      scheduled = true;
-      requestAnimationFrame(apply);
-    }
-
-    apply();
-    window.addEventListener("scroll", onScrollOrResize, { passive: true });
-    window.addEventListener("resize", onScrollOrResize);
+    raf = requestAnimationFrame(tick);
 
     return () => {
       destroyed = true;
-      window.removeEventListener("scroll", onScrollOrResize);
-      window.removeEventListener("resize", onScrollOrResize);
+      cancelAnimationFrame(raf);
     };
   }, [targetRef, sectionRef, edge, fadeDistance]);
 }
