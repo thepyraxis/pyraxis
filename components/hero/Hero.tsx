@@ -60,7 +60,7 @@ export default function Hero() {
       <div
         ref={particlesWrapRef}
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 will-change-transform"
+        className="pointer-events-none absolute inset-0 z-0"
       >
         <HeroAmbientParticles className="absolute inset-0 h-full w-full" variant="back" />
       </div>
@@ -73,17 +73,10 @@ export default function Hero() {
         className="pointer-events-none absolute inset-0 z-[1] overflow-hidden"
       >
         <div className="absolute inset-[-5%]">
-          {/* .layer-noise — SVG feTurbulence background is one of the most
-              expensive things a browser can paint. It gets a `transform`
-              write every parallax frame; without an explicit compositing
-              hint the browser can re-rasterize this filter on repaint
-              instead of just moving an existing composited layer, which is
-              real jank on a "premium" hero. will-change pins it to its own
-              GPU layer up front so the per-frame transform is pure
-              composite, no repaint. */}
+          {/* .layer-noise */}
           <div
             ref={noiseRef}
-            className="absolute inset-0 z-[1] opacity-[0.025] will-change-transform"
+            className="absolute inset-0 z-[1] opacity-[0.025]"
             style={{
               backgroundImage:
                 "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E\")",
