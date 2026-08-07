@@ -54,7 +54,11 @@ export default function GrowthEngineIconCanvas({ icon, className, active }: Grow
     const draw = ICONS[icon];
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctxOrNull = canvas.getContext("2d", { willReadFrequently: true });
+    // willReadFrequently belongs on the OFFSCREEN context below (the one
+    // that actually calls getImageData), not here. This is the canvas
+    // that animates every frame — forcing it onto the software rendering
+    // path for a pixel read it never does was pure cost.
+    const ctxOrNull = canvas.getContext("2d");
     if (!ctxOrNull) return;
     const ctx: CanvasRenderingContext2D = ctxOrNull;
 
@@ -64,7 +68,7 @@ export default function GrowthEngineIconCanvas({ icon, className, active }: Grow
     const offscreen = document.createElement("canvas");
     offscreen.width = SIZE;
     offscreen.height = SIZE;
-    const octx = offscreen.getContext("2d");
+    const octx = offscreen.getContext("2d", { willReadFrequently: true });
     if (!octx) return;
     draw(octx, SIZE);
     const data = octx.getImageData(0, 0, SIZE, SIZE).data;
