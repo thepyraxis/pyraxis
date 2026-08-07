@@ -43,16 +43,11 @@ export default function ParticleEngine({ instructionStore }: Props) {
     if (!ctx) return;
 
     const resize = () => {
-      // Cap DPR at 2 like every other canvas in the codebase — this is a
-      // full-window canvas, so an uncapped 3x/4x devicePixelRatio (common
-      // on phones/high-end laptops) meant 9x-16x the pixels to fill every
-      // single frame for zero visible sharpness gain past 2x.
-      const dpr = Math.min(devicePixelRatio || 1, 2);
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
+      canvas.width = window.innerWidth * devicePixelRatio;
+      canvas.height = window.innerHeight * devicePixelRatio;
       canvas.style.width = "100%";
       canvas.style.height = "100%";
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
     };
     resize();
     window.addEventListener("resize", resize);
@@ -197,24 +192,11 @@ export default function ParticleEngine({ instructionStore }: Props) {
         ctx.beginPath();
         ctx.arc(pool.x[i]!, pool.y[i]!, size, 0, Math.PI * 2);
         ctx.fillStyle = isSignal ? `rgba(139, 92, 246, ${0.55 * twinkledAlpha})` : `rgba(232, 232, 240, ${0.4 * twinkledAlpha})`;
-        // BUG FIX: shadowBlur was only ever turned ON here for signal
-        // particles, never turned back OFF for everything else. Canvas
-        // context state persists across draw calls AND across frames — so
-        // the instant one signal particle was drawn, every fill/stroke
-        // after it (every other particle, every connection-line stroke in
-        // drawConnections, every frame from then on) silently inherited an
-        // expensive shadow-blur pass it was never meant to have. This is a
-        // global full-window canvas with O(n^2) connection lines, so that
-        // leaked blur compounding onto every stroke was very likely the
-        // single biggest source of site-wide hang.
         if (isSignal) {
           ctx.shadowColor = colors.purple[500];
           ctx.shadowBlur = 6;
-        } else {
-          ctx.shadowBlur = 0;
         }
         ctx.fill();
-        ctx.shadowBlur = 0;
         if (twinkledAlpha > 0.5) {
           ctx.beginPath();
           ctx.arc(pool.x[i]!, pool.y[i]!, size * 0.4, 0, Math.PI * 2);
@@ -230,21 +212,6 @@ export default function ParticleEngine({ instructionStore }: Props) {
       const mouse = mouseStore.getSnapshot();
       const snapshot = instructionStore.getSnapshot();
       reconcile(snapshot);
-
-      // PERF: nobody in this codebase currently calls sendInstruction()
-      // (grep confirms it), so in practice this engine idles at 0 active
-      // particles and 0 instructions on every page load — but was still
-      // doing a full-window clearRect + iterating all 8000 pool slots +
-      // scanning for connections every single frame, forever, for
-      // literally nothing rendered. That's a constant, invisible
-      // main-thread cost on top of everything else on the page. Skip the
-      // whole draw pass when there's truly nothing to show; still keep
-      // ticking (cheap) so a future instruction wakes it up next frame.
-      if (pool.activeCount === 0 && snapshot.size === 0) {
-        rafId = requestAnimationFrame(loop);
-        return;
-      }
-
       for (let i = 0; i < pool.capacity; i++) {
         if (pool.active[i] === 1) stepParticle(pool, i, dt, mouse.x, mouse.y, mouse.active, reducedMotion);
       }

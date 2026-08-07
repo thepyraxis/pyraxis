@@ -28,15 +28,7 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
   useEffect(() => {
     const canvasEl = canvasRef.current;
     if (!canvasEl) return;
-    // NOTE: no willReadFrequently here — that flag forces this canvas onto
-    // the software (CPU) rendering path. This context redraws the logo +
-    // up to 100 erosion particles every single frame; the only pixel READ
-    // in this whole file happens once, at load, on a separate offscreen
-    // canvas (`octx` below) — not on this one. Setting it here bought
-    // nothing and forced the entire per-frame animation loop off the GPU,
-    // which stacked with HeroAmbientParticles' and CustomCursor's own rAF
-    // loops was the main source of the hero's frame drops/hangs.
-    const lctxEl = canvasEl.getContext("2d");
+    const lctxEl = canvasEl.getContext("2d", { willReadFrequently: true });
     if (!lctxEl) return;
     const canvas = canvasEl;
     const lctx = lctxEl;
@@ -170,11 +162,7 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
       const offscreen = document.createElement("canvas");
       offscreen.width = canvas.width;
       offscreen.height = canvas.height;
-      // willReadFrequently belongs HERE instead — this is the context that
-      // actually calls getImageData (once, right below), and it's an
-      // offscreen canvas never drawn to the page, so forcing it to
-      // software rendering costs nothing.
-      const octx = offscreen.getContext("2d", { willReadFrequently: true });
+      const octx = offscreen.getContext("2d");
       const scale =
         Math.min(canvas.width / logoImg.width, canvas.height / logoImg.height) * 0.94 * MARGIN_SCALE;
       const x = (canvas.width - logoImg.width * scale) / 2;
