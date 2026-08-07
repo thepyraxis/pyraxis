@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 
 import { ambientPointer, subscribeAmbientPointer } from "../common/ambientPointer";
-import { usePerformanceTier } from "@/providers/PerformanceProvider";
 
 type ParticleType = "fastPurple" | "purple" | "white" | "normal";
 type Depth = "far" | "mid" | "near";
@@ -43,7 +42,6 @@ type DustParticle = {
  */
 export default function ProblemAmbientParticles({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const { tier } = usePerformanceTier();
 
   useEffect(() => {
     const canvasEl = canvasRef.current;
@@ -54,8 +52,7 @@ export default function ProblemAmbientParticles({ className }: { className?: str
     const ctx = ctxEl;
 
     let particles: DustParticle[] = [];
-    const tierMul = tier === "mobile" ? 0.35 : tier === "tablet" ? 0.65 : 1;
-    const totalParticleCount = Math.max(6, Math.round(60 * tierMul));
+    const totalParticleCount = 60;
     let canvasActive = true;
     let parallaxX = 0;
     let parallaxY = 0;
@@ -165,21 +162,7 @@ export default function ProblemAmbientParticles({ className }: { className?: str
 
     const unsubscribeMouse = subscribeAmbientPointer();
     window.addEventListener("resize", resize);
-    // Was: `updateRect` bound directly to the scroll event — every single
-    // scroll tick (trackpad momentum can fire dozens/sec) forced a
-    // synchronous layout read via getBoundingClientRect(). Collapse
-    // bursts to one read per frame instead, same pattern already used in
-    // HeroAmbientParticles and ProblemWaveBackground.
-    let scrollScheduled = false;
-    const onScroll = () => {
-      if (scrollScheduled) return;
-      scrollScheduled = true;
-      requestAnimationFrame(() => {
-        scrollScheduled = false;
-        updateRect();
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("scroll", updateRect, { passive: true });
 
     const observer = new IntersectionObserver(
       (entries) => entries.forEach((entry) => (canvasActive = entry.isIntersecting)),
@@ -275,10 +258,10 @@ export default function ProblemAmbientParticles({ className }: { className?: str
       cancelAnimationFrame(raf);
       unsubscribeMouse();
       window.removeEventListener("resize", resize);
-      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", updateRect);
       observer.disconnect();
     };
-  }, [tier]);
+  }, []);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" role="presentation" />;
 }

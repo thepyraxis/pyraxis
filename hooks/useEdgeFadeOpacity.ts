@@ -36,17 +36,41 @@ export function useEdgeFadeOpacity(
   fadeDistance = 520
 ) {
   useEffect(() => {
-    let scheduled = false;
+    let raf = 0;
     let destroyed = false;
 
-    function apply() {
-      scheduled = false;
-      if (destroyed) return;
+    // PERF FIX: this used to call section.getBoundingClientRect() inside
+    // the rAF loop itself — a forced synchronous layout read, every
+    // single frame, forever (not even gated to when Hero is on screen).
+    // getBoundingClientRect() has to flush any pending layout before it
+    // can answer, so on a page with lots of other animated elements this
+    // was a recurring main-thread stall sitting right next to the
+    // particle canvas's own rAF work — exactly what reads as "not
+    // flowing smoothly" rather than a clean drop in fps.
+    //
+    // Fix: measure the section's document-relative position ONCE (and on
+    // resize), then derive its current viewport position each frame from
+    // window.scrollY, which is already known to the browser and never
+    // forces layout.
+    let sectionDocTop = 0;
+    let sectionHeight = 0;
+
+    function measure() {
       const section = sectionRef.current;
+      if (!section) return;
+      const rect = section.getBoundingClientRect();
+      sectionDocTop = rect.top + window.scrollY;
+      sectionHeight = rect.height;
+    }
+    measure();
+    window.addEventListener("resize", measure);
+
+    function tick() {
+      if (destroyed) return;
       const target = targetRef.current;
-      if (section && target) {
-        const rect = section.getBoundingClientRect();
-        const edgeY = edge === "bottom" ? rect.bottom : rect.top;
+      if (target) {
+        const top = sectionDocTop - window.scrollY;
+        const edgeY = edge === "bottom" ? top + sectionHeight : top;
         const raw = edgeY / fadeDistance;
         const opacity =
           edge === "bottom"
@@ -54,29 +78,14 @@ export function useEdgeFadeOpacity(
             : Math.max(0, Math.min(1, 1 - raw));
         target.style.opacity = opacity.toFixed(3);
       }
+      raf = requestAnimationFrame(tick);
     }
-
-    // Was: an unconditional requestAnimationFrame loop calling
-    // getBoundingClientRect (forces a synchronous layout read) every
-    // single frame for the entire page lifetime, even miles past this
-    // section. Scroll position only changes on scroll/resize, so drive
-    // this off those events instead — rAF-batched so bursts of scroll
-    // events collapse to one layout read per frame, same pattern as
-    // ProblemWaveBackground's own onScroll handler.
-    function onScrollOrResize() {
-      if (scheduled) return;
-      scheduled = true;
-      requestAnimationFrame(apply);
-    }
-
-    apply();
-    window.addEventListener("scroll", onScrollOrResize, { passive: true });
-    window.addEventListener("resize", onScrollOrResize);
+    raf = requestAnimationFrame(tick);
 
     return () => {
       destroyed = true;
-      window.removeEventListener("scroll", onScrollOrResize);
-      window.removeEventListener("resize", onScrollOrResize);
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", measure);
     };
   }, [targetRef, sectionRef, edge, fadeDistance]);
 }
