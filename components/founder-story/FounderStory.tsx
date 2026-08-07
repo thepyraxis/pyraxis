@@ -86,7 +86,7 @@ export default function FounderStory() {
             </div>
           </div>
 
-          <div className="flex justify-center lg:justify-end">
+          <div data-reveal className="flex justify-center lg:justify-end">
             <FounderSequence className="h-[280px] w-[280px] select-none rounded-full border border-border/60 lg:h-[340px] lg:w-[340px]" />
           </div>
         </div>
