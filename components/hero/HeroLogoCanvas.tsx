@@ -77,6 +77,16 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
     };
     let logoParticles: ErosionParticle[] = [];
     const MAX_LOGO_PARTICLES = 100;
+    const erosionRgbCache = new Map<string, string>();
+    function erosionRgbString(r: number, g: number, b: number) {
+      const key = `${r},${g},${b}`;
+      let s = erosionRgbCache.get(key);
+      if (!s) {
+        s = `rgb(${key})`;
+        erosionRgbCache.set(key, s);
+      }
+      return s;
+    }
 
     function spawnErosionParticle(x: number, y: number, r: number, g: number, b: number) {
       logoParticles.push({
@@ -294,8 +304,14 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
         if (p.life <= 0) {
           logoParticles.splice(i, 1);
         } else {
-          lctx.fillStyle = `rgba(${p.r}, ${p.g}, ${p.b}, ${p.life})`;
+          // Same fix as the ambient dust field: cache the fixed rgb()
+          // string (logo pixels cluster into a handful of colors) instead
+          // of allocating+parsing a fresh rgba() template literal for up
+          // to 100 particles every frame; life/alpha rides globalAlpha.
+          lctx.globalAlpha = p.life;
+          lctx.fillStyle = erosionRgbString(p.r, p.g, p.b);
           lctx.fillRect(p.x, p.y, p.size, p.size);
+          lctx.globalAlpha = 1;
         }
       }
 
