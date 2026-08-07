@@ -6,7 +6,6 @@ import ProblemIcons from "./ProblemIcons";
 import ProblemStatBar from "./ProblemStatBar";
 import ProblemAmbientParticles from "./ProblemAmbientParticles";
 import ProblemWaveBackground from "./ProblemWaveBackground";
-import ResponsiveCanvas from "@/components/common/ResponsiveCanvas";
 import { useEdgeFadeOpacity } from "@/hooks/useEdgeFadeOpacity";
 import Section from "@/components/layout/Section";
 import SectionContent from "@/components/layout/SectionContent";
@@ -58,11 +57,9 @@ export default function Problem() {
         added on direct instruction, overriding that rule for this one
         visual. Noise texture below kept as-is underneath it.
       */}
-      <ResponsiveCanvas>
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-          <ProblemWaveBackground sectionRef={sectionRef} />
-        </div>
-      </ResponsiveCanvas>
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        <ProblemWaveBackground sectionRef={sectionRef} />
+      </div>
 
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
         <div
