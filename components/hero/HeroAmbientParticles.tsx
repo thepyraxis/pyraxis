@@ -7,53 +7,81 @@ import { ambientPointer, subscribeAmbientPointer } from "../common/ambientPointe
 type HeroAmbientParticlesProps = {
   className?: string;
   /**
-   * "back" (default): full ambient field, sits behind the logo (matches the
-   * old CSS stacking — .layer-particles has no z-index, i.e. auto/0, while
-   * .layer-hero-image is z-index 3, so old dust actually renders BEHIND the
-   * logo, not in front of it).
-   * "front": a thin, sparse layer of near-depth particles confined around
-   * the logo's footprint, meant to sit ABOVE the logo so a few motes drift
-   * over it — sells the "emerging from the field" read.
+   * "back" (default): the full field — sparse, drifts up past the logo's
+   * footprint and out toward the edges of Hero.
+   * "front": a thinner, even sparser accent confined near the logo's
+   * footprint — reads as fragments still close enough to the mark to be
+   * legible as crystal, before they've dissolved into the far field.
    */
   variant?: "back" | "front";
 };
 
-type ParticleType = "fastPurple" | "purple" | "white" | "normal";
-type Depth = "far" | "mid" | "near";
+// Four gently-varied crystal silhouettes (unit-scale point sets, scaled by
+// `size` at draw time). Not randomized per-frame — picked once at spawn —
+// so a given fragment keeps one consistent silhouette for its whole life.
+const SHAPES: Record<string, number[][]> = {
+  diamond: [
+    [0, -1],
+    [0.62, 0],
+    [0, 1],
+    [-0.62, 0],
+  ],
+  rhombus: [
+    [0, -0.68],
+    [1, 0],
+    [0, 0.68],
+    [-1, 0],
+  ],
+  triangle: [
+    [0, -1],
+    [0.88, 0.78],
+    [-0.88, 0.78],
+  ],
+  elongated: [
+    [0, -1.7],
+    [0.32, 0],
+    [0, 1.7],
+    [-0.32, 0],
+  ],
+};
+const SHAPE_KEYS = Object.keys(SHAPES);
 
-type DustParticle = {
+type Fragment = {
   x: number;
   y: number;
   vx: number;
   vy: number;
+  // Slow-changing wander target — inertia steers vx toward this instead of
+  // ever snapping, so drift never reads as jitter.
+  windPhase: number;
+  windSpeed: number;
+  windAmp: number;
   size: number;
-  opacity: number;
-  color: string;
-  type: ParticleType;
-  depth: Depth;
-  mouseMul: number;
-  twinkleSpeed: number;
-  twinklePhase: number;
+  baseOpacity: number; // 0.15–0.30, per spec
+  shape: number[][];
+  rotZ: number;
+  rotZSpeed: number;
+  rotY: number; // drives the pseudo-3D tumble (vertical squish)
+  rotYSpeed: number;
+  spawnX: number;
+  spawnY: number;
+  traveled: number; // accumulated upward distance since spawn, drives dissolve
+  lit: number; // 0..1, smoothed proximity-to-cursor / sparkle brightness
+  sparkleUntil: number; // ms timestamp; while now < this, a brief catch-the-light flash
+  nextSparkleAt: number;
+  trail: { x: number; y: number }[];
 };
 
 /**
- * Ambient dust field, ported 1:1 from the original site's `particlesCanvas`
- * (script.js `Particle` class: same three types/colors/sizes/speeds, same
- * mouse-repel radius/force, same edge wraparound) — this IS that canvas,
- * not a reinterpretation. One addition on top of the original: a fourth
- * "purple" type, more saturated than the others, for a denser violet
- * presence in the field, and a bumped total count.
+ * Hero's ambient field: microscopic glass-crystal fragments shed slowly by
+ * the logo's violet mass, drifting upward through still air. Optical, not
+ * mechanical — no repulsion, no bursts, no per-frame randomness. Every
+ * motion value here is either fixed at spawn or eased toward a slow-moving
+ * target, which is what keeps it calm rather than reading as a particle
+ * system.
  *
- * (A batch of fast "assemble" particles that rushed toward the logo on
- * mount used to live here — not part of the original site, and it made
- * particles visibly dart at the hero image on load. Removed.)
- *
- * Ownership: strictly Hero's. The canvas fills its parent 1:1 (sized off
- * the parent's own rect, not the viewport) and every particle wraps at
- * that box's own edges — nothing here ever reaches Problem or any later
- * section. The Hero -> Problem handoff is a section-level opacity
- * crossfade applied from the outside (Hero.tsx's `useEdgeFadeOpacity`),
- * not anything this component does with individual particles.
+ * The cursor is treated as a light source: fragments near it brighten at
+ * the edges and gain a faint violet rim, then fade back out — never moved.
  */
 export default function HeroAmbientParticles({
   className,
@@ -69,147 +97,86 @@ export default function HeroAmbientParticles({
     const canvas = canvasEl;
     const ctx = ctxEl;
 
-    let particles: DustParticle[] = [];
-    // Old site: 80. +25% (not doubled) = 100 for the main back layer.
-    // Front layer is a sparse accent, not a second full field.
-    const totalParticleCount = variant === "front" ? 14 : 100;
+    let fragments: Fragment[] = [];
+    // Sparse by design — large empty areas are intentional, not a gap to
+    // fill. "front" is a thinner accent still, not a second full field.
+    const totalCount = variant === "front" ? 9 : 26;
     let canvasActive = true;
-    let parallaxX = 0;
-    let parallaxY = 0;
-    // Near-tier (mouseMul 1.6) maxes out around 8*1.6 ≈ 13px drift;
-    // far-tier (0.45) barely moves. Kept subtle — a premium reference site
-    // wants a faint depth cue, not the field visibly sliding around.
-    const PARALLAX_PX = 8;
     let raf = 0;
     let destroyed = false;
     let width = 0;
     let height = 0;
-
-    // Approximate on-screen center of the logo mark (Hero.tsx: right-aligned,
-    // pr-[9%], vertically centered). Only used to confine the "front" spawn
-    // ring around the logo's footprint.
-    function logoTargetX() {
-      return width * 0.82;
-    }
-    function logoTargetY() {
-      return height * 0.5;
-    }
-    // Logo's on-screen footprint is roughly a 5986:3384 rectangle sized to
-    // ~34% of the hero width (Hero.tsx clamp) — approximate that as an
-    // ellipse for the "front" spawn ring.
-    function logoSemiWidth() {
-      return width * 0.17;
-    }
-    function logoSemiHeight() {
-      return logoSemiWidth() * (3384 / 5986);
-    }
-
-    // Depth tiers give the field actual layering: far/mid/near control size,
-    // opacity ceiling, and how strongly a particle reacts to the mouse —
-    // near particles read as foreground and bend more; far ones barely move.
-    function pickDepth(): { depth: Depth; sizeMul: number; opacityMul: number; mouseMul: number } {
-      const r = Math.random();
-      if (variant === "front") {
-        // Front accent layer is all near-depth by definition.
-        return { depth: "near", sizeMul: 1.7, opacityMul: 1.1, mouseMul: 1.5 };
-      }
-      if (r < 0.55) return { depth: "far", sizeMul: 0.75, opacityMul: 0.75, mouseMul: 0.45 };
-      if (r < 0.88) return { depth: "mid", sizeMul: 1, opacityMul: 1, mouseMul: 1 };
-      return { depth: "near", sizeMul: 1.9, opacityMul: 1.15, mouseMul: 1.6 };
-    }
-
-    function pickType(): { type: ParticleType; color: string; size: number; opacity: number; vx: number; vy: number; twinkleSpeed: number } {
-      const typeRoll = Math.random();
-      if (typeRoll < 0.08) {
-        return {
-          type: "fastPurple",
-          color: "139, 92, 246",
-          size: Math.random() * 0.6 + 0.4,
-          opacity: Math.random() * 0.2 + 0.8,
-          vx: (Math.random() - 0.5) * 0.8,
-          vy: (Math.random() - 0.5) * 0.8,
-          twinkleSpeed: Math.random() * 0.08 + 0.03,
-        };
-      }
-      if (typeRoll < 0.23) {
-        return {
-          type: "white",
-          color: "255, 255, 255",
-          size: Math.random() * 0.4 + 0.2,
-          opacity: Math.random() * 0.3 + 0.5,
-          vx: (Math.random() - 0.5) * 0.15,
-          vy: (Math.random() - 0.5) * 0.15,
-          twinkleSpeed: Math.random() * 0.03 + 0.01,
-        };
-      }
-      if (typeRoll < 0.42) {
-        // Extra dedicated purple particles — richer, more saturated violet
-        // than the "normal" mix below, so purple reads as its own color.
-        return {
-          type: "purple",
-          color: "168, 85, 247",
-          size: Math.random() * 0.6 + 0.35,
-          opacity: Math.random() * 0.3 + 0.55,
-          vx: (Math.random() - 0.5) * 0.2,
-          vy: (Math.random() - 0.5) * 0.2,
-          twinkleSpeed: Math.random() * 0.04 + 0.015,
-        };
-      }
-      const colorShift = Math.random() > 0.8 ? "109, 40, 217" : "139, 92, 246";
-      return {
-        type: "normal",
-        color: colorShift,
-        size: Math.random() * 0.8 + 0.4,
-        opacity: Math.random() * 0.3 + 0.5,
-        vx: (Math.random() - 0.5) * 0.15,
-        vy: (Math.random() - 0.5) * 0.15,
-        twinkleSpeed: Math.random() * 0.03 + 0.01,
-      };
-    }
-
-    function makeParticle(x?: number, y?: number): DustParticle {
-      const t = pickType();
-      const d = pickDepth();
-      return {
-        x: x ?? Math.random() * width,
-        y: y ?? Math.random() * height,
-        vx: t.vx * (d.depth === "far" ? 0.7 : d.depth === "near" ? 1.15 : 1),
-        vy: t.vy * (d.depth === "far" ? 0.7 : d.depth === "near" ? 1.15 : 1),
-        size: t.size * d.sizeMul,
-        opacity: Math.min(1, t.opacity * d.opacityMul),
-        color: t.color,
-        type: t.type,
-        depth: d.depth,
-        mouseMul: d.mouseMul,
-        twinkleSpeed: t.twinkleSpeed,
-        twinklePhase: Math.random() * Math.PI * 2,
-      };
-    }
-
-    // Front variant: confine spawn to a ring around the logo's footprint
-    // instead of the whole hero, so it reads as "a few motes near the mark"
-    // rather than a second full ambient field.
-    function makeFrontParticle(): DustParticle {
-      const p = makeParticle();
-      const angle = Math.random() * Math.PI * 2;
-      const rScale = 0.4 + Math.random() * 0.9; // inside to just past the outline
-      p.x = logoTargetX() + Math.cos(angle) * logoSemiWidth() * rScale;
-      p.y = logoTargetY() + Math.sin(angle) * logoSemiHeight() * rScale;
-      return p;
-    }
-
     let rectLeft = 0;
     let rectTop = 0;
 
-    function updateRect() {
-      const r = canvas.getBoundingClientRect();
-      rectLeft = r.left;
-      rectTop = r.top;
+    // Approximate on-screen position of the logo's violet mass (Hero.tsx:
+    // right-aligned, pr-[~12%], vertically centered). Fragments originate
+    // from within this footprint, as though the mark is releasing them.
+    function logoX() {
+      return width * 0.82;
+    }
+    function logoY() {
+      return height * 0.5;
+    }
+    function logoSemiW() {
+      return width * 0.16;
+    }
+    function logoSemiH() {
+      return logoSemiW() * (3384 / 5986);
     }
 
-    // Sized off the parent's own box (Hero's box), not the viewport — this
-    // canvas is exactly as tall as Hero, nothing more. No bleed, no
-    // extension past Hero's bottom edge.
+    function spawnPoint(): { x: number; y: number } {
+      if (variant === "front") {
+        const angle = Math.random() * Math.PI * 2;
+        const rScale = 0.3 + Math.random() * 0.7;
+        return {
+          x: logoX() + Math.cos(angle) * logoSemiW() * rScale,
+          y: logoY() + Math.sin(angle) * logoSemiH() * rScale,
+        };
+      }
+      // Back field: mostly born near/within the logo footprint, a
+      // minority already loose in the wider field so the canvas doesn't
+      // read empty on first paint.
+      if (Math.random() < 0.7) {
+        const angle = Math.random() * Math.PI * 2;
+        const rScale = Math.random() * 1.15;
+        return {
+          x: logoX() + Math.cos(angle) * logoSemiW() * rScale,
+          y: logoY() + Math.sin(angle) * logoSemiH() * rScale,
+        };
+      }
+      return { x: Math.random() * width, y: Math.random() * height };
+    }
+
+    function makeFragment(fresh = true): Fragment {
+      const p = spawnPoint();
+      const shapeKey = SHAPE_KEYS[Math.floor(Math.random() * SHAPE_KEYS.length)];
+      const now = performance.now();
+      return {
+        x: p.x,
+        y: p.y,
+        vx: 0,
+        vy: -(0.035 + Math.random() * 0.05), // barely-there upward drift
+        windPhase: Math.random() * Math.PI * 2,
+        windSpeed: 0.0025 + Math.random() * 0.0025,
+        windAmp: 0.05 + Math.random() * 0.06,
+        size: 2 + Math.random() * 4, // 2–6px
+        baseOpacity: 0.15 + Math.random() * 0.15, // 15–30%
+        shape: SHAPES[shapeKey],
+        rotZ: Math.random() * Math.PI * 2,
+        rotZSpeed: (Math.random() - 0.5) * 0.0022,
+        rotY: Math.random() * Math.PI * 2,
+        rotYSpeed: 0.0009 + Math.random() * 0.0014,
+        spawnX: p.x,
+        spawnY: p.y,
+        traveled: fresh ? 0 : Math.random() * height * 0.3,
+        lit: 0,
+        sparkleUntil: 0,
+        nextSparkleAt: now + 4000 + Math.random() * 9000,
+        trail: [],
+      };
+    }
+
     function resize() {
       const rect = canvas.parentElement?.getBoundingClientRect();
       width = rect?.width ?? canvas.clientWidth;
@@ -220,10 +187,14 @@ export default function HeroAmbientParticles({
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      particles = Array.from({ length: totalParticleCount }, () =>
-        variant === "front" ? makeFrontParticle() : makeParticle()
-      );
+      fragments = Array.from({ length: totalCount }, () => makeFragment(false));
       updateRect();
+    }
+
+    function updateRect() {
+      const r = canvas.getBoundingClientRect();
+      rectLeft = r.left;
+      rectTop = r.top;
     }
 
     const unsubscribeMouse = subscribeAmbientPointer();
@@ -249,58 +220,147 @@ export default function HeroAmbientParticles({
     );
     observer.observe(canvas);
 
-    function applyMouseRepel(p: DustParticle, localMX: number, localMY: number) {
+    // Distance beyond which a fragment has fully dissolved into the
+    // ambient field and is recycled back to the logo. Kept generous (most
+    // of Hero's height) so the transition is a slow fade, not a cutoff.
+    const dissolveRange = () => Math.max(height * 0.75, 420);
+    // How far out (as a fraction of dissolveRange) crystal detail begins
+    // yielding to a soft ambient dot.
+    const dissolveStart = 0.45;
+
+    const LIGHT_RADIUS = 130;
+
+    function updateFragment(p: Fragment, localMX: number, localMY: number, now: number) {
+      // Inertia: ease velocity toward a slow, low-frequency wander target
+      // rather than ever assigning it directly — this is what keeps the
+      // motion "held in still air" instead of noisy.
+      p.windPhase += p.windSpeed;
+      const targetVx = Math.sin(p.windPhase) * p.windAmp * 0.05;
+      p.vx += (targetVx - p.vx) * 0.02;
+      p.y += p.vy;
+      p.x += p.vx;
+      p.traveled += -p.vy;
+
+      p.rotZ += p.rotZSpeed;
+      p.rotY += p.rotYSpeed;
+
+      // Gentle horizontal wrap only — never a repel, never a bounce.
+      if (p.x < -20) p.x = width + 20;
+      if (p.x > width + 20) p.x = -20;
+
+      // Recycle once fully dissolved or drifted off the top.
+      if (p.traveled > dissolveRange() || p.y < -40) {
+        Object.assign(p, makeFragment(true));
+        return;
+      }
+
+      // Cursor as light source: proximity sets a target brightness, eased
+      // in fast and released slowly, so the fade-out reads as optical
+      // afterglow rather than a snap.
       const dx = p.x - localMX;
       const dy = p.y - localMY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      // Wide radius so the mouse disturbs the whole atmosphere, not just a
-      // tight bubble around the cursor. Base force is gentle; each particle's
-      // depth-driven mouseMul (0.45 far / 1 mid / 1.6 near) does the rest —
-      // near particles bend a lot, far ones barely notice, which also reads
-      // as parallax.
-      const forceRadius = 220;
-      if (distance < forceRadius && distance > 0) {
-        const force = (forceRadius - distance) / forceRadius;
-        const strength = force * 0.55 * (p.mouseMul ?? 1);
-        p.x += (dx / distance) * strength;
-        p.y += (dy / distance) * strength;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const proximity = dist < LIGHT_RADIUS ? 1 - dist / LIGHT_RADIUS : 0;
+      const targetLit = Math.max(proximity, now < p.sparkleUntil ? 1 : 0);
+      p.lit += (targetLit - p.lit) * (targetLit > p.lit ? 0.22 : 0.05);
+
+      // Rare, brief catch-the-light sparkle — independent of the cursor,
+      // always under 200ms.
+      if (now >= p.nextSparkleAt) {
+        p.sparkleUntil = now + 120 + Math.random() * 70;
+        p.nextSparkleAt = now + 5000 + Math.random() * 11000;
+      }
+
+      // Trail: a handful of fading past positions, sampled sparsely so it
+      // reads as a faint smear rather than a comet tail.
+      if (Math.random() < 0.5) {
+        p.trail.push({ x: p.x, y: p.y });
+        if (p.trail.length > 4) p.trail.shift();
       }
     }
 
-    function updateParticle(p: DustParticle, localMX: number, localMY: number) {
-      p.x += p.vx;
-      p.y += p.vy;
-      applyMouseRepel(p, localMX, localMY);
-      if (p.x < 0) p.x = width;
-      if (p.x > width) p.x = 0;
-      if (p.y < 0) p.y = height;
-      if (p.y > height) p.y = 0;
-      p.twinklePhase += p.twinkleSpeed;
-    }
+    function drawFragment(p: Fragment) {
+      const range = dissolveRange();
+      const maturity = Math.min(
+        1,
+        Math.max(0, (p.traveled / range - dissolveStart) / (1 - dissolveStart))
+      );
+      const crystalStrength = 1 - maturity;
+      const ambientStrength = maturity;
 
-    function drawParticle(p: DustParticle, pulse: number, offsetX = 0, offsetY = 0) {
-      const twinkle = Math.sin(p.twinklePhase) * 0.5 + 0.5;
-      let alpha = p.opacity * (0.6 + pulse * 0.2 + twinkle * 0.2);
-      if (p.type === "fastPurple" || p.type === "purple") {
-        alpha = p.opacity * (0.8 + pulse * 0.1 + twinkle * 0.1);
-      }
-      const px = p.x + offsetX;
-      const py = p.y + offsetY;
-      // Reference draw() is a plain filled arc, no shadowBlur, no glow ring —
-      // that's what makes its dust read crisp. A soft outer ring used to
-      // live here as a cheap shadowBlur stand-in; dropped since it only
-      // softened/faded the dot rather than matching the reference's sharp
-      // edge.
-      ctx.beginPath();
-      ctx.arc(px, py, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${p.color}, ${alpha})`;
-      ctx.fill();
-      if (p.type === "normal" && alpha > 0.5) {
+      // Trail — extremely subtle, fades toward the tail, drawn before the
+      // fragment so the fragment sits on top.
+      for (let i = 0; i < p.trail.length; i++) {
+        const t = p.trail[i];
+        const trailAlpha = p.baseOpacity * crystalStrength * 0.08 * ((i + 1) / p.trail.length);
+        if (trailAlpha <= 0.002) continue;
         ctx.beginPath();
-        ctx.arc(px, py, p.size * 0.4, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.8})`;
+        ctx.arc(t.x, t.y, Math.max(0.4, p.size * 0.25), 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(196, 181, 253, ${trailAlpha})`;
         ctx.fill();
       }
+
+      // Once mostly dissolved, fragments read as a soft ambient point —
+      // this is the "lose crystalline appearance, join the star field"
+      // behavior, not a disappearance.
+      if (ambientStrength > 0.001) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * 0.4, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(226, 232, 255, ${p.baseOpacity * ambientStrength * 0.6})`;
+        ctx.fill();
+      }
+
+      if (crystalStrength <= 0.001) return;
+
+      const squish = 0.32 + 0.68 * Math.abs(Math.cos(p.rotY));
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotZ);
+      ctx.scale(1, squish);
+
+      ctx.beginPath();
+      const pts = p.shape;
+      ctx.moveTo(pts[0][0] * p.size, pts[0][1] * p.size);
+      for (let i = 1; i < pts.length; i++) {
+        ctx.lineTo(pts[i][0] * p.size, pts[i][1] * p.size);
+      }
+      ctx.closePath();
+
+      const baseAlpha = p.baseOpacity * crystalStrength;
+      const litBoost = p.lit;
+
+      // Transparent center -> soft violet edge refraction.
+      const grad = ctx.createLinearGradient(0, -p.size, 0, p.size);
+      grad.addColorStop(0, `rgba(196, 181, 253, 0)`);
+      grad.addColorStop(0.55, `rgba(196, 181, 253, ${baseAlpha * (0.35 + litBoost * 0.35)})`);
+      grad.addColorStop(1, `rgba(167, 139, 250, ${baseAlpha * (0.6 + litBoost * 0.4)})`);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Thin white specular highlight — brightens under the light, faint
+      // and constant otherwise. A plain thin stroke, no blur.
+      ctx.lineWidth = Math.max(0.4, p.size * 0.12);
+      ctx.strokeStyle = `rgba(255, 255, 255, ${baseAlpha * (0.5 + litBoost * 0.9)})`;
+      ctx.stroke();
+
+      // Subtle purple rim, visible only while lit — a second, larger,
+      // fainter outline rather than shadowBlur, so it stays crisp.
+      if (litBoost > 0.02) {
+        ctx.save();
+        ctx.scale(1.22, 1.22);
+        ctx.beginPath();
+        ctx.moveTo(pts[0][0] * p.size, pts[0][1] * p.size);
+        for (let i = 1; i < pts.length; i++) {
+          ctx.lineTo(pts[i][0] * p.size, pts[i][1] * p.size);
+        }
+        ctx.closePath();
+        ctx.lineWidth = Math.max(0.4, p.size * 0.1);
+        ctx.strokeStyle = `rgba(167, 139, 250, ${litBoost * 0.35})`;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      ctx.restore();
     }
 
     function animate() {
@@ -310,10 +370,8 @@ export default function HeroAmbientParticles({
         return;
       }
       ctx.clearRect(0, 0, width, height);
-      const pulse = Math.sin(Date.now() / 3000) * 0.5 + 0.5;
 
-      // Canvas fills its own positioned container 1:1, so mapping viewport
-      // -> local is a direct subtraction of this canvas's own rect.
+      const now = performance.now();
       let localMX = -9999;
       let localMY = -9999;
       if (ambientPointer.initialized) {
@@ -321,28 +379,9 @@ export default function HeroAmbientParticles({
         localMY = ambientPointer.y - rectTop;
       }
 
-      // Parallax: on top of the per-particle repel, the whole field also
-      // drifts a little with the cursor — depth-scaled (mouseMul, same
-      // 0.45 far / 1 mid / 1.6 near tiers the repel already uses) so near
-      // particles shift more than far ones, selling a 3D-depth illusion as
-      // the environment "moves" with the mouse. Pure draw-time offset, not
-      // mutated into p.x/p.y, so it never fights the repel/wraparound math.
-      // Smoothed (lerp) so it drifts, not snaps, on fast mouse moves.
-      if (ambientPointer.initialized) {
-        const targetX = Math.max(-1, Math.min(1, (localMX - width / 2) / (width / 2)));
-        const targetY = Math.max(-1, Math.min(1, (localMY - height / 2) / (height / 2)));
-        parallaxX += (targetX - parallaxX) * 0.05;
-        parallaxY += (targetY - parallaxY) * 0.05;
-      }
-
-      particles.forEach((p) => {
-        updateParticle(p, localMX, localMY);
-        drawParticle(
-          p,
-          pulse,
-          parallaxX * PARALLAX_PX * (p.mouseMul ?? 1),
-          parallaxY * PARALLAX_PX * (p.mouseMul ?? 1)
-        );
+      fragments.forEach((p) => {
+        updateFragment(p, localMX, localMY, now);
+        drawFragment(p);
       });
 
       raf = requestAnimationFrame(animate);
@@ -359,11 +398,6 @@ export default function HeroAmbientParticles({
       window.removeEventListener("scroll", onScroll);
       observer.disconnect();
     };
-    // `variant` picks particle count/spawn-mode (front vs back) at setup
-    // time (line ~65). Effect fully tears itself down above (cancels RAF,
-    // removes listeners, disconnects observer) before re-running, so
-    // including it here just re-initializes the field correctly if a
-    // parent ever swaps variants at runtime — no partial/stale state risk.
   }, [variant]);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" role="presentation" />;
