@@ -289,6 +289,18 @@ export default function HeroAmbientParticles({
       p.twinklePhase += p.twinkleSpeed;
     }
 
+    // Fixed opaque colors, built once — never rebuilt per frame.
+    const rgbCache = new Map<string, string>();
+    function rgbString(color: string) {
+      let s = rgbCache.get(color);
+      if (!s) {
+        s = `rgb(${color})`;
+        rgbCache.set(color, s);
+      }
+      return s;
+    }
+    const WHITE_RGB = "rgb(255, 255, 255)";
+
     function drawParticle(p: DustParticle, pulse: number, offsetX = 0, offsetY = 0) {
       const twinkle = Math.sin(p.twinklePhase) * 0.5 + 0.5;
       let alpha = p.opacity * (0.6 + pulse * 0.2 + twinkle * 0.2);
@@ -302,16 +314,25 @@ export default function HeroAmbientParticles({
       // live here as a cheap shadowBlur stand-in; dropped since it only
       // softened/faded the dot rather than matching the reference's sharp
       // edge.
+      // Was: `rgba(${p.color}, ${alpha})` template-literal rebuilt (alloc +
+      // re-parsed by fillStyle setter) every particle, every frame — up to
+      // ~200 string builds/frame at full particle count, steady GC churn
+      // that reads as stutter over time. Fixed rgb() string is cached once
+      // per distinct color; alpha now rides globalAlpha instead, which is
+      // just a number write, no allocation.
+      ctx.globalAlpha = alpha;
       ctx.beginPath();
       ctx.arc(px, py, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${p.color}, ${alpha})`;
+      ctx.fillStyle = rgbString(p.color);
       ctx.fill();
       if (p.type === "normal" && alpha > 0.5) {
+        ctx.globalAlpha = alpha * 0.8;
         ctx.beginPath();
         ctx.arc(px, py, p.size * 0.4, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.8})`;
+        ctx.fillStyle = WHITE_RGB;
         ctx.fill();
       }
+      ctx.globalAlpha = 1;
     }
 
     function animate() {
