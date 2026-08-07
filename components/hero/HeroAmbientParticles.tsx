@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 
 import { ambientPointer, subscribeAmbientPointer } from "../common/ambientPointer";
+import { usePerformanceTier } from "@/providers/PerformanceProvider";
 
 type HeroAmbientParticlesProps = {
   className?: string;
@@ -60,6 +61,12 @@ export default function HeroAmbientParticles({
   variant = "back",
 }: HeroAmbientParticlesProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  // Was: fixed particle count (100 back / 14 front) on every device,
+  // including low-power phones — the exact "GPU burn" complaint. Scale
+  // down using the tier detection PerformanceProvider already computes
+  // (coarse-pointer + width, or low core count) instead of duplicating
+  // that logic here.
+  const { tier } = usePerformanceTier();
 
   useEffect(() => {
     const canvasEl = canvasRef.current;
@@ -70,9 +77,13 @@ export default function HeroAmbientParticles({
     const ctx = ctxEl;
 
     let particles: DustParticle[] = [];
-    // Old site: 80. +25% (not doubled) = 100 for the main back layer.
-    // Front layer is a sparse accent, not a second full field.
-    const totalParticleCount = variant === "front" ? 14 : 100;
+    // Old site: 80. +25% (not doubled) = 100 for the main back layer on
+    // desktop. Front layer is a sparse accent, not a second full field.
+    // Tablet/mobile get a reduced budget — same visual language, far
+    // fewer draw calls per frame.
+    const tierMul = tier === "mobile" ? 0.35 : tier === "tablet" ? 0.65 : 1;
+    const baseCount = variant === "front" ? 14 : 100;
+    const totalParticleCount = Math.max(6, Math.round(baseCount * tierMul));
     let canvasActive = true;
     let parallaxX = 0;
     let parallaxY = 0;
@@ -364,7 +375,7 @@ export default function HeroAmbientParticles({
     // removes listeners, disconnects observer) before re-running, so
     // including it here just re-initializes the field correctly if a
     // parent ever swaps variants at runtime — no partial/stale state risk.
-  }, [variant]);
+  }, [variant, tier]);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" role="presentation" />;
 }
