@@ -155,13 +155,21 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
       function sizeCanvas() {
+        // No canvas.style.width/height writes here: this canvas's box is
+        // owned by the responsive Tailwind class (w-[clamp(...)] /
+        // aspect-[...]) on the element itself. Pinning it to an inline px
+        // value froze the box at whatever size it had on first mount —
+        // getBoundingClientRect() on the NEXT resize would just read that
+        // same frozen inline value back (inline style beats the class),
+        // so the logo silently stopped rescaling on breakpoint/viewport
+        // changes after the first paint. Only the backing pixel buffer
+        // (canvas.width/height) needs to track dpr; the CSS box size is
+        // left alone.
         const rect = canvas.getBoundingClientRect();
         rectWidth = rect.width || 1;
         rectHeight = rect.height || 1;
         canvas.width = Math.round(rectWidth * dpr);
         canvas.height = Math.round(rectHeight * dpr);
-        canvas.style.width = `${rectWidth}px`;
-        canvas.style.height = `${rectHeight}px`;
         rectLeft = rect.left;
         rectTop = rect.top;
       }
