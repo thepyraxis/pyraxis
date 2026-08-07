@@ -9,6 +9,7 @@ import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
 import Section from "@/components/layout/Section";
 import SectionContent from "@/components/layout/SectionContent";
 import NextStepGlobe from "./NextStepGlobe";
+import ResponsiveCanvas from "@/components/common/ResponsiveCanvas";
 
 /**
  * Scene — CTA ("The Next Step").
@@ -83,10 +84,12 @@ export default function CTA() {
         }}
       />
 
-      <NextStepGlobe
-        sectionRef={sectionRef}
-        className="absolute right-[3%] top-1/2 hidden h-[780px] w-[780px] -translate-y-1/2 lg:block xl:right-[6%] xl:h-[880px] xl:w-[880px]"
-      />
+      <ResponsiveCanvas>
+        <NextStepGlobe
+          sectionRef={sectionRef}
+          className="absolute right-[3%] top-1/2 hidden h-[780px] w-[780px] -translate-y-1/2 lg:block xl:right-[6%] xl:h-[880px] xl:w-[880px]"
+        />
+      </ResponsiveCanvas>
 
       <SectionContent className="flex flex-col items-start text-left lg:max-w-none">
         <div className="w-full max-w-[680px]">

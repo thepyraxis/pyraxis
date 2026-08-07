@@ -23,16 +23,19 @@ export default function CustomCursor() {
   useEffect(() => {
     const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
 
+    // Touch devices have no cursor to replace — skip mounting listeners
+    // and the rAF loop entirely instead of running it forever and doing
+    // nothing (previous fail-safe kept the loop alive to protect against
+    // hybrid-device false positives; CSS below now covers that case
+    // instead, so the JS can bail cleanly).
+    if (isTouchDevice) return;
+
     const dot = dotRef.current;
     const ring = ringRef.current;
     if (!dot || !ring) return;
 
-    // Only hide the native pointer when touch is confidently detected.
-    // If we skip rendering entirely on a false-positive coarse-pointer
-    // read (some trackpads/hybrid laptops misreport), you'd see neither
-    // cursor — fail safe by still animating the custom one regardless.
     const prevCursor = document.body.style.cursor;
-    if (!isTouchDevice) document.body.style.cursor = "none";
+    document.body.style.cursor = "none";
 
     let mx = 0;
     let my = 0;
@@ -109,7 +112,7 @@ export default function CustomCursor() {
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseover", onMouseOver);
       document.removeEventListener("mouseout", onMouseOut);
-      if (!isTouchDevice) document.body.style.cursor = prevCursor;
+      document.body.style.cursor = prevCursor;
     };
   }, []);
 
@@ -118,13 +121,13 @@ export default function CustomCursor() {
       <div
         ref={dotRef}
         aria-hidden="true"
-        className="pointer-events-none fixed left-0 top-0 z-[99999] h-2 w-2 rounded-full [mix-blend-mode:screen] [will-change:transform]"
+        className="custom-cursor-el pointer-events-none fixed left-0 top-0 z-[99999] h-2 w-2 rounded-full [mix-blend-mode:screen] [will-change:transform]"
         style={{ background: "#6D28D9" }}
       />
       <div
         ref={ringRef}
         aria-hidden="true"
-        className="pointer-events-none fixed left-0 top-0 z-[99998] h-8 w-8 rounded-full [will-change:transform]"
+        className="custom-cursor-el pointer-events-none fixed left-0 top-0 z-[99998] h-8 w-8 rounded-full [will-change:transform]"
         style={{
           border: "1px solid rgba(109, 40, 217, 0.35)",
           background: "rgba(109, 40, 217, 0.05)",
