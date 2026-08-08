@@ -77,16 +77,6 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
     };
     let logoParticles: ErosionParticle[] = [];
     const MAX_LOGO_PARTICLES = 100;
-    const erosionRgbCache = new Map<string, string>();
-    function erosionRgbString(r: number, g: number, b: number) {
-      const key = `${r},${g},${b}`;
-      let s = erosionRgbCache.get(key);
-      if (!s) {
-        s = `rgb(${key})`;
-        erosionRgbCache.set(key, s);
-      }
-      return s;
-    }
 
     function spawnErosionParticle(x: number, y: number, r: number, g: number, b: number) {
       logoParticles.push({
@@ -155,13 +145,6 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
 
     logoImg.onload = () => {
       if (destroyed) return;
-      // Box here is NOT square — HeroLogo.tsx sizes it to aspect-[5986/3384]
-      // (the logo's real pixel aspect), so the backing buffer has to track
-      // that same aspect via the actual rendered rect. A fixed square
-      // buffer (reference's 800x800 — its own box IS square there) gets
-      // stretched non-uniformly into this non-square box and visibly
-      // squishes the mark. Kept the one genuine perf win from that pass —
-      // dpr fixed at 1 instead of the old up-to-2 — without breaking shape.
       const MARGIN_SCALE = 1 / 1.6;
 
       let rectLeft = 0;
@@ -169,12 +152,16 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
       let rectWidth = 1;
       let rectHeight = 1;
 
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
       function sizeCanvas() {
         const rect = canvas.getBoundingClientRect();
         rectWidth = rect.width || 1;
         rectHeight = rect.height || 1;
-        canvas.width = Math.round(rectWidth);
-        canvas.height = Math.round(rectHeight);
+        canvas.width = Math.round(rectWidth * dpr);
+        canvas.height = Math.round(rectHeight * dpr);
+        canvas.style.width = `${rectWidth}px`;
+        canvas.style.height = `${rectHeight}px`;
         rectLeft = rect.left;
         rectTop = rect.top;
       }
@@ -299,14 +286,8 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
         if (p.life <= 0) {
           logoParticles.splice(i, 1);
         } else {
-          // Same fix as the ambient dust field: cache the fixed rgb()
-          // string (logo pixels cluster into a handful of colors) instead
-          // of allocating+parsing a fresh rgba() template literal for up
-          // to 100 particles every frame; life/alpha rides globalAlpha.
-          lctx.globalAlpha = p.life;
-          lctx.fillStyle = erosionRgbString(p.r, p.g, p.b);
+          lctx.fillStyle = `rgba(${p.r}, ${p.g}, ${p.b}, ${p.life})`;
           lctx.fillRect(p.x, p.y, p.size, p.size);
-          lctx.globalAlpha = 1;
         }
       }
 
