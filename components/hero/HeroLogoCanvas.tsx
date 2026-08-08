@@ -155,6 +155,13 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
 
     logoImg.onload = () => {
       if (destroyed) return;
+      // Box here is NOT square — HeroLogo.tsx sizes it to aspect-[5986/3384]
+      // (the logo's real pixel aspect), so the backing buffer has to track
+      // that same aspect via the actual rendered rect. A fixed square
+      // buffer (reference's 800x800 — its own box IS square there) gets
+      // stretched non-uniformly into this non-square box and visibly
+      // squishes the mark. Kept the one genuine perf win from that pass —
+      // dpr fixed at 1 instead of the old up-to-2 — without breaking shape.
       const MARGIN_SCALE = 1 / 1.6;
 
       let rectLeft = 0;
@@ -162,24 +169,12 @@ export default function HeroLogoCanvas({ logoSrc, className, startReveal = true 
       let rectWidth = 1;
       let rectHeight = 1;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
       function sizeCanvas() {
-        // No canvas.style.width/height writes here: this canvas's box is
-        // owned by the responsive Tailwind class (w-[clamp(...)] /
-        // aspect-[...]) on the element itself. Pinning it to an inline px
-        // value froze the box at whatever size it had on first mount —
-        // getBoundingClientRect() on the NEXT resize would just read that
-        // same frozen inline value back (inline style beats the class),
-        // so the logo silently stopped rescaling on breakpoint/viewport
-        // changes after the first paint. Only the backing pixel buffer
-        // (canvas.width/height) needs to track dpr; the CSS box size is
-        // left alone.
         const rect = canvas.getBoundingClientRect();
         rectWidth = rect.width || 1;
         rectHeight = rect.height || 1;
-        canvas.width = Math.round(rectWidth * dpr);
-        canvas.height = Math.round(rectHeight * dpr);
+        canvas.width = Math.round(rectWidth);
+        canvas.height = Math.round(rectHeight);
         rectLeft = rect.left;
         rectTop = rect.top;
       }
