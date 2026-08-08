@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 import { ambientPointer, subscribeAmbientPointer } from "../common/ambientPointer";
-import { usePerformanceTier } from "@/providers/PerformanceProvider";
+import { usePerformanceTierOnly } from "@/providers/PerformanceProvider";
 
 type ParticleType = "fastPurple" | "purple" | "white" | "normal";
 type Depth = "far" | "mid" | "near";
@@ -43,7 +43,7 @@ type DustParticle = {
  */
 export default function ProblemAmbientParticles({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const { tier } = usePerformanceTier();
+  const tier = usePerformanceTierOnly();
 
   useEffect(() => {
     const canvasEl = canvasRef.current;

@@ -32,6 +32,12 @@ export default function ParticleEngine({ instructionStore }: Props) {
   const mouseStore = useMouseStore();
   const { tier, degradeFactor } = usePerformanceTier();
   const reducedMotion = usePrefersReducedMotion();
+  // Ref mirror: degradeFactor updates every frame under any fps dip.
+  // Reading it via a ref inside the loop (instead of the effect dep
+  // array) means those updates never tear down/rebuild the rAF loop +
+  // resize listener — only tier/reducedMotion changes do that now.
+  const degradeFactorRef = useRef(degradeFactor);
+  degradeFactorRef.current = degradeFactor;
 
   if (!poolRef.current) poolRef.current = new ParticlePool(MAX_CAPACITY);
 
@@ -99,7 +105,7 @@ export default function ParticleEngine({ instructionStore }: Props) {
 
       instructions.forEach((instruction) => {
         const ownerId = getOwnerId(instruction.sourceId);
-        const desired = Math.round(tierBudget * instruction.density * degradeFactor * densityScale);
+        const desired = Math.round(tierBudget * instruction.density * degradeFactorRef.current * densityScale);
         let currentCount = 0;
         for (let i = 0; i < pool.capacity; i++) {
           if (pool.active[i] === 1 && pool.ownerSlot[i] === ownerId) currentCount++;
@@ -259,7 +265,7 @@ export default function ParticleEngine({ instructionStore }: Props) {
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(rafId);
     };
-  }, [instructionStore, mouseStore, tier, degradeFactor, reducedMotion]);
+  }, [instructionStore, mouseStore, tier, reducedMotion]);
 
   return (
     <canvas

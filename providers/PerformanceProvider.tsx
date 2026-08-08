@@ -20,7 +20,22 @@ function detectTier(): DeviceTier {
   return "desktop";
 }
 
-const PerformanceContext = createContext<PerformanceState>({ tier: "desktop", degradeFactor: 1 });
+// Split in two: `tier` is near-static (set once, rarely changes) but
+// `degradeFactor` updates on every fps sample once the app dips under
+// 45fps — that's every rAF tick for several frames in a row during any
+// heavy scene (Hero's particle+logo+cursor stack, Problem's scroll-in
+// wave/fountain/icon-assemble burst). Bundling both into one context
+// object meant EVERY consumer re-rendered on EVERY degradeFactor tick,
+// even ones that only ever read `tier` — and `ParticleEngine` had
+// `degradeFactor` in its effect's dependency array, so its whole rAF
+// loop + resize listener got torn down and rebuilt on every tick too.
+// Net effect: a brief fps dip cascaded into a global re-render/remount
+// storm that read as the whole page "hanging" right when scroll or
+// playback was already under load — the storm caused by the very thing
+// meant to relieve load. Two contexts means a degradeFactor tick only
+// re-renders whoever actually reads degradeFactor.
+const TierContext = createContext<DeviceTier>("desktop");
+const DegradeContext = createContext<number>(1);
 
 /**
  * Detects device tier once, then watches real frame rate so the particle
@@ -28,12 +43,13 @@ const PerformanceContext = createContext<PerformanceState>({ tier: "desktop", de
  * (ai/context/09-particle-engine.md).
  */
 export function PerformanceProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<PerformanceState>({ tier: "desktop", degradeFactor: 1 });
+  const [tier, setTier] = useState<DeviceTier>("desktop");
+  const [degradeFactor, setDegradeFactor] = useState(1);
   const frameTimes = useRef<number[]>([]);
   const rafId = useRef<number | null>(null);
 
   useEffect(() => {
-    setState((prev) => ({ ...prev, tier: detectTier() }));
+    setTier(detectTier());
 
     let last = performance.now();
     const sampleWindow = 60;
@@ -47,9 +63,9 @@ export function PerformanceProvider({ children }: { children: ReactNode }) {
       if (frameTimes.current.length === sampleWindow) {
         const avg = frameTimes.current.reduce((a, b) => a + b, 0) / sampleWindow;
         const fps = 1000 / avg;
-        setState((prev) => {
-          const nextFactor = fps < 45 ? Math.max(0.4, prev.degradeFactor - 0.1) : Math.min(1, prev.degradeFactor + 0.05);
-          return Math.abs(nextFactor - prev.degradeFactor) > 0.01 ? { ...prev, degradeFactor: nextFactor } : prev;
+        setDegradeFactor((prev) => {
+          const nextFactor = fps < 45 ? Math.max(0.4, prev - 0.1) : Math.min(1, prev + 0.05);
+          return Math.abs(nextFactor - prev) > 0.01 ? nextFactor : prev;
         });
       }
       rafId.current = requestAnimationFrame(tick);
@@ -61,9 +77,29 @@ export function PerformanceProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  return <PerformanceContext.Provider value={state}>{children}</PerformanceContext.Provider>;
+  return (
+    <TierContext.Provider value={tier}>
+      <DegradeContext.Provider value={degradeFactor}>{children}</DegradeContext.Provider>
+    </TierContext.Provider>
+  );
 }
 
+/**
+ * Back-compat combined hook — still returns both, but now composed from
+ * two contexts. Prefer `usePerformanceTierOnly()` in components that
+ * never read `degradeFactor` (Hero/Problem/Globe canvases), so they stop
+ * re-rendering on every fps-driven degradeFactor tick.
+ */
 export function usePerformanceTier(): PerformanceState {
-  return useContext(PerformanceContext);
+  const tier = useContext(TierContext);
+  const degradeFactor = useContext(DegradeContext);
+  return { tier, degradeFactor };
+}
+
+export function usePerformanceTierOnly(): DeviceTier {
+  return useContext(TierContext);
+}
+
+export function useDegradeFactor(): number {
+  return useContext(DegradeContext);
 }
