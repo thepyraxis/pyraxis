@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 import { ambientPointer, subscribeAmbientPointer } from "../common/ambientPointer";
-import { usePerformanceTier } from "@/providers/PerformanceProvider";
+import { usePerformanceTierOnly } from "@/providers/PerformanceProvider";
 
 type HeroAmbientParticlesProps = {
   className?: string;
@@ -66,7 +66,7 @@ export default function HeroAmbientParticles({
   // down using the tier detection PerformanceProvider already computes
   // (coarse-pointer + width, or low core count) instead of duplicating
   // that logic here.
-  const { tier } = usePerformanceTier();
+  const tier = usePerformanceTierOnly();
 
   useEffect(() => {
     const canvasEl = canvasRef.current;

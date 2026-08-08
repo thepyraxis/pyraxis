@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
-import { usePerformanceTier } from "@/providers/PerformanceProvider";
+import { usePerformanceTierOnly } from "@/providers/PerformanceProvider";
 
 /**
  * Glowing purple wireframe-style Earth for the Why-PYRAXIS ("How We Build")
@@ -39,7 +39,7 @@ type GlobeCanvasProps = {
 export default function GlobeCanvas({ sectionRef, className }: GlobeCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const reducedMotion = usePrefersReducedMotion();
-  const { tier } = usePerformanceTier();
+  const tier = usePerformanceTierOnly();
 
   useEffect(() => {
     const canvas = canvasRef.current;
