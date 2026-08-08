@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import HeroText from "./HeroText";
 import HeroButtons from "./HeroButtons";
 import HeroLogo from "./HeroLogo";
 import HeroAmbientParticles from "./HeroAmbientParticles";
+import { useParallaxMouse } from "@/hooks/useParallaxMouse";
 import { useEdgeFadeOpacity } from "@/hooks/useEdgeFadeOpacity";
 
 /**
@@ -31,22 +32,13 @@ export default function Hero() {
   const noiseRef = useRef<HTMLDivElement | null>(null);
   const particlesWrapRef = useRef<HTMLDivElement | null>(null);
 
-  // Parallax on .layer-noise / .layer-particles, driven off the SAME
-  // rAF loop as the particle simulation (inside HeroAmbientParticles) —
-  // exactly how the reference's animateBackground() does both together
-  // in one loop, direct proportional offset, no lerp/easing. Was two
-  // separate useParallaxMouse hooks, each its own rAF + lerp loop — extra
-  // concurrent loops and an artificial catch-up lag the reference never
-  // had. Memoized so the array identity is stable across renders (refs
-  // themselves never change), otherwise the effect below would re-run
-  // every render.
-  const parallaxTargets = useMemo(
-    () => [
-      { ref: noiseRef, speed: 0.01 },
-      { ref: particlesWrapRef, speed: 0.04 },
-    ],
-    []
-  );
+  // Mouse parallax on .layer-noise / .layer-particles — matches the
+  // reference's animateBackground(), which skips .layer-glow by class
+  // check and never touches the logo (not a .background-layer at all).
+  // depth = data-speed * 0.3 * ~1920px viewport width (noise 0.01,
+  // particles 0.04).
+  useParallaxMouse(noiseRef, { depth: 6 });
+  useParallaxMouse(particlesWrapRef, { depth: 23 });
 
   // Atmosphere crossfade: as Hero's own bottom edge rises toward the top
   // of the viewport (Hero scrolling out of view), ease this field's
@@ -70,10 +62,7 @@ export default function Hero() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-0"
       >
-        <HeroAmbientParticles
-          className="absolute inset-0 h-full w-full"
-          parallaxTargets={parallaxTargets}
-        />
+        <HeroAmbientParticles className="absolute inset-0 h-full w-full" variant="back" />
       </div>
 
       {/* .hero-background — noise/glow/logo only now; clipped to exactly
