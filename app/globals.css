@@ -62,14 +62,22 @@ body {
   will-change: filter;
 }
 
-/* Growth System — small particle traveling along the arrow into the
-   active node, reinforcing "the customer moves through the system"
-   rather than a static illuminated line. */
-@keyframes growth-node-travel {
+/* Signature System — shard traveling along an active Path into the next
+   Node (creative/SIGNATURE_MOTIF.md). Generalized from the old
+   growth-node-travel keyframe (was Growth-System-only); GrowthNode now
+   consumes this via SignaturePath/SignatureShard like every other
+   section that adopts the motif. */
+@keyframes signature-shard-travel-x {
   0% { transform: translate(0, -50%); opacity: 0; }
   15% { opacity: 1; }
   85% { opacity: 1; }
   100% { transform: translate(24px, -50%); opacity: 0; }
+}
+@keyframes signature-shard-travel-y {
+  0% { transform: translate(-50%, 0); opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translate(-50%, 24px); opacity: 0; }
 }
 
 /* Marquee ticker — infinite scroll, seamless loop via duplicated content

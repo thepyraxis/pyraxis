@@ -57,7 +57,7 @@ export const projects: ProjectData[] = [
     solution: "Premium Pan-Asian site with online ordering, reservations, cinematic UI.",
     statValue: "Live Website",
     statLabel: "Premium restaurant experience with online ordering, reservations, responsive design, and cinematic animations.",
-    accent: "#8b5cf6",
+    accent: "#F2F0EB",
     previewIcon: "gear",
     previewSrc: "/projects/eateria.webp",
     liveUrl: "https://thepyraxis.github.io/eateria",
@@ -69,7 +69,7 @@ export const projects: ProjectData[] = [
     category: "AI Automation & Lead Engagement",
     statValue: "0",
     statLabel: "Missed Leads",
-    accent: "#8b5cf6",
+    accent: "#F2F0EB",
     previewIcon: "brain",
   },
   {
@@ -78,7 +78,7 @@ export const projects: ProjectData[] = [
     category: "Booking System & Automation",
     statValue: "+58%",
     statLabel: "Direct Bookings",
-    accent: "#8b5cf6",
+    accent: "#F2F0EB",
     previewIcon: "converge",
   },
 ];

@@ -3,6 +3,7 @@ import type React from "react";
 
 import Image from "next/image";
 import type { GrowthNodeData, GrowthIcon } from "./nodes";
+import { SignatureNode, SignaturePath } from "@/components/signature-system";
 
 const ICON_SRC: Record<GrowthIcon, string> = {
   website: "/icons/growth-system-48/website-globe-48.webp",
@@ -35,124 +36,64 @@ interface GrowthNodeProps {
 }
 
 /**
- * Scene 03 — Growth System. Compact icon + title, fixed size always
- * (48px), no scaling on activation. The icon itself is always rendered in
- * its final bright, glowing state (opacity 1, brightness 1.2, two-layer
- * drop-shadow) — hover/focus no longer changes the icon at all. Hover
- * only adds two independent node-level effects: a ::before pseudo-element
- * reusing the exact Infrastructure Modules card glow (rgba(139,92,246,0.16)
- * → transparent 68%, blur 6px, -25% inset) as a background halo, fading in
- * over 240ms; and a border-color brighten. One border only, no rings, no
- * panel.
+ * Scene 03 — Growth System. This is the canonical Node in the site
+ * (creative/SIGNATURE_MOTIF.md) — the halo/border/travel mechanics live
+ * in components/signature-system now (SignatureNode + SignaturePath);
+ * this file only owns what's specific to Growth System: the icon set,
+ * the fixed-size label row, and the mobile-vs-desktop connector
+ * orientation. Any other section adopting the motif (e.g. Future-Proof
+ * Systems) reuses the same two primitives instead of copying this file.
  */
 export default function GrowthNode({ node, index, isFocused, isLast, onFocus, onBlur }: GrowthNodeProps) {
   return (
     <div className="flex shrink-0 flex-col items-center sm:flex-row sm:items-start">
       <div className="flex w-[92px] shrink-0 flex-col items-center">
-        <button
-          type="button"
-          onMouseEnter={() => onFocus(index)}
-          onMouseLeave={onBlur}
-          onFocus={() => onFocus(index)}
-          onBlur={onBlur}
-          aria-pressed={isFocused}
-          className="group flex flex-col items-center gap-2 rounded-2xl focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-400"
+        <SignatureNode
+          as="button"
+          size="lg"
+          state={isFocused ? "active" : "idle"}
+          onActivate={() => onFocus(index)}
+          onDeactivate={onBlur}
+          className="flex-col gap-2 rounded-2xl"
         >
-          {/* Fixed-height icon row — independent of label line count. Glow
-              reuses the exact Infrastructure Modules card treatment
-              (rgba(139,92,246,0.16) → transparent 68%, blur 6px, -25%
-              inset) so both sections read as one design system. */}
-          <div
-            className={`relative flex h-20 w-20 shrink-0 items-center justify-center before:pointer-events-none before:absolute before:inset-[-20px] before:rounded-full before:bg-[radial-gradient(circle,rgba(139,92,246,0.16),transparent_68%)] before:blur-[6px] before:transition-opacity before:duration-[240ms] before:ease-out before:content-[''] ${
-              isFocused ? "before:opacity-100" : "before:opacity-0"
+          <Image
+            src={ICON_SRC[node.icon]}
+            alt=""
+            width={48}
+            height={48}
+            unoptimized
+            className="relative h-12 w-12 object-contain transition-transform duration-300 ease-out"
+            style={{
+              // Icon rendering is constant — full opacity, brightness 1.2,
+              // the original two-layer drop-shadow glow — regardless of
+              // isFocused. Only the Node halo/border (SignatureNode)
+              // reacts to focus state.
+              opacity: 1,
+              filter:
+                "brightness(1.2) drop-shadow(0 0 5px rgba(139,92,246,1)) drop-shadow(0 0 14px rgba(139,92,246,0.7))",
+              transform: node.icon === "business-growth" ? "scale(1.16)" : undefined,
+            }}
+          />
+        </SignatureNode>
+
+        {/* Fixed-height label row — wraps up to 2 lines without moving anything else. */}
+        <div className="mt-2 flex h-10 w-full items-start justify-center">
+          <span
+            className={`line-clamp-2 text-center font-display text-sm leading-tight transition-colors duration-300 ${
+              isFocused ? "text-ink-100" : "text-ink-300"
             }`}
           >
-            <span
-              className={`relative flex h-16 w-16 shrink-0 items-center justify-center rounded-full border transition-colors duration-300 ease-out ${
-                isFocused ? "border-purple-300" : "border-purple-500/40"
-              }`}
-            >
-              <Image
-                src={ICON_SRC[node.icon]}
-                alt=""
-                width={48}
-                height={48}
-                unoptimized
-                className="relative h-12 w-12 object-contain transition-transform duration-300 ease-out"
-                style={{
-                  // Icon rendering is now constant — the exact "hover" look
-                  // (full opacity, brightness 1.2, the original two-layer
-                  // drop-shadow glow) is the icon's one and only state. No
-                  // isFocused branching here anymore: hover/focus no longer
-                  // touches the icon at all, it only toggles the halo
-                  // (before-pseudo above) and the border color. Crisp PNG,
-                  // no extra blur layers, no fuzziness — this is the same
-                  // rendering that used to be gated behind isFocused.
-                  opacity: 1,
-                  filter:
-                    "brightness(1.2) drop-shadow(0 0 5px rgba(139,92,246,1)) drop-shadow(0 0 14px rgba(139,92,246,0.7))",
-                  // Business Growth: measured the actual content bounding box
-                  // inside each PNG. The other 7 icons fill ~76–81% of their
-                  // square canvas in both width and height. Business Growth's
-                  // artwork fills ~80% width but only ~66% height — its
-                  // source art is inherently wider/flatter (a bar-chart glyph)
-                  // than the rounder icons it sits next to, not a bug in this
-                  // component. At the current 1.16 scale its effective fill
-                  // is ~93% width / ~77% height — by area it's already at or
-                  // above the sibling average, so it is NOT being scaled
-                  // further here; the earlier "still lighter" read was most
-                  // likely the compression softness fixed above, which hits
-                  // this icon's thinner linework hardest. Re-check visually
-                  // before nudging this again.
-                  transform: node.icon === "business-growth" ? "scale(1.16)" : undefined,
-                }}
-              />
-            </span>
-          </div>
-
-          {/* Fixed-height label row — wraps up to 2 lines without moving anything else. */}
-          <div className="flex h-10 w-full items-start justify-center">
-            <span
-              className={`line-clamp-2 text-center font-display text-sm leading-tight transition-colors duration-300 ${
-                isFocused ? "text-ink-100" : "text-ink-300"
-              }`}
-            >
-              {node.label}
-            </span>
-          </div>
-        </button>
+            {node.label}
+          </span>
+        </div>
       </div>
 
       {!isLast && (
         <>
           {/* Mobile: vertical connector between stacked steps. */}
-          <span aria-hidden="true" className="flex h-6 w-20 shrink-0 items-center justify-center sm:hidden">
-            <span
-              className={`block text-center transition-colors duration-500 ${
-                isFocused ? "text-purple-300" : "text-purple-500/40"
-              }`}
-            >
-              ↓
-            </span>
-          </span>
-
-          {/* sm+: original horizontal connector, unchanged. */}
-          <span aria-hidden="true" className="relative mx-3 hidden h-20 w-6 shrink-0 items-center justify-center sm:flex">
-            <span
-              className={`block text-center transition-colors duration-500 ${
-                isFocused ? "text-purple-300" : "text-purple-500/40"
-              }`}
-            >
-              →
-            </span>
-            {isFocused && (
-              <span
-                key={index}
-                className="absolute left-0 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-purple-300/80 shadow-[0_0_5px_rgba(192,132,252,0.6)]"
-                style={{ animation: "growth-node-travel 900ms ease-out infinite" }}
-              />
-            )}
-          </span>
+          <SignaturePath active={isFocused} orientation="vertical" className="mt-16 sm:hidden" />
+          {/* sm+: horizontal connector, shard travels when this node is active. */}
+          <SignaturePath active={isFocused} orientation="horizontal" className="mx-3 hidden sm:flex" />
         </>
       )}
     </div>

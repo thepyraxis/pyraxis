@@ -17,10 +17,10 @@ const config: Config = {
     },
     extend: {
       colors: {
-        bg: "#020205",
-        surface: "#0d0d18",
-        card: "#08080f",
-        border: "#1a1a2e",
+        bg: "#050506",
+        surface: "#08080B",
+        card: "#0B0B0F",
+        border: "#1a1a1c",
         purple: {
           400: "#a78bfa",
           500: "#8b5cf6",
@@ -29,11 +29,11 @@ const config: Config = {
           vivid: "#5800D0",
         },
         ink: {
-          100: "#f8f8ff",
-          200: "#e8e8f0",
-          300: "#c8c8d8",
-          400: "#a0a0b8",
-          600: "#7a7a90",
+          100: "#F2F0EB",
+          200: "#d9d6cf",
+          300: "#A8A5AD",
+          400: "#8a8791",
+          600: "#68666E",
         },
       },
       fontFamily: {

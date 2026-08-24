@@ -66,7 +66,7 @@ export default function WhyPyraxis() {
                 <span
                   data-reveal
                   key={line}
-                  className={`block ${i === 1 ? "italic text-ink-100" : ""}`}
+                  className={`block ${i === 0 ? "text-ink-100" : "italic text-purple-400"}`}
                 >
                   {line}
                 </span>
@@ -75,7 +75,7 @@ export default function WhyPyraxis() {
             <a
               data-reveal
               href="#portfolio"
-              className="mt-8 inline-flex items-center gap-2 rounded-[2px] border border-purple-500/60 px-5 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.2em] text-purple-300 transition-colors duration-300 ease-out hover:border-purple-400 hover:text-purple-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+              className="mt-8 inline-flex items-center gap-2 rounded-[2px] border border-border px-5 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.2em] text-ink-300 transition-colors duration-300 ease-out hover:border-ink-400 hover:text-ink-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-400"
             >
               {whyPyraxisHeadline.cta}
               <span aria-hidden="true">→</span>
@@ -87,9 +87,9 @@ export default function WhyPyraxis() {
           {whyPyraxisPoints.map((point) => {
             const Icon = ICONS[point.icon];
             return (
-              <div data-reveal key={point.id} className="flex flex-col items-center text-center">
-                <span className="flex h-14 w-14 items-center justify-center rounded-full border border-purple-500/40">
-                  <Icon className="h-6 w-6 text-purple-400" />
+              <div data-reveal key={point.id} className="group flex flex-col items-center text-center">
+                <span className="flex h-14 w-14 items-center justify-center rounded-full border border-border transition-colors duration-300 ease-out group-hover:border-purple-500/40 group-focus-within:border-purple-500/40">
+                  <Icon className="h-6 w-6 text-ink-300 transition-colors duration-300 ease-out group-hover:text-ink-100 group-focus-within:text-ink-100" />
                 </span>
                 <h3 className="mt-4 font-display text-base font-semibold text-ink-100">{point.label}</h3>
                 <p className="mt-2 max-w-[180px] font-display text-[15px] leading-relaxed text-ink-300">

@@ -26,3 +26,9 @@ export const futureProofPillars: FutureProofPillar[] = [
   { id: "repeat-customers", icon: "converge", title: "Repeat Customers", description: "A better experience is the reason people come back." },
   { id: "compounding-growth", icon: "growth", title: "Compounding Growth", description: "Each cycle adds momentum the last one didn't have." },
 ];
+
+/** The verb connecting each pillar to the next — this is what makes the
+ *  chain a Signature Path (creative/SIGNATURE_MOTIF.md #3: "the Path
+ *  must carry meaning"), not just an arrow between cards. One shorter
+ *  than futureProofPillars — index i sits between pillar i and i+1. */
+export const futureProofPaths = ["shapes", "creates", "earns", "compounds into"];

@@ -74,18 +74,29 @@ export default function ProblemAmbientParticles({ className }: { className?: str
 
     function pickType(): { type: ParticleType; color: string; size: number; opacity: number; vx: number; vy: number; twinkleSpeed: number } {
       const typeRoll = Math.random();
-      if (typeRoll < 0.08) {
+      if (typeRoll < 0.05) {
         return {
           type: "fastPurple",
           color: "139, 92, 246",
           size: Math.random() * 0.6 + 0.4,
-          opacity: Math.random() * 0.2 + 0.8,
+          opacity: Math.random() * 0.2 + 0.7,
           vx: (Math.random() - 0.5) * 0.8,
           vy: (Math.random() - 0.5) * 0.8,
           twinkleSpeed: Math.random() * 0.08 + 0.03,
         };
       }
-      if (typeRoll < 0.23) {
+      if (typeRoll < 0.13) {
+        return {
+          type: "purple",
+          color: "168, 85, 247",
+          size: Math.random() * 0.55 + 0.3,
+          opacity: Math.random() * 0.25 + 0.4,
+          vx: (Math.random() - 0.5) * 0.2,
+          vy: (Math.random() - 0.5) * 0.2,
+          twinkleSpeed: Math.random() * 0.04 + 0.015,
+        };
+      }
+      if (typeRoll < 0.55) {
         return {
           type: "white",
           color: "255, 255, 255",
@@ -96,23 +107,11 @@ export default function ProblemAmbientParticles({ className }: { className?: str
           twinkleSpeed: Math.random() * 0.03 + 0.01,
         };
       }
-      if (typeRoll < 0.42) {
-        return {
-          type: "purple",
-          color: "168, 85, 247",
-          size: Math.random() * 0.6 + 0.35,
-          opacity: Math.random() * 0.3 + 0.55,
-          vx: (Math.random() - 0.5) * 0.2,
-          vy: (Math.random() - 0.5) * 0.2,
-          twinkleSpeed: Math.random() * 0.04 + 0.015,
-        };
-      }
-      const colorShift = Math.random() > 0.8 ? "109, 40, 217" : "139, 92, 246";
       return {
         type: "normal",
-        color: colorShift,
+        color: "242, 240, 235",
         size: Math.random() * 0.8 + 0.4,
-        opacity: Math.random() * 0.3 + 0.5,
+        opacity: Math.random() * 0.3 + 0.4,
         vx: (Math.random() - 0.5) * 0.15,
         vy: (Math.random() - 0.5) * 0.15,
         twinkleSpeed: Math.random() * 0.03 + 0.01,
