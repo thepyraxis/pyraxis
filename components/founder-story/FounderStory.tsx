@@ -59,7 +59,7 @@ export default function FounderStory() {
       <SectionContent>
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_360px]">
           <div>
-            <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-purple-400">
+            <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-ink-400">
               {founderStoryContent.eyebrow}
             </p>
             <h2 data-reveal className="mt-6 font-display text-[clamp(28px,4.4vw,44px)] font-semibold leading-[1.15] text-ink-100">

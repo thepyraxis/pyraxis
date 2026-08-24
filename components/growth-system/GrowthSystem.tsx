@@ -77,7 +77,7 @@ export default function GrowthSystem() {
     >
       <SectionContent className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[240px_1fr] lg:gap-8">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.3em] text-purple-400">The Solution</p>
+          <p className="text-[11px] uppercase tracking-[0.3em] text-ink-400">The Solution</p>
           <h2 className="mt-6 font-display text-[clamp(30px,4.8vw,44px)] font-semibold leading-[1.15] text-ink-100">
             One system.
             <span className="block italic text-purple-400">Every stage covered.</span>

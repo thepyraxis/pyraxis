@@ -47,7 +47,7 @@ export default function GrowthEnginesHeadline({ activeIndex }: GrowthEnginesHead
 
   return (
     <div ref={rootRef} className="max-w-[420px]">
-      <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-purple-400">
+      <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-ink-400">
         Infrastructure Modules
       </p>
       <h2
@@ -55,7 +55,7 @@ export default function GrowthEnginesHeadline({ activeIndex }: GrowthEnginesHead
         className="mt-6 font-display text-[clamp(28px,4.4vw,44px)] font-semibold leading-[1.15] text-ink-100"
       >
         Powerful by default.
-        <span className="block italic text-purple-400">Built to scale.</span>
+        <span className="block italic text-ink-100">Built to scale.</span>
       </h2>
       <div data-reveal>
         <GrowthEnginePanel activeIndex={activeIndex} />

@@ -20,10 +20,10 @@ export default function FutureProofSystems() {
     <Section id="future-proof-systems" aria-label="After Launch" className="z-0 overflow-hidden">
       <SectionContent>
         <div>
-          <p className="text-[11px] uppercase tracking-[0.3em] text-purple-400">{futureProofHeadline.eyebrow}</p>
+          <p className="text-[11px] uppercase tracking-[0.3em] text-ink-400">{futureProofHeadline.eyebrow}</p>
           <h2 className="mt-6 font-display text-[clamp(28px,4.4vw,44px)] font-semibold leading-[1.15] text-ink-100">
             {futureProofHeadline.heading}
-            <span className="block italic text-purple-400">{futureProofHeadline.headingAccent}</span>
+            <span className="block italic text-ink-100">{futureProofHeadline.headingAccent}</span>
           </h2>
           <p className="mt-6 max-w-[380px] font-display text-base leading-relaxed text-ink-300">
             {futureProofHeadline.subline}

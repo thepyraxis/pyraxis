@@ -58,7 +58,7 @@ export default function WhyPyraxis() {
       <SectionContent>
         <div className="grid grid-cols-1 items-center gap-10">
           <div>
-            <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-purple-400">
+            <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-ink-400">
               {whyPyraxisHeadline.eyebrow}
             </p>
             <h2 className="mt-6 font-display text-[clamp(28px,4.4vw,44px)] font-semibold leading-[1.15] text-ink-100">
@@ -66,7 +66,7 @@ export default function WhyPyraxis() {
                 <span
                   data-reveal
                   key={line}
-                  className={`block ${i === 1 ? "italic text-purple-400" : ""}`}
+                  className={`block ${i === 1 ? "italic text-ink-100" : ""}`}
                 >
                   {line}
                 </span>
