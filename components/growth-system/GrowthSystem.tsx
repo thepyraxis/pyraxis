@@ -79,11 +79,12 @@ export default function GrowthSystem() {
         <div>
           <p className="text-[11px] uppercase tracking-[0.3em] text-purple-400">The Solution</p>
           <h2 className="mt-6 font-display text-[clamp(30px,4.8vw,44px)] font-semibold leading-[1.15] text-ink-100">
-            One connected system.
-            <span className="block italic text-purple-400">Endless growth.</span>
+            One system.
+            <span className="block italic text-purple-400">Every stage covered.</span>
           </h2>
           <p className="mt-6 max-w-[420px] font-display text-base leading-relaxed text-ink-300">
-            A seamless ecosystem that turns strangers into loyal customers and advocates.
+            Strangers become leads. Leads become customers. Customers come back —
+            without you touching a spreadsheet.
           </p>
           <a
             href="#growth-engines"

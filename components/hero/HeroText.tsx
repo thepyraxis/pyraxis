@@ -37,16 +37,16 @@ export default function HeroText() {
     <div ref={rootRef}>
       <h1 data-reveal className="font-display leading-[1.15]">
         <span className="block bg-gradient-to-br from-[#e8e8f8] to-[#888898] bg-clip-text pb-[0.05em] text-hero-headline font-semibold text-transparent">
-          Websites,
+          More Customers.
         </span>
         <span className="block bg-gradient-to-br from-[#e8e8f8] to-[#888898] bg-clip-text pb-[0.05em] text-hero-headline font-semibold text-transparent">
-          Automation &amp; AI Systems
+          Less Manual Work.
         </span>
         <em className="block bg-gradient-to-br from-[#6D28D9] to-[#8B5CF6] bg-clip-text pb-[0.05em] text-hero-headline font-semibold italic text-transparent">
-          That Turn
+          Built To Run
         </em>
         <em className="block bg-gradient-to-br from-[#6D28D9] to-[#8B5CF6] bg-clip-text pb-[0.05em] text-hero-headline font-semibold italic text-transparent">
-          Leads Into Customers
+          Without You.
         </em>
       </h1>
 
@@ -65,8 +65,8 @@ export default function HeroText() {
       </p>
 
       <p data-reveal className="mt-[20px] max-w-md font-display text-base leading-relaxed text-ink-400 sm:text-lg">
-        I build growth systems that attract leads, convert customers, and increase repeat business
-        automatically.
+        Systems that bring customers in, close them, and keep them coming back —
+        running whether you&apos;re working or not.
       </p>
 
       <p
