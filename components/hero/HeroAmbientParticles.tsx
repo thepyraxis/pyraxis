@@ -77,12 +77,13 @@ export default function HeroAmbientParticles({
     const ctx = ctxEl;
 
     let particles: DustParticle[] = [];
-    // Old site: 80. +25% (not doubled) = 100 for the main back layer on
-    // desktop. Front layer is a sparse accent, not a second full field.
-    // Tablet/mobile get a reduced budget — same visual language, far
-    // fewer draw calls per frame.
+    // Old site: 80, later bumped to 100. Refinement pass pulls that back
+    // down ~25% (100 → 75) — the field was reading as visual noise rather
+    // than atmosphere. Front layer is a sparse accent, not a second full
+    // field. Tablet/mobile get a reduced budget — same visual language,
+    // far fewer draw calls per frame.
     const tierMul = tier === "mobile" ? 0.35 : tier === "tablet" ? 0.65 : 1;
-    const baseCount = variant === "front" ? 14 : 100;
+    const baseCount = variant === "front" ? 10 : 75;
     const totalParticleCount = Math.max(6, Math.round(baseCount * tierMul));
     let canvasActive = true;
     let parallaxX = 0;
@@ -131,18 +132,33 @@ export default function HeroAmbientParticles({
 
     function pickType(): { type: ParticleType; color: string; size: number; opacity: number; vx: number; vy: number; twinkleSpeed: number } {
       const typeRoll = Math.random();
-      if (typeRoll < 0.08) {
+      // Rebalanced: purple is a rare signal accent (~13% combined), not the
+      // dominant color. The field reads as warm ivory/white dust with an
+      // occasional violet mote, not a purple haze.
+      if (typeRoll < 0.05) {
         return {
           type: "fastPurple",
           color: "139, 92, 246",
           size: Math.random() * 0.6 + 0.4,
-          opacity: Math.random() * 0.2 + 0.8,
+          opacity: Math.random() * 0.2 + 0.7,
           vx: (Math.random() - 0.5) * 0.8,
           vy: (Math.random() - 0.5) * 0.8,
           twinkleSpeed: Math.random() * 0.08 + 0.03,
         };
       }
-      if (typeRoll < 0.23) {
+      if (typeRoll < 0.13) {
+        // Sparse dedicated purple accent — restrained, not saturated.
+        return {
+          type: "purple",
+          color: "168, 85, 247",
+          size: Math.random() * 0.55 + 0.3,
+          opacity: Math.random() * 0.25 + 0.4,
+          vx: (Math.random() - 0.5) * 0.2,
+          vy: (Math.random() - 0.5) * 0.2,
+          twinkleSpeed: Math.random() * 0.04 + 0.015,
+        };
+      }
+      if (typeRoll < 0.55) {
         return {
           type: "white",
           color: "255, 255, 255",
@@ -153,25 +169,12 @@ export default function HeroAmbientParticles({
           twinkleSpeed: Math.random() * 0.03 + 0.01,
         };
       }
-      if (typeRoll < 0.42) {
-        // Extra dedicated purple particles — richer, more saturated violet
-        // than the "normal" mix below, so purple reads as its own color.
-        return {
-          type: "purple",
-          color: "168, 85, 247",
-          size: Math.random() * 0.6 + 0.35,
-          opacity: Math.random() * 0.3 + 0.55,
-          vx: (Math.random() - 0.5) * 0.2,
-          vy: (Math.random() - 0.5) * 0.2,
-          twinkleSpeed: Math.random() * 0.04 + 0.015,
-        };
-      }
-      const colorShift = Math.random() > 0.8 ? "109, 40, 217" : "139, 92, 246";
+      // Warm ivory dust — the bulk of the field. Neutral, not purple.
       return {
         type: "normal",
-        color: colorShift,
+        color: "242, 240, 235",
         size: Math.random() * 0.8 + 0.4,
-        opacity: Math.random() * 0.3 + 0.5,
+        opacity: Math.random() * 0.3 + 0.4,
         vx: (Math.random() - 0.5) * 0.15,
         vy: (Math.random() - 0.5) * 0.15,
         twinkleSpeed: Math.random() * 0.03 + 0.01,

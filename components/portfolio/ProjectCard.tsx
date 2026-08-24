@@ -72,23 +72,21 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         transform: lifted ? `translateY(-${CARD_HOVER_LIFT_PX}px) scale(${CARD_HOVER_SCALE})` : undefined,
         transitionTimingFunction: CARD_HOVER_EASE,
       }}
-      className={`group relative flex h-[480px] w-full flex-col overflow-hidden rounded-[28px] border bg-card/60 backdrop-blur-md transition-[border-color,box-shadow,transform] duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 ${
-        lifted
-          ? "border-purple-500 shadow-[0_0_1px_rgba(139,92,246,0.9),0_0_20px_rgba(139,92,246,0.45),0_0_48px_rgba(139,92,246,0.25)]"
-          : "border-border/70 shadow-[0_0_16px_rgba(139,92,246,0.06)]"
+      className={`group relative flex h-[480px] w-full flex-col overflow-hidden rounded-[28px] border bg-card/60 backdrop-blur-md transition-[border-color,box-shadow,transform] duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-ink-300 ${
+        lifted ? "border-ink-400/70 shadow-[0_12px_40px_rgba(0,0,0,0.5)]" : "border-border/70"
       }`}
     >
       <div
         aria-hidden="true"
         className={`pointer-events-none absolute inset-0 z-10 transition-opacity duration-300 ${lifted ? "opacity-100" : "opacity-0"}`}
         style={{
-          background: `radial-gradient(220px circle at ${glow.x}% ${glow.y}%, rgba(139,92,246,0.16), transparent 70%)`,
+          background: `radial-gradient(220px circle at ${glow.x}% ${glow.y}%, ${project.accent}14, transparent 70%)`,
         }}
       />
 
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute left-[22px] top-[10px] z-0 select-none font-display text-[40px] font-semibold italic leading-none text-purple-400/[0.16]"
+        className="pointer-events-none absolute left-[22px] top-[10px] z-0 select-none font-display text-[40px] font-semibold italic leading-none text-ink-200/[0.12]"
       >
         {String(index + 1).padStart(2, "0")}
       </span>
@@ -97,7 +95,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         <h3 className="font-display text-xl font-semibold text-ink-100">{project.name}</h3>
         <p className="mt-1.5 font-display text-[15px] text-ink-300">{project.category}</p>
         {project.industry && (
-          <span className="mt-3 inline-flex w-fit items-center rounded-full border border-purple-500/25 bg-purple-500/[0.08] px-2.5 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.14em] text-purple-300">
+          <span className="mt-3 inline-flex w-fit items-center rounded-full border border-border bg-white/[0.03] px-2.5 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-300">
             {project.industry}
           </span>
         )}
@@ -160,7 +158,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
               <p className="line-clamp-2 font-display text-[13px] leading-snug text-ink-300">{project.problem}</p>
             </div>
 
-            <span aria-hidden="true" className="text-purple-400/60">
+            <span aria-hidden="true" className="text-ink-400">
               ↓
             </span>
 
@@ -174,10 +172,11 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="group/link relative z-20 font-sans text-[9px] font-semibold uppercase tracking-[0.16em] text-purple-300 transition-colors hover:text-purple-200 focus-visible:text-purple-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+              className="group/link relative z-20 font-sans text-[9px] font-semibold uppercase tracking-[0.16em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-300"
+              style={{ color: project.accent }}
             >
               Request full case study
-              <span className="absolute -bottom-1 left-0 h-px w-0 bg-purple-400 transition-all duration-300 ease-out group-hover/link:w-full" />
+              <span className="absolute -bottom-1 left-0 h-px w-0 transition-all duration-300 ease-out group-hover/link:w-full" style={{ background: project.accent }} />
             </a>
           </div>
         ) : (
@@ -201,10 +200,11 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="group/link relative z-20 font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-purple-300 transition-colors hover:text-purple-200 focus-visible:text-purple-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+              className="group/link relative z-20 font-sans text-[10px] font-semibold uppercase tracking-[0.18em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-300"
+              style={{ color: project.accent }}
             >
               Request full case study
-              <span className="absolute -bottom-1 left-0 h-px w-0 bg-purple-400 transition-all duration-300 ease-out group-hover/link:w-full" />
+              <span className="absolute -bottom-1 left-0 h-px w-0 transition-all duration-300 ease-out group-hover/link:w-full" style={{ background: project.accent }} />
             </a>
           </div>
         )}
@@ -218,7 +218,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
             rel="noopener noreferrer"
             aria-label={`View live website: ${project.name}`}
             onClick={(e) => e.stopPropagation()}
-            className="font-display text-3xl font-semibold underline decoration-transparent underline-offset-4 transition-colors hover:decoration-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-400"
+            className="font-display text-3xl font-semibold underline decoration-transparent underline-offset-4 transition-colors hover:decoration-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink-300"
             style={{ color: project.accent }}
           >
             {project.statValue}

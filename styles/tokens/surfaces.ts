@@ -21,7 +21,7 @@ export const surfaces: Record<SurfaceType, SurfaceStyle> = {
   },
   /** Semi-transparent, blur 8–12px. Used for interactive cards. */
   glass: {
-    background: "rgba(13, 13, 24, 0.55)",
+    background: "rgba(11, 11, 15, 0.55)",
     backdropBlur: "10px",
     border: `1px solid ${colors.border}`,
   },

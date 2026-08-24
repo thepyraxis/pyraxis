@@ -1,21 +1,43 @@
-import { futureProofHeadline, futureProofPillars } from "./content";
-import PillarCard from "./PillarCard";
+"use client";
+
+import { useState } from "react";
+import type React from "react";
+import { futureProofHeadline, futureProofPillars, futureProofPaths } from "./content";
+import { SpreadsheetIcon, BrainIcon, HandshakeHeartIcon, ConvergeIcon, ChartUpIcon } from "@/components/common/LineIcons";
+import { SignatureNode, SignaturePath } from "@/components/signature-system";
+import type { FutureProofIcon } from "./content";
 import Section from "@/components/layout/Section";
 import SectionContent from "@/components/layout/SectionContent";
 
+const ICONS: Record<FutureProofIcon, React.ComponentType<{ className?: string }>> = {
+  data: SpreadsheetIcon,
+  brain: BrainIcon,
+  heart: HandshakeHeartIcon,
+  converge: ConvergeIcon,
+  growth: ChartUpIcon,
+};
+
 /**
- * Scene 08 — Future-Proof Systems / "After Launch". Headline + CTA on the
- * left, a five-card cause-and-effect chain on the right connected by
- * arrows — same shell as before. Answers "what happens after launch,"
- * not "what features do we have": each pillar is the direct reason the
- * next one happens (Customer Data → Smarter Decisions → Better
- * Experience → Repeat Customers → Compounding Growth), handing the
- * visitor straight into the CTA. Static SVG icons (LineIcons) — no
- * canvas, no rAF; `layout.ts`/`motion.ts` in this folder are unrelated
- * leftover particle-geometry constants actually consumed by
- * components/cta, not by this component — intentionally untouched.
+ * Scene 08 — Future-Proof Systems / "After Launch".
+ *
+ * Rebuilt on the Signature System (creative/SIGNATURE_MOTIF.md) instead
+ * of a five-card grid: each pillar is a Node (a state the business is
+ * in), each gap between them is a labeled Path (the verb that causes the
+ * next state) — Customer Data *shapes* Smarter Decisions *creates*
+ * Better Experience *earns* Repeat Customers *compounds into*
+ * Compounding Growth. Removing a Path here would remove the actual claim
+ * being made (that each stage causes the next), which is the motif's own
+ * test for whether a Path belongs.
+ *
+ * The final node (Compounding Growth) is the Outcome — same Node
+ * primitive, no special-case styling, but rendered permanently active:
+ * it's the resting state the chain arrives at, not one more thing to
+ * hover.
  */
 export default function FutureProofSystems() {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const lastIndex = futureProofPillars.length - 1;
+
   return (
     <Section id="future-proof-systems" aria-label="After Launch" className="z-0 overflow-hidden">
       <SectionContent>
@@ -37,15 +59,50 @@ export default function FutureProofSystems() {
           </a>
         </div>
 
-        <div className="mt-12 flex flex-col items-stretch gap-4 lg:flex-row lg:items-start lg:gap-3">
+        <div className="mt-16 flex flex-col items-stretch gap-0 lg:flex-row lg:items-start">
           {futureProofPillars.map((pillar, index) => {
+            const Icon = ICONS[pillar.icon];
+            const isOutcome = index === lastIndex;
+            const isActive = isOutcome || activeIndex === index;
+
             return (
-              <div key={pillar.id} className="flex flex-1 items-start lg:min-w-0">
-                <PillarCard index={index} title={pillar.title} description={pillar.description} icon={pillar.icon} />
-                {index < futureProofPillars.length - 1 && (
-                  <span aria-hidden="true" className="mt-16 hidden shrink-0 px-1 text-purple-500/60 lg:block">
-                    →
-                  </span>
+              <div key={pillar.id} className="flex flex-1 flex-col items-start lg:min-w-0">
+                <div
+                  className="flex items-start gap-4 lg:flex-col lg:items-center lg:gap-3 lg:text-center"
+                  onMouseEnter={() => setActiveIndex(index)}
+                  onMouseLeave={() => setActiveIndex(null)}
+                  onFocus={() => setActiveIndex(index)}
+                  onBlur={() => setActiveIndex(null)}
+                >
+                  <SignatureNode state={isActive ? "active" : "idle"} size="md">
+                    <Icon className="h-5 w-5 text-purple-400" />
+                  </SignatureNode>
+                  <div>
+                    <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-ink-400">
+                      {isOutcome ? "Outcome" : `Stage ${index + 1}`}
+                    </span>
+                    <h3 className="mt-1 font-display text-base font-semibold text-ink-100">{pillar.title}</h3>
+                    <p className="mt-1 max-w-[220px] font-display text-[14px] leading-relaxed text-ink-300">
+                      {pillar.description}
+                    </p>
+                  </div>
+                </div>
+
+                {index < lastIndex && (
+                  <>
+                    <SignaturePath
+                      active={activeIndex === index}
+                      orientation="vertical"
+                      label={futureProofPaths[index]}
+                      className="ml-[27px] lg:hidden"
+                    />
+                    <SignaturePath
+                      active={activeIndex === index}
+                      orientation="horizontal"
+                      label={futureProofPaths[index]}
+                      className="mt-9 hidden w-full lg:flex"
+                    />
+                  </>
                 )}
               </div>
             );

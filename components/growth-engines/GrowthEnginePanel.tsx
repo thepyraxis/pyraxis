@@ -57,7 +57,7 @@ export default function GrowthEnginePanel({ activeIndex }: GrowthEnginePanelProp
       <span
         aria-hidden="true"
         key={`connector-${contentIndex}`}
-        className="absolute -left-0 top-1 h-8 w-px rounded-full bg-purple-400/70 shadow-[0_0_10px_rgba(192,132,252,0.55)]"
+        className="absolute -left-0 top-1 h-8 w-px rounded-full bg-ink-300/70"
         style={{
           transitionProperty: "opacity, height",
           transitionDuration: `${ENTER_MS}ms`,
@@ -94,7 +94,7 @@ export default function GrowthEnginePanel({ activeIndex }: GrowthEnginePanelProp
             style={base(DESC_DELAY_MS + FEATURE_STEP_MS * (i + 1))}
             className="flex items-center gap-2 font-display text-[15px] text-ink-300"
           >
-            <span aria-hidden="true" className="text-xs font-semibold text-purple-400">
+            <span aria-hidden="true" className="text-xs font-semibold text-ink-300">
               ✓
             </span>
             {feature}
@@ -109,8 +109,8 @@ export default function GrowthEnginePanel({ activeIndex }: GrowthEnginePanelProp
         style={base(DESC_DELAY_MS + FEATURE_STEP_MS * (engine.features.length + 1))}
         className="mt-6 border-t border-border/60 pt-5"
       >
-        <span className="inline-flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-500/10 py-1.5 pl-2 pr-3.5">
-          <span className="font-display text-base font-semibold leading-none text-purple-300">{engine.stat.value}</span>
+        <span className="inline-flex items-center gap-2 rounded-full border border-border bg-white/[0.03] py-1.5 pl-2 pr-3.5">
+          <span className="font-display text-base font-semibold leading-none text-ink-100">{engine.stat.value}</span>
           <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-300">
             {engine.stat.label}
           </span>

@@ -107,10 +107,10 @@ export default function Footer() {
               <li key={label}>
                 <a
                   href={href}
-                  className="group relative text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-300 transition-colors hover:text-ink-100 focus-visible:text-ink-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+                  className="group relative text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-300 transition-colors hover:text-ink-100 focus-visible:text-ink-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-300"
                 >
                   {label}
-                  <span className="absolute -bottom-1 left-0 h-px w-0 bg-purple-400 transition-all duration-300 ease-out group-hover:w-full" />
+                  <span className="absolute -bottom-1 left-0 h-px w-0 bg-ink-200 transition-all duration-300 ease-out group-hover:w-full" />
                 </a>
               </li>
             ))}
@@ -123,19 +123,19 @@ export default function Footer() {
             href={footerContact.whatsapp.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-300 transition-colors hover:text-ink-100 focus-visible:text-ink-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+            className="group relative text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-300 transition-colors hover:text-ink-100 focus-visible:text-ink-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-300"
           >
             {footerContact.whatsapp.label}
-            <span className="absolute -bottom-1 left-0 h-px w-0 bg-purple-400 transition-all duration-300 ease-out group-hover:w-full" />
+            <span className="absolute -bottom-1 left-0 h-px w-0 bg-ink-200 transition-all duration-300 ease-out group-hover:w-full" />
           </a>
           <a
             href={footerContact.email.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-300 transition-colors hover:text-ink-100 focus-visible:text-ink-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+            className="group relative text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-300 transition-colors hover:text-ink-100 focus-visible:text-ink-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-300"
           >
             {footerContact.email.label}
-            <span className="absolute -bottom-1 left-0 h-px w-0 bg-purple-400 transition-all duration-300 ease-out group-hover:w-full" />
+            <span className="absolute -bottom-1 left-0 h-px w-0 bg-ink-200 transition-all duration-300 ease-out group-hover:w-full" />
           </a>
         </div>
 
@@ -146,10 +146,10 @@ export default function Footer() {
             <Link
               key={label}
               href={href}
-              className="group relative text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-400 transition-colors hover:text-ink-100 focus-visible:text-ink-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+              className="group relative text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-400 transition-colors hover:text-ink-100 focus-visible:text-ink-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-300"
             >
               {label}
-              <span className="absolute -bottom-1 left-0 h-px w-0 bg-purple-400 transition-all duration-300 ease-out group-hover:w-full" />
+              <span className="absolute -bottom-1 left-0 h-px w-0 bg-ink-200 transition-all duration-300 ease-out group-hover:w-full" />
             </Link>
           ))}
         </div>

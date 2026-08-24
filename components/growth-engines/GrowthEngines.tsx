@@ -138,7 +138,7 @@ export default function GrowthEngines() {
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 -z-10"
           style={{
-            background: "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(139,92,246,0.07), transparent 65%)",
+            background: "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255,255,255,0.02), transparent 65%)",
           }}
         />
 
@@ -177,7 +177,7 @@ export default function GrowthEngines() {
                     onClick={() => goToIndex(index)}
                     aria-label={`Show ${engine.title}`}
                     className={`h-1.5 rounded-full transition-all ${
-                      activeIndex === index ? "w-5 bg-purple-400" : "w-1.5 bg-ink-600"
+                      activeIndex === index ? "w-5 bg-ink-200" : "w-1.5 bg-ink-600"
                     }`}
                   />
                 ))}

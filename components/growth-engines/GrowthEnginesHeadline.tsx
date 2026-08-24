@@ -54,8 +54,8 @@ export default function GrowthEnginesHeadline({ activeIndex }: GrowthEnginesHead
         data-reveal
         className="mt-6 font-display text-[clamp(28px,4.4vw,44px)] font-semibold leading-[1.15] text-ink-100"
       >
-        Powerful by default.
-        <span className="block italic text-ink-100">Built to scale.</span>
+        <span className="text-ink-100">Powerful by default.</span>
+        <span className="block italic text-purple-400">Built to scale.</span>
       </h2>
       <div data-reveal>
         <GrowthEnginePanel activeIndex={activeIndex} />
@@ -63,7 +63,7 @@ export default function GrowthEnginesHeadline({ activeIndex }: GrowthEnginesHead
       <a
         data-reveal
         href="#portfolio"
-        className="mt-8 inline-flex items-center gap-2 rounded-[2px] border border-purple-500/60 px-5 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.2em] text-purple-300 transition-colors duration-300 ease-out hover:border-purple-400 hover:text-purple-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+        className="mt-8 inline-flex items-center gap-2 rounded-[2px] border border-border px-5 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.2em] text-ink-300 transition-colors duration-300 ease-out hover:border-ink-400 hover:text-ink-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-400"
       >
         Explore All Modules
         <span aria-hidden="true">→</span>

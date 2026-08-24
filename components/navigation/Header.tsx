@@ -121,7 +121,7 @@ export default function Header() {
               className="group relative text-xs font-semibold uppercase tracking-[0.18em] text-ink-300 transition-colors hover:text-ink-100 focus-visible:text-ink-100"
             >
               {label}
-              <span className="absolute -bottom-1 left-0 h-px w-0 bg-purple-400 transition-all duration-300 ease-out group-hover:w-full" />
+              <span className="absolute -bottom-1 left-0 h-px w-0 bg-ink-200 transition-all duration-300 ease-out group-hover:w-full" />
             </a>
           ))}
 
@@ -158,7 +158,7 @@ export default function Header() {
               onClick={closeMenu}
               style={{ transitionDelay: menuOpen ? `${80 + index * 45}ms` : "0ms" }}
               className={cn(
-                "min-h-[48px] py-3 font-display text-nav-mobile font-semibold text-ink-200 transition-all duration-300 ease-out hover:text-purple-300",
+                "min-h-[48px] py-3 font-display text-nav-mobile font-semibold text-ink-200 transition-all duration-300 ease-out hover:text-ink-100",
                 menuOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
               )}
             >

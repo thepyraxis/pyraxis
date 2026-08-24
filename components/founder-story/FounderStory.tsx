@@ -63,7 +63,7 @@ export default function FounderStory() {
               {founderStoryContent.eyebrow}
             </p>
             <h2 data-reveal className="mt-6 font-display text-[clamp(28px,4.4vw,44px)] font-semibold leading-[1.15] text-ink-100">
-              {founderStoryContent.heading}
+              Why <span className="text-purple-400">PYRAXIS</span> exists.
             </h2>
 
             <p data-reveal className="mt-8 max-w-[480px] font-display text-2xl font-semibold leading-snug text-ink-100 md:text-[28px]">

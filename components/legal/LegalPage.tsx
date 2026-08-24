@@ -24,7 +24,7 @@ export default function LegalPage({ title, lastUpdated, sections }: LegalPagePro
       <div className="mx-auto w-full max-w-[800px]">
         <Link
           href="/"
-          className="mb-10 inline-block text-[12px] font-bold uppercase tracking-[0.2em] text-purple-400 transition-colors hover:text-purple-300"
+          className="mb-10 inline-block text-[12px] font-bold uppercase tracking-[0.2em] text-ink-300 transition-colors hover:text-ink-100"
         >
           ← Back to Home
         </Link>

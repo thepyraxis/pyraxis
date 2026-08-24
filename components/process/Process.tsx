@@ -248,10 +248,7 @@ export default function Process() {
                           the content inside it crossfades, so this reads
                           as one object updating, never a swap. */}
                       <div
-                        className="relative w-full rounded-[24px] border border-purple-400/70 p-8 shadow-[0_0_1px_rgba(139,92,246,0.9),0_0_32px_rgba(139,92,246,0.45),0_0_80px_rgba(139,92,246,0.25)] backdrop-blur-md"
-                        style={{
-                          background: "radial-gradient(circle at 30% 20%, rgba(139,92,246,0.1), rgba(255,255,255,0.02))",
-                        }}
+                        className="relative w-full rounded-[24px] border border-purple-500/40 bg-card/60 p-8 shadow-[0_0_20px_rgba(139,92,246,0.18)] backdrop-blur-md"
                       >
                         {/* Decorative stage number — same design language as the
                             Infrastructure Modules cards (large, italic, low
@@ -267,7 +264,7 @@ export default function Process() {
                             not just occlusion. */}
                         <span
                           aria-hidden="true"
-                          className="pointer-events-none absolute left-[19px] top-[-3px] z-0 select-none font-display text-[56px] font-semibold italic leading-none text-purple-400/[0.10]"
+                          className="pointer-events-none absolute left-[19px] top-[-3px] z-0 select-none font-display text-[56px] font-semibold italic leading-none text-ink-200/[0.10]"
                           style={contentState(index, activeIndex)}
                         >
                           {String(index + 1).padStart(2, "0")}
@@ -299,7 +296,7 @@ export default function Process() {
                                 aria-hidden="true"
                                 className="pointer-events-none absolute inset-[-15%] rounded-full"
                                 style={{
-                                  background: "radial-gradient(circle, rgba(139,92,246,0.35), transparent 70%)",
+                                  background: "radial-gradient(circle, rgba(139,92,246,0.22), transparent 70%)",
                                   filter: "blur(10px)",
                                   ...contentState(index, activeIndex),
                                   opacity: index === activeIndex ? 1 : 0.35,

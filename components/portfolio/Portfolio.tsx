@@ -19,34 +19,35 @@ import SectionContent from "@/components/layout/SectionContent";
 export default function Portfolio() {
   return (
     <Section id="portfolio" aria-label="Portfolio" className="z-0 min-h-fit">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background: "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(139,92,246,0.06), transparent 65%)",
-        }}
-      />
-
+      {/* Quiet section — no ambient purple, no motif (creative/SIGNATURE_MOTIF.md).
+          Projects are parallel case studies, not sequential system states,
+          so this is the page's breath, not another purple beat. */}
       <SectionContent>
         <span className="font-sans text-[11px] uppercase tracking-[0.3em] text-ink-400">Recent Deployments</span>
         <h2 className="mt-2 font-display text-[clamp(28px,4vw,40px)] font-semibold text-ink-100">
           Real systems.
-          <span className="block italic text-ink-100">Real results.</span>
+          <span className="block italic text-purple-400">Real results.</span>
         </h2>
         <p className="mt-3 max-w-2xl font-display text-sm leading-relaxed text-ink-300 md:text-base">
           A few examples of how we&apos;ve helped businesses streamline, automate, and scale.
         </p>
         <a
           href="#process"
-          className="mt-6 inline-flex items-center gap-2 rounded-[2px] border border-purple-500/60 px-5 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.2em] text-purple-300 transition-colors duration-300 ease-out hover:border-purple-400 hover:text-purple-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+          className="mt-6 inline-flex items-center gap-2 rounded-[2px] border border-border px-5 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.2em] text-ink-300 transition-colors duration-300 ease-out hover:border-ink-400 hover:text-ink-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-400"
         >
           View All Projects
           <span aria-hidden="true">→</span>
         </a>
 
+        {/* Asymmetric composition, not a uniform A/A/A grid — the first
+            project reads as the dominant case study (wider column), the
+            rest sit smaller beside/below it. Falls back to a plain wrap
+            gracefully if more projects are added later. */}
         <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
           {projects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+            <div key={project.id} className={index === 0 ? "sm:col-span-2 lg:col-span-2" : ""}>
+              <ProjectCard project={project} index={index} />
+            </div>
           ))}
         </div>
       </SectionContent>

@@ -25,9 +25,8 @@ function MarqueeGroup({ items }: { items: string[] }) {
       {items.map((item, index) => (
         <span
           key={`${item}-${index}`}
-          className="mr-16 flex shrink-0 items-center gap-3 whitespace-nowrap font-sans text-[10px] font-semibold uppercase tracking-[0.28em] text-ink-500"
+          className="mr-16 flex shrink-0 items-center whitespace-nowrap font-sans text-[10px] font-semibold uppercase tracking-[0.28em] text-ink-500"
         >
-          <span className="text-purple-400">✦</span>
           {item}
         </span>
       ))}

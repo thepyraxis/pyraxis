@@ -36,10 +36,8 @@ export default function GrowthEngineCard({ engine, index, isFocused, onFocus }: 
       aria-label={`${engine.title}: ${engine.description}`}
       tabIndex={0}
       onFocus={() => onFocus(index)}
-      className={`relative flex h-[288px] w-[244px] shrink-0 flex-col overflow-hidden rounded-[24px] border bg-card/40 px-6 pb-6 pt-7 text-left transition-[border-color,box-shadow,transform] duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 ${
-        isFocused
-          ? "border-purple-500 shadow-[0_0_1px_rgba(139,92,246,0.9),0_0_14px_rgba(139,92,246,0.45),0_0_34px_rgba(139,92,246,0.25)]"
-          : "border-border/70 shadow-[0_0_16px_rgba(139,92,246,0.06)]"
+      className={`relative flex h-[288px] w-[244px] shrink-0 flex-col overflow-hidden rounded-[24px] border bg-card/40 px-6 pb-6 pt-7 text-left transition-[border-color,box-shadow,transform] duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-ink-300 ${
+        isFocused ? "border-purple-500/50 shadow-[0_12px_32px_rgba(0,0,0,0.45)]" : "border-border/70"
       }`}
       style={{ transform: isFocused ? "translateY(-4px)" : "translateY(0)" }}
     >
@@ -54,7 +52,7 @@ export default function GrowthEngineCard({ engine, index, isFocused, onFocus }: 
           rather than shrinking the type size. */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute -top-3 left-3 z-0 select-none font-display text-[62px] font-semibold italic leading-none text-purple-400/[0.10] transition-opacity duration-300 ease-out"
+        className="pointer-events-none absolute -top-3 left-3 z-0 select-none font-display text-[62px] font-semibold italic leading-none text-ink-200/[0.10] transition-opacity duration-300 ease-out"
         style={{ opacity: isFocused ? 0.85 : 0.6 }}
       >
         {String(index + 1).padStart(2, "0")}
@@ -68,9 +66,11 @@ export default function GrowthEngineCard({ engine, index, isFocused, onFocus }: 
           aria-hidden="true"
           className="pointer-events-none absolute inset-[-25%] rounded-full transition-opacity duration-300 ease-out"
           style={{
-            background: "radial-gradient(circle, rgba(139,92,246,0.16), transparent 68%)",
+            background: isFocused
+              ? "radial-gradient(circle, rgba(139,92,246,0.18), transparent 68%)"
+              : "radial-gradient(circle, rgba(255,255,255,0.05), transparent 68%)",
             filter: "blur(6px)",
-            opacity: isFocused ? 1 : 0.65,
+            opacity: isFocused ? 1 : 0.5,
           }}
         />
         <Image
