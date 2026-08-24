@@ -28,10 +28,10 @@ export default function Portfolio() {
       />
 
       <SectionContent>
-        <span className="font-sans text-[11px] uppercase tracking-[0.3em] text-purple-400">Recent Deployments</span>
+        <span className="font-sans text-[11px] uppercase tracking-[0.3em] text-ink-400">Recent Deployments</span>
         <h2 className="mt-2 font-display text-[clamp(28px,4vw,40px)] font-semibold text-ink-100">
           Real systems.
-          <span className="block italic text-purple-400">Real results.</span>
+          <span className="block italic text-ink-100">Real results.</span>
         </h2>
         <p className="mt-3 max-w-2xl font-display text-sm leading-relaxed text-ink-300 md:text-base">
           A few examples of how we&apos;ve helped businesses streamline, automate, and scale.

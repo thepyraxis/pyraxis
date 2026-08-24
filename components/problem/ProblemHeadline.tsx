@@ -25,7 +25,7 @@ export default function ProblemHeadline() {
 
   return (
     <div ref={rootRef} className="max-w-[560px] text-left">
-      <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-purple-400">
+      <p data-reveal className="text-[11px] uppercase tracking-[0.3em] text-ink-400">
         The Real Problem
       </p>
 
