@@ -39,15 +39,9 @@ export default function Portfolio() {
           <span aria-hidden="true">→</span>
         </a>
 
-        {/* Asymmetric composition, not a uniform A/A/A grid — the first
-            project reads as the dominant case study (wider column), the
-            rest sit smaller beside/below it. Falls back to a plain wrap
-            gracefully if more projects are added later. */}
         <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
           {projects.map((project, index) => (
-            <div key={project.id} className={index === 0 ? "sm:col-span-2 lg:col-span-2" : ""}>
-              <ProjectCard project={project} index={index} />
-            </div>
+            <ProjectCard key={project.id} project={project} index={index} />
           ))}
         </div>
       </SectionContent>
