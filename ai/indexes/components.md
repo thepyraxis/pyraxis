@@ -194,7 +194,7 @@ Keep this file and `ai/knowledge/components.json` in sync — this is the human-
 
 ### FounderStory
 - Location: `components/founder-story/FounderStory.tsx`
-- Purpose: Founder-story scene between Portfolio and Process — responsive `grid-cols-1 lg:grid-cols-[1fr_260px]` layout, circular avatar image/placeholder.
+- Purpose: Founder-story scene between Portfolio and Process — responsive `grid-cols-1 lg:grid-cols-[1fr_360px]` layout, circular avatar image/placeholder.
 - Status: complete
 - Used by: `app/page.tsx`
 
@@ -221,6 +221,12 @@ Keep this file and `ai/knowledge/components.json` in sync — this is the human-
 - Purpose: Phase 15 scene — site footer, `min-h-[40vh]`, wordmark + links, now also Privacy/Terms legal links (no social — none exist for this business).
 - Status: complete
 - Used by: `app/page.tsx`
+
+### SignatureAssembly / SignatureNode / SignaturePath / SignatureShard
+- Location: `components/signature-system/`
+- Purpose: Shared shape-assembly primitives (node/path/shard drawing + composition) consumed by the shared particle engine's signature/Earth-illusion choreography.
+- Status: complete
+- Used by: `components/growth-system/GrowthNode.tsx`, `components/future-proof-systems/FutureProofSystems.tsx`
 
 ### LegalPage
 - Location: `components/legal/LegalPage.tsx`
