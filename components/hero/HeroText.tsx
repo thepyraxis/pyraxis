@@ -50,7 +50,7 @@ export default function HeroText() {
         </em>
       </h1>
 
-      <p data-reveal className="mt-[20px] font-display text-[15px] text-ink-300">
+      <p data-reveal className="mt-[clamp(0.75rem,1.2vw,1.25rem)] font-display text-[15px] text-ink-300">
         Built by <strong className="font-semibold text-ink-200">Aman Deep Sharma</strong>, founder
         of{" "}
         <Image
@@ -64,7 +64,7 @@ export default function HeroText() {
         .
       </p>
 
-      <p data-reveal className="mt-[20px] max-w-md font-display text-base leading-relaxed text-ink-400 sm:text-lg">
+      <p data-reveal className="mt-[clamp(0.75rem,1.2vw,1.25rem)] max-w-md font-display text-base leading-relaxed text-ink-400 sm:text-lg">
         Systems that bring customers in, close them, and keep them coming back —
         running whether you&apos;re working or not.
       </p>
