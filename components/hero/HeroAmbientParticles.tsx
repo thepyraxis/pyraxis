@@ -326,11 +326,14 @@ export default function HeroAmbientParticles({
       ctx.clearRect(0, 0, width, height);
       const pulse = Math.sin(Date.now() / 3000) * 0.5 + 0.5;
 
-      // Parent wrapper gets a per-frame parallax `transform` from
-      // useParallaxMouse (up to depth=23px), so the cached rect from
-      // scroll/resize goes stale mid-drift — refresh every frame instead.
-      // getBoundingClientRect() here is cheap (no layout write this frame).
-      updateRect();
+      // rectLeft/rectTop are kept fresh by resize() and the scroll-rAF
+      // handler above — both fire on the actual events that can move this
+      // canvas. A getBoundingClientRect() call here too was a forced-layout
+      // read on every single animation frame (this loop runs continuously
+      // whenever the section is in view), which stacked with
+      // HeroLogoCanvas's own rAF loop and was a real source of the hero's
+      // frame drops. Parallax draws its offset on top of this cached
+      // position rather than needing a fresh read every frame.
 
       // Canvas fills its own positioned container 1:1, so mapping viewport
       // -> local is a direct subtraction of this canvas's own rect.
