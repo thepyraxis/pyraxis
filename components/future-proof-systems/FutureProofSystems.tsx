@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type React from "react";
 import { futureProofHeadline, futureProofPillars, futureProofPaths } from "./content";
 import { SpreadsheetIcon, BrainIcon, HandshakeHeartIcon, ConvergeIcon, ChartUpIcon } from "@/components/common/LineIcons";
@@ -8,6 +8,7 @@ import { SignatureNode, SignaturePath } from "@/components/signature-system";
 import type { FutureProofIcon } from "./content";
 import Section from "@/components/layout/Section";
 import SectionContent from "@/components/layout/SectionContent";
+import { useSectionHandoff } from "@/hooks/useSectionHandoff";
 
 const ICONS: Record<FutureProofIcon, React.ComponentType<{ className?: string }>> = {
   data: SpreadsheetIcon,
@@ -35,11 +36,16 @@ const ICONS: Record<FutureProofIcon, React.ComponentType<{ className?: string }>
  * hover.
  */
 export default function FutureProofSystems() {
+  const sectionRef = useRef<HTMLElement | null>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const lastIndex = futureProofPillars.length - 1;
 
+  // ai/specs/architecture/section-boundary-handoff.md
+  useSectionHandoff("future-proof-systems", sectionRef, "top");
+  useSectionHandoff("future-proof-systems", sectionRef, "bottom");
+
   return (
-    <Section id="future-proof-systems" aria-label="After Launch" className="z-0 overflow-hidden">
+    <Section ref={sectionRef} id="future-proof-systems" aria-label="After Launch" className="z-0 overflow-hidden">
       <SectionContent>
         <div>
           <p className="text-[11px] uppercase tracking-[0.3em] text-ink-400">{futureProofHeadline.eyebrow}</p>

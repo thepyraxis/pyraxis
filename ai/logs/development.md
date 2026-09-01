@@ -3,19 +3,19 @@
 Tracks live project state. Update after every completed task. See `ai/memory/current.md` for the canonical current-task pointer — this file is the working-notes companion to it.
 
 ## Current Milestone
-Phase 09 — Growth Engines. Complete. See `ai/memory/current.md`.
+Section-boundary particle handoff (D-016). Implemented and verified. See `ai/memory/current.md`.
 
 ## Latest Completed Work
-Growth Engines scene: six reusable engine cards (Website, Lead, Booking, WhatsApp, Review, AI Assistant), particle-built icons via `GrowthEngineIconCanvas`, global `ParticleProvider`/`AnimationProvider` integration for ambient signal traffic, scroll-triggered headline reveal, hover/keyboard focus with particle redirect, vertical-mobile/horizontal-desktop layout. See `ai/memory/completed.md`.
+`hooks/useSectionHandoff.ts` built — first real consumer of `providers/ParticleProvider.tsx`. Sends a small additive density-ramped instruction per section edge as it nears the viewport boundary, driven by Lenis-backed `useScrollStore()`. Wired into all 10 applicable sections (11 boundaries total; Marquee excluded). Every section's existing local canvas untouched. See `ai/memory/decisions.md` D-016.
 
 ## Active Task
-None in progress. Next: Phase 10 — Why PYRAXIS. See `ai/memory/next.md`.
+None in progress. Next: real-browser verification of the handoff + Lenis scroll feel + responsive breakpoint sweep, all blocked on the same sandbox tooling gap. Separately open: resolve the Hero→Problem crossfade-vs-handoff conflict flagged in `ai/memory/known-issues.md`. See `ai/memory/next.md`.
 
 ## Blocking Issues
-None new. Particle-engine-ownership split (self-contained icon-construction canvases vs. global ambient engine) and unfilled `ai/specs/growth-system.md` remain open — see `ai/memory/known-issues.md`.
+Same sandbox browser-tooling gap as before, now also covering handoff visual verification. New this session: `hooks/useEdgeFadeOpacity.ts` (pre-existing, Hero→Problem only) confirmed to violate `ai/rules/animation.md` #3 (opacity crossfade) — flagged, not fixed, left coexisting with the new handoff at that one boundary pending a separate decision. Particle-engine-ownership split (now partially addressed — the shared engine has its first consumer, but sections' primary systems remain on local canvases, unchanged) and unfilled `ai/specs/growth-system.md` remain open. `ai/memory/changelog.md` versioning drift (pre-existing, from the Lenis session) still unreconciled.
 
 ## Performance Notes
-Growth Engines' ambient particle density capped at 0.12 of the device-tier budget (0.04 under reduced motion), shared with other sections through the same pool. Icon-construction canvases pause via `IntersectionObserver` when off-screen.
+Handoff instructions use a small density share (0.04 peak, default) specifically to avoid competing with whichever section's own local canvas is dominant at a boundary. First Load JS moved 310kB → 319kB across the 10 wired sections + new hook (`next build` output).
 
 ## Technical Debt
-Same as `ai/memory/known-issues.md` "Open" section — no new debt introduced by this phase beyond the six-vs-seven engine content deviation (D-014).
+Same as `ai/memory/known-issues.md` "Open" section, plus the flagged crossfade conflict and changelog-versioning drift noted above.

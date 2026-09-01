@@ -34,6 +34,10 @@
 - ~~`ai/indexes/files.md` didn't list `ai/specs/`, `ai/indexes/`, or `ai/logs/`~~ — added.
 - ~~`ai/knowledge/architecture.json` listed a `config/` folder that was never scaffolded and doesn't appear anywhere else in the docs~~ — removed; also added the real (previously undocumented) `scripts/` and `.github/workflows/` placeholder folders.
 
+- **`ai/memory/changelog.md` versioning drifted from root `CHANGELOG.md`**: canonical log stalled at v1.7 while the root digest had already advanced to v2.2 across several sessions (Portfolio bugfixes, HTML-port features, stats corrections). Pre-existing gap, not introduced by the Lenis integration session that found it — both files continued their own numbering (canonical → v1.8, root → v2.3) rather than being force-aligned. Needs a dedicated reconciliation pass to decide whether these should share one version number or are intentionally separate sequences.
+
+- **Pre-existing rule conflict found this session**: `hooks/useEdgeFadeOpacity.ts` already implements the Hero→Problem boundary via opacity crossfade (`Hero.tsx`/`Problem.tsx`), which directly contradicts `ai/rules/animation.md` #3 ("Scene transitions never use opacity crossfades — one scene physically transforms into the next"). It is the only boundary with any transition at all, and predates this session's work. Left untouched for now (out of this spec's non-goals — not redesigning any section's existing behavior) but flagged: the new particle-handoff mechanism this spec adds should NOT be layered on top of it at that one boundary without a decision on whether to replace the crossfade or let both coexist. See `ai/memory/decisions.md` for the resolution once made.
+
 ## How to use this file
 
 Log every open bug here with: description, reproduction steps if known, severity, and the file/component affected. Move to `completed.md` history (not deleted) once resolved, and note the fix in `changelog.md`.

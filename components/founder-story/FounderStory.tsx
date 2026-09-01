@@ -7,6 +7,7 @@ import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
 import Section from "@/components/layout/Section";
 import SectionContent from "@/components/layout/SectionContent";
 import FounderSequence from "./FounderSequence";
+import { useSectionHandoff } from "@/hooks/useSectionHandoff";
 
 /**
  * Scene — Founder Story. Sits between Portfolio (Proof) and Process (How
@@ -25,6 +26,11 @@ export default function FounderStory() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const reducedMotion = usePrefersReducedMotion();
   const [isVisible, setIsVisible] = useState(false);
+
+  // Boundary-only (ai/specs/architecture/section-boundary-handoff.md) — does
+  // not conflict with this section's own "no ambient particles" interior.
+  useSectionHandoff("founder-story", sectionRef, "top");
+  useSectionHandoff("founder-story", sectionRef, "bottom");
 
   useEffect(() => {
     const section = sectionRef.current;

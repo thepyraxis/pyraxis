@@ -8,6 +8,7 @@ import ProblemAmbientParticles from "./ProblemAmbientParticles";
 import ProblemWaveBackground from "./ProblemWaveBackground";
 import ResponsiveCanvas from "@/components/common/ResponsiveCanvas";
 import { useEdgeFadeOpacity } from "@/hooks/useEdgeFadeOpacity";
+import { useSectionHandoff } from "@/hooks/useSectionHandoff";
 import Section from "@/components/layout/Section";
 import SectionContent from "@/components/layout/SectionContent";
 
@@ -27,6 +28,13 @@ export default function Problem() {
   // never talk to each other, they just happen to be reading the same
   // seam, which is what makes the handoff read as one atmosphere.
   useEdgeFadeOpacity(particlesWrapRef, sectionRef, "top");
+
+  // Shared-engine boundary handoff (additive to the crossfade above, entry
+  // side) and Problem's own exit toward GrowthSystem (no local-canvas
+  // crossfade exists on that side yet — this is Problem's only exit signal).
+  // ai/specs/architecture/section-boundary-handoff.md
+  useSectionHandoff("problem", sectionRef, "top");
+  useSectionHandoff("problem", sectionRef, "bottom");
 
   return (
     <Section

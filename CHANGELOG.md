@@ -2,6 +2,14 @@
 
 Human-readable digest. This is a summary — every entry here also exists, in full technical detail, in [`ai/memory/changelog.md`](ai/memory/changelog.md), which is the canonical/detailed log. Don't duplicate full detail here; link back instead.
 
+## v2.4 — Section-boundary particle handoff (D-016)
+
+All 11 section boundaries now bridge via a shared particle handoff instead of hard cuts. New `hooks/useSectionHandoff.ts` — first real consumer of the previously-dormant `providers/ParticleProvider.tsx` — sends a small additive density-ramped instruction per section edge as it nears the viewport boundary, driven by Lenis-backed scroll. Every section's existing local canvas/animation is untouched; this is purely additive connective dust at the seams. Spec corrected mid-session after live-code inspection showed sections don't route through the shared engine (initial assumption was wrong) — see `ai/memory/decisions.md` D-016 for the full correction. `tsc --noEmit`, `eslint`, `next build`, `validate-all.mjs` all clean.
+
+## v2.3 — Lenis smooth scroll adopted (D-015)
+
+Added `lenis` (^1.3.26) as the app's scroll driver, replacing native `window.scrollY`. Single global instance (`providers/LenisProvider.tsx`), RAF unified under `gsap.ticker`, `ScrollTrigger.update()` wired to Lenis's scroll event — no competing animation loops. `providers/ScrollProvider.tsx`'s public API unchanged; internals now read Lenis's own scroll/velocity/progress. Spec written and locked first per CLAUDE.md discipline (`ai/specs/architecture/lenis-smooth-scroll.md`). `tsc --noEmit`, `eslint`, `next build` all clean; see `ai/memory/decisions.md` D-015 for full detail.
+
 ## v2.2 — Growth Engine stats corrected against real marketing posters
 
 User shared 8 real PYRAXIS marketing poster images (one per engine + overview). Cross-checked `components/growth-engines/engines.ts` against them — titles/order already matched exactly, but 3 stats directly contradicted the real posters: AI Receptionist (site said 94%, poster says 90%+), Smart Booking (site said 41% fewer no-shows, poster says 70%), Repeat Purchase (site said 2.5x LTV, poster says 35%+ higher LTV) — all corrected. Also replaced 2 previously-unsourced/invented stats with real poster numbers: Follow-Up (was 3.2x deals recovered → now 60%+ increase in pipeline) and Smart Reviews (was 5x reviews collected → now 70%+ customers from referrals). Reputation System's description/features updated to describe its actual mechanism shown in the poster (4-5★ routes to public review, 1-3★ routes privately to email/WhatsApp) — that specific routing detail wasn't mentioned anywhere in the copy before. `components/growth-system/nodes.ts` reads these same values from `engines.ts` directly (no duplicate copy), so all fixes propagate to both sections automatically. `npm run build` and `validate-all.mjs` clean.

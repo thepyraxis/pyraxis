@@ -10,6 +10,7 @@ import Section from "@/components/layout/Section";
 import SectionContent from "@/components/layout/SectionContent";
 import NextStepGlobe from "./NextStepGlobe";
 import ResponsiveCanvas from "@/components/common/ResponsiveCanvas";
+import { useSectionHandoff } from "@/hooks/useSectionHandoff";
 
 /**
  * Scene — CTA ("The Next Step").
@@ -26,6 +27,10 @@ export default function CTA() {
   const primaryRef = useRef<HTMLAnchorElement | null>(null);
   const reducedMotion = usePrefersReducedMotion();
   const [isSectionVisible, setIsSectionVisible] = useState(false);
+
+  // ai/specs/architecture/section-boundary-handoff.md
+  useSectionHandoff("cta", sectionRef, "top");
+  useSectionHandoff("cta", sectionRef, "bottom");
 
   useEffect(() => {
     const section = sectionRef.current;

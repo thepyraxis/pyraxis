@@ -7,6 +7,7 @@ import HeroLogo from "./HeroLogo";
 import HeroAmbientParticles from "./HeroAmbientParticles";
 import { useParallaxMouse } from "@/hooks/useParallaxMouse";
 import { useEdgeFadeOpacity } from "@/hooks/useEdgeFadeOpacity";
+import { useSectionHandoff } from "@/hooks/useSectionHandoff";
 
 /**
  * Matches the reference HTML's actual `.hero` structure/stacking exactly:
@@ -46,6 +47,11 @@ export default function Hero() {
   // physical scroll range from its own side (see Problem.tsx) — no
   // shared state between the two, just two edges of the same seam.
   useEdgeFadeOpacity(particlesWrapRef, sectionRef, "bottom");
+
+  // Shared-engine boundary handoff, additive to the local-canvas crossfade
+  // above (ai/specs/architecture/section-boundary-handoff.md). Hero has no
+  // "entering" side (first section on the page).
+  useSectionHandoff("hero", sectionRef, "bottom");
 
   return (
     <section

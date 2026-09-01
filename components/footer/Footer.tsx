@@ -12,6 +12,7 @@ import { FOOTER_NAV_ARIA_LABEL, FOOTER_CONTENT_MAX_WIDTH_PX } from "./layout";
 import { ENTRY_Y_OFFSET_PX, ENTRY_DURATION_S, ENTRY_STAGGER_S, ENTRY_EASE, ENTRY_THRESHOLD } from "./motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useSectionHandoff } from "@/hooks/useSectionHandoff";
 
 /**
  * Scene — Footer (Phase 15, ai/specs/footer.md).
@@ -29,6 +30,12 @@ export default function Footer() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const reducedMotion = usePrefersReducedMotion();
   const [isSectionVisible, setIsSectionVisible] = useState(false);
+
+  // Entering side only — Footer is terminal, no exit handoff needed
+  // (ai/specs/architecture/section-boundary-handoff.md non-goals). Small
+  // tail of CTA's own exit dust, consistent with Footer's deliberate
+  // "Very Low intensity floor, no particle spectacle" design (spec).
+  useSectionHandoff("footer", sectionRef, "top");
 
   // Visibility only — no particle instruction to send/clear here, unlike
   // every other scene's version of this effect.

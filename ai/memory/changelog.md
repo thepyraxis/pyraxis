@@ -2,6 +2,27 @@
 
 Chronological record of changes to the repository and documentation.
 
+## v1.9 — Section-boundary particle handoff (D-016)
+
+- Built `hooks/useSectionHandoff.ts` — first real consumer of `providers/ParticleProvider.tsx`'s `useParticles()` (confirmed via grep: zero prior usages; the provider was mounted at the app root but architecturally dormant, every section using its own local canvas instead).
+- Sends a small additive instruction (`density` peaking ~0.04 share of the device budget, `particleType: "ambient"`, `shape: "scatter"`) under a dedicated `sourceId` per section edge, ramped by distance from the viewport edge using Lenis-backed `useScrollStore()` (D-015). `phase: "exiting"` on a section's bottom edge, `"entering"` on the next section's top edge — concurrent during the overlap window, a physical bridge rather than a crossfade (`ai/rules/animation.md` #3).
+- Wired into all 10 applicable sections (`Hero`, `Problem`, `GrowthSystem`, `GrowthEngines`, `WhyPyraxis`, `Portfolio`, `FounderStory`, `Process`, `FutureProofSystems`, `CTA`, `Footer`) covering all 11 `app/page.tsx` boundaries. `MarqueeTicker` excluded (no particle system). `Footer` entering-only (terminal section). 3 sections (`GrowthSystem`, `Portfolio`, `FutureProofSystems`) needed a `sectionRef` added, forwarded through the existing `Section` wrapper.
+- Deliberately additive only — no section's existing local canvas, primary animation, layout, or content was touched. `Portfolio`'s and `FounderStory`'s explicit "no ambient motif" interior design is preserved; the handoff lives only at the seam.
+- **Mid-session correction:** the spec's first draft assumed sections already sent instructions to the shared engine and that this hook would only modulate them. Verified against live code (`HeroAmbientParticles.tsx`, `ProblemAmbientParticles.tsx`, `GrowthEngineIconCanvas.tsx`, `GlobeCanvas.tsx`) that this was false — corrected the spec (`ai/specs/architecture/section-boundary-handoff.md`) before writing any code.
+- **Flagged, not resolved:** `hooks/useEdgeFadeOpacity.ts` (pre-existing, Hero→Problem only) violates `ai/rules/animation.md` #3 (opacity crossfade). New handoff instructions sit alongside it at that boundary, not replacing it — logged to `ai/memory/known-issues.md` as an open decision.
+- `tsc --noEmit`, `eslint .`, `next build`, `validate-all.mjs` all verified clean. First Load JS 310kB → 319kB.
+
+## v1.8 — Lenis smooth scroll adopted (D-015)
+
+- Added `lenis` (^1.3.26) as a direct dependency.
+- Built `providers/LenisProvider.tsx`: single global Lenis instance, mounted in `GlobalProviders.tsx` between `MouseProvider` and `ScrollProvider`. `lenis.raf` driven by `gsap.ticker` (not its own RAF loop); `lenis.on("scroll", ScrollTrigger.update)` wired so ScrollTrigger scrub/pin stays the source of truth for all section animations, per `ai/rules/architecture.md` #2. `prefers-reduced-motion` handled inside the provider (near-instant duration rather than a separate disable path), per `ai/rules/animation.md` #10.
+- Rewrote `providers/ScrollProvider.tsx` internals to read Lenis's own `scroll`/`velocity`/`progress` via its `scroll` event, replacing the previous `window.scrollY` + passive-listener + manual-RAF-batch implementation. Public `ScrollState` interface and `useScrollStore()` API are unchanged — confirmed zero consumers exist yet (grep), so this is a zero-call-site-edit swap.
+- Deliberately kept `lib/gsap.ts` untouched (single-responsibility: plugin registration only) — the ticker-drives-Lenis wiring lives in `LenisProvider.tsx` instead.
+- Did not adopt a Lenis React wrapper package; hand-rolled provider to match the codebase's existing pattern (`ThemeProvider`, `MouseProvider`, etc.).
+- Spec written and locked first: `ai/specs/architecture/lenis-smooth-scroll.md`, per CLAUDE.md spec-first discipline.
+- `tsc --noEmit`, `eslint .`, `next build` all verified clean; all 7 routes still generate statically.
+- **Docs-sync note:** this canonical changelog had stalled at v1.7 while the root `CHANGELOG.md` digest had already advanced to v2.2 (a pre-existing drift, not introduced this session) — logged to `ai/memory/known-issues.md` rather than silently renumbering either file to fake alignment.
+
 ## v1.7 — CTA scene (Phase 14 implementation)
 
 - Built `components/cta/{CTA.tsx, content.ts, motion.ts, layout.ts}` against the already-locked `ai/specs/cta.md`, wired into `app/page.tsx` after `FutureProofSystems`.

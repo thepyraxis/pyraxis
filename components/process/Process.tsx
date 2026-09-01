@@ -17,6 +17,7 @@ const ICON_SRC: Record<ProcessIcon, string> = {
 import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
 import Section from "@/components/layout/Section";
 import SectionContent from "@/components/layout/SectionContent";
+import { useSectionHandoff } from "@/hooks/useSectionHandoff";
 
 const STAGE_COUNT = processStages.length;
 const PIN_HEIGHT_VH = STAGE_COUNT * STEP_VH;
@@ -68,6 +69,10 @@ export default function Process() {
   const stackRef = useRef<HTMLDivElement | null>(null);
   const reducedMotion = usePrefersReducedMotion();
   const [isDesktop, setIsDesktop] = useState(false);
+
+  // ai/specs/architecture/section-boundary-handoff.md
+  useSectionHandoff("process", sectionRef, "top");
+  useSectionHandoff("process", sectionRef, "bottom");
   const [activeIndex, setActiveIndex] = useState(0);
 
   // Explicit desktop detection so the left column can get a real,

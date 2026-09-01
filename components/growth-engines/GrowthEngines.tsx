@@ -5,6 +5,7 @@ import { growthEngines } from "./engines";
 import GrowthEngineCard from "./GrowthEngineCard";
 import GrowthEnginesHeadline from "./GrowthEnginesHeadline";
 import SectionContent from "@/components/layout/SectionContent";
+import { useSectionHandoff } from "@/hooks/useSectionHandoff";
 
 const CARD_COUNT = growthEngines.length;
 // How much extra vertical scroll room the section reserves for stepping
@@ -38,6 +39,10 @@ export default function GrowthEngines() {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isSectionVisible, setIsSectionVisible] = useState(false);
+
+  // ai/specs/architecture/section-boundary-handoff.md
+  useSectionHandoff("growth-engines", sectionRef, "top");
+  useSectionHandoff("growth-engines", sectionRef, "bottom");
 
   useEffect(() => {
     const section = sectionRef.current;
