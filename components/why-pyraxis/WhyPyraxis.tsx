@@ -8,6 +8,7 @@ import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
 import { TargetIcon, PerformBarsIcon, GearIcon, HandshakeHeartIcon } from "@/components/common/LineIcons";
 import Section from "@/components/layout/Section";
 import SectionContent from "@/components/layout/SectionContent";
+import { useSectionHandoff } from "@/hooks/useSectionHandoff";
 
 const ICONS: Record<WhyPyraxisIcon, React.ComponentType<{ className?: string }>> = {
   target: TargetIcon,
@@ -24,6 +25,10 @@ export default function WhyPyraxis() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const reducedMotion = usePrefersReducedMotion();
   const [isVisible, setIsVisible] = useState(false);
+
+  // ai/specs/architecture/section-boundary-handoff.md
+  useSectionHandoff("why-pyraxis", sectionRef, "top");
+  useSectionHandoff("why-pyraxis", sectionRef, "bottom");
 
   useEffect(() => {
     const section = sectionRef.current;

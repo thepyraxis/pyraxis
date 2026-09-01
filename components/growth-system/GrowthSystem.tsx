@@ -6,6 +6,7 @@ import GrowthNode from "./GrowthNode";
 import GrowthSystemPanel from "./GrowthSystemPanel";
 import Section from "@/components/layout/Section";
 import SectionContent from "@/components/layout/SectionContent";
+import { useSectionHandoff } from "@/hooks/useSectionHandoff";
 
 const BLUR_RESET_MS = 250;
 
@@ -38,8 +39,14 @@ const BLUR_RESET_MS = 250;
  * on the site.
  */
 export default function GrowthSystem() {
+  const sectionRef = useRef<HTMLElement | null>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const resetTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Boundary handoff both edges — no local per-section canvas crossfade
+  // exists here (ai/specs/architecture/section-boundary-handoff.md).
+  useSectionHandoff("growth-system", sectionRef, "top");
+  useSectionHandoff("growth-system", sectionRef, "bottom");
 
   const clearPendingReset = () => {
     if (resetTimeout.current !== null) {
@@ -71,6 +78,7 @@ export default function GrowthSystem() {
 
   return (
     <Section
+      ref={sectionRef}
       id="growth-system"
       aria-label="The PYRAXIS growth system"
       className="z-0 flex min-h-[80vh] w-full flex-col items-center justify-center overflow-x-clip"

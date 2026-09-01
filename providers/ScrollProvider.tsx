@@ -1,7 +1,9 @@
 "use client";
 
 import { createContext, useContext, useEffect, useRef, type ReactNode } from "react";
+import type Lenis from "lenis";
 import { createExternalStore } from "@/lib/utils/externalStore";
+import { useLenis } from "./LenisProvider";
 
 export interface ScrollState {
   y: number;
@@ -16,42 +18,41 @@ type ScrollStore = ReturnType<typeof createExternalStore<ScrollState>>;
 const ScrollContext = createContext<ScrollStore | null>(null);
 
 /**
- * One window scroll listener for the whole app (ai/rules/coding.md #10).
+ * One scroll source of truth for the whole app (ai/rules/coding.md #10).
  * Sections read scroll progress/velocity from this store instead of
  * mounting their own IntersectionObserver/scroll listener per component.
+ *
+ * Public ScrollState/useScrollStore shape is unchanged from the pre-Lenis
+ * version (ai/specs/architecture/lenis-smooth-scroll.md Goal 2) — internally,
+ * values now come from Lenis's own scroll event instead of window.scrollY,
+ * since Lenis already computes progress/velocity/direction and driving a
+ * second independent scroll listener would duplicate that work.
  */
 export function ScrollProvider({ children }: { children: ReactNode }) {
   const storeRef = useRef<ScrollStore>(createExternalStore(initialScroll));
+  const lenis = useLenis();
 
   useEffect(() => {
+    if (!lenis) return;
     const store = storeRef.current;
-    let raf: number | null = null;
 
-    const flush = () => {
-      raf = null;
-      const prev = store.getSnapshot();
-      const y = window.scrollY;
-      const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      const velocity = y - prev.y;
+    const onScroll = (instance: Lenis) => {
+      const velocity = instance.velocity;
       store.setState({
-        y,
-        progress: Math.min(1, Math.max(0, y / max)),
+        y: instance.scroll,
+        progress: Math.min(1, Math.max(0, instance.progress)),
         velocity,
-        direction: velocity > 0.5 ? "down" : velocity < -0.5 ? "up" : "idle",
+        direction: velocity > 0.05 ? "down" : velocity < -0.05 ? "up" : "idle",
       });
     };
 
-    const handleScroll = () => {
-      if (raf === null) raf = requestAnimationFrame(flush);
-    };
+    lenis.on("scroll", onScroll);
+    onScroll(lenis);
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    flush();
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (raf !== null) cancelAnimationFrame(raf);
+      lenis.off("scroll", onScroll);
     };
-  }, []);
+  }, [lenis]);
 
   return <ScrollContext.Provider value={storeRef.current}>{children}</ScrollContext.Provider>;
 }

@@ -72,7 +72,7 @@ Derived cache of `ai/memory/current.md`/`next.md`/`roadmap.md`. Those files win 
 
 `hero.md` · `problem.md` · `growth-system.md` · `growth-engines.md` · `why-pyraxis.md` · `portfolio.md` · `process.md` · `future-proof-systems.md` · `cta.md` · `footer.md`. All content currently UNKNOWN pending Phase 01+; see each file's `## Notes` for source pointers.
 
-`ai/specs/architecture/` — cross-cutting specs not tied to one section/scene, kept in a subfolder so `validate-state.mjs`'s section:spec 1:1 check doesn't treat them as orphaned. Currently: `responsive-layout-system.md` (fluid layout/typography/spacing token architecture refactor spanning all sections — see `ai/state.json` for status).
+`ai/specs/architecture/` — cross-cutting specs not tied to one section/scene, kept in a subfolder so `validate-state.mjs`'s section:spec 1:1 check doesn't treat them as orphaned. Currently: `responsive-layout-system.md` (fluid layout/typography/spacing token architecture refactor spanning all sections — see `ai/state.json` for status); `lenis-smooth-scroll.md` (Lenis scroll-driver integration, LOCKED — see `ai/memory/decisions.md` D-015); `section-boundary-handoff.md` (shared particle-engine handoff across all 11 section boundaries, LOCKED — see D-016).
 
 ## `ai/indexes/` — human-readable "what exists and where" (this folder)
 

@@ -1,9 +1,11 @@
 "use client";
 
+import { useRef } from "react";
 import { projects } from "./projects";
 import ProjectCard from "./ProjectCard";
 import Section from "@/components/layout/Section";
 import SectionContent from "@/components/layout/SectionContent";
+import { useSectionHandoff } from "@/hooks/useSectionHandoff";
 
 /**
  * Scene — Portfolio (Phase 11, ai/specs/portfolio.md).
@@ -17,8 +19,17 @@ import SectionContent from "@/components/layout/SectionContent";
  * per-card hover lift remains (see ProjectCard).
  */
 export default function Portfolio() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  // Boundary-only handoff dust (ai/specs/architecture/
+  // section-boundary-handoff.md) — does not conflict with this section's
+  // deliberate "no motif" interior (creative/SIGNATURE_MOTIF.md); the
+  // handoff lives at the seam, not inside the section body.
+  useSectionHandoff("portfolio", sectionRef, "top");
+  useSectionHandoff("portfolio", sectionRef, "bottom");
+
   return (
-    <Section id="portfolio" aria-label="Portfolio" className="z-0 min-h-fit">
+    <Section ref={sectionRef} id="portfolio" aria-label="Portfolio" className="z-0 min-h-fit">
       {/* Quiet section — no ambient purple, no motif (creative/SIGNATURE_MOTIF.md).
           Projects are parallel case studies, not sequential system states,
           so this is the page's breath, not another purple beat. */}

@@ -1,10 +1,10 @@
 # Current
 
-Growth Engines (Phase 09) is implemented and passing its checkpoint (`ai/checkpoints/phase09.md`) — `tsc --noEmit`, `eslint`, and `next build` all clean. It reuses the real global `ParticleProvider`/`AnimationProvider` (which already existed in the codebase via Growth System, Phase 08) rather than a self-contained canvas for ambient particles, and resolves the previously-open horizontal-scroll-on-mobile decision (D-014: vertical stack below `md`).
+Section-boundary particle handoff is implemented and verified — see `ai/memory/decisions.md` D-016 and `ai/specs/architecture/section-boundary-handoff.md` (LOCKED). New `hooks/useSectionHandoff.ts` is the first real consumer of `providers/ParticleProvider.tsx` (previously mounted but unused — every section runs its own local canvas). Wired additively into all 10 applicable sections covering all 11 boundaries in `app/page.tsx`; every section's existing local canvas is untouched. `tsc --noEmit`, `eslint`, `next build`, `validate-all.mjs` all clean.
 
-This session also found `ai/memory/current.md`, `next.md`, `progress.md`, `completed.md`, `STATUS.md`, and `ai/state.json` badly out of sync with the actual codebase (they described Phases 01-04 and Growth System as not started, when that code already existed and passed its own checks) and corrected them — see `ai/memory/decisions.md` D-014. Cross-check code against these files at the start of every session rather than trusting either blindly.
+Spec's first draft assumed sections already routed through the shared engine — wrong, corrected mid-session against live-code inspection before writing the hook (see D-016 for detail). Flagged, not resolved: pre-existing `useEdgeFadeOpacity` opacity crossfade at Hero→Problem still violates `ai/rules/animation.md` #3; this session's handoff sits alongside it, not replacing it.
 
-The next real "current work" entry is **Phase 10 — Why PYRAXIS** (Tier 1 priority per D-013).
+The next real "current work" entry is **real-browser verification** — Lenis scroll feel, the new handoff dust at all 11 seams, and the still-pending responsive-refactor breakpoint sweep — all blocked on the same sandbox tooling gap (`ai/memory/known-issues.md`). Separately open: resolving the crossfade-vs-handoff conflict at Hero→Problem. Once unblocked, resume Phase 16 runtime-measurement / Phase 17 final polish.
 
 ## How to use this file
 
