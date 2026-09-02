@@ -3,71 +3,39 @@
 import { useEffect, useRef, useState } from "react";
 
 type Stat = {
-  /** Numeric part that gets counted up, e.g. 79 for "79%". Omit for stats
-   * that aren't a clean single number (e.g. "2-3x" stays static, matching
-   * the reference doc's own "24/7" stat). */
-  target?: number;
-  prefix?: string;
-  suffix: string;
-  caption: string;
-  source: string;
+  value: string;
+  label: string;
+  source?: { name: string; href: string };
 };
 
+/**
+ * Four stats, each traced to an original research source (not a
+ * secondary compilation) and worded to match exactly what that source
+ * measured — no rounding a qualifier off a number to make it sound
+ * broader than the underlying research supports.
+ */
 const STATS: Stat[] = [
-  { target: 79, suffix: "%", caption: "of leads never get a response.", source: "HubSpot" },
-  { target: 67, suffix: "%", caption: "of customers choose a competitor due to slow response.", source: "Salesforce" },
-  { target: 30, suffix: "%+", caption: "potential revenue lost due to poor follow-up.", source: "Bain & Company" },
-  { prefix: "2-3", suffix: "x", caption: "more expensive to acquire a new customer vs. retain an existing one.", source: "McKinsey" },
+  {
+    value: "5–25×",
+    label: "more expensive to acquire a new customer than retain an existing one.",
+    source: { name: "HBR / Bain & Company", href: "https://searchlab.nl/en/statistics/customer-retention-statistics-2026?utm_source=chatgpt.com" },
+  },
+  {
+    value: "25–95%",
+    label: "potential profit increase from a 5% improvement in customer retention.",
+    source: { name: "Bain & Company", href: "https://searchlab.nl/en/statistics/customer-retention-statistics-2026?utm_source=chatgpt.com" },
+  },
+  {
+    value: "67%",
+    label: "of churn is preventable if the customer's problem is resolved during the first interaction.",
+    source: { name: "HubSpot", href: "https://blog.hubspot.com/service/statistics-on-customer-retention?like=ow-ly&utm_source=chatgpt.com" },
+  },
+  {
+    value: "67%",
+    label: "more spending by returning customers than new customers.",
+    source: { name: "Bain & Company", href: "https://searchlab.nl/en/statistics/customer-retention-statistics-2026?utm_source=chatgpt.com" },
+  },
 ];
-
-/** Deduplicated, in citation order — used for the compact footnote line. */
-const SOURCES = Array.from(new Set(STATS.map((s) => s.source)));
-
-function StatValue({ stat, revealed }: { stat: Stat; revealed: boolean }) {
-  const [count, setCount] = useState(0);
-  const startedRef = useRef(false);
-
-  useEffect(() => {
-    if (!revealed || startedRef.current || stat.target === undefined) return;
-    startedRef.current = true;
-
-    const target = stat.target;
-    const duration = 1600;
-    const startTime = performance.now();
-    let raf = 0;
-
-    const tick = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(target * eased));
-      if (progress < 1) {
-        raf = requestAnimationFrame(tick);
-      } else {
-        setCount(target);
-      }
-    };
-    raf = requestAnimationFrame(tick);
-
-    return () => cancelAnimationFrame(raf);
-  }, [revealed, stat.target]);
-
-  if (stat.target === undefined) {
-    return (
-      <>
-        {stat.prefix}
-        {stat.suffix}
-      </>
-    );
-  }
-
-  return (
-    <>
-      {count}
-      {stat.suffix}
-    </>
-  );
-}
 
 /** Bottom stat band — matches the reference design's Problem section footer bar. */
 export default function ProblemStatBar() {
@@ -86,45 +54,53 @@ export default function ProblemStatBar() {
           }
         });
       },
-      { threshold: 0.3 }
+      // Same rootMargin as ProblemWaveBackground's own IntersectionObserver
+      // so the terrain and this stat reveal trigger on the same scroll
+      // position instead of two independently-tuned thresholds.
+      { threshold: 0, rootMargin: "100px 0px 100px 0px" }
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
   return (
-    <div ref={wrapRef} data-reveal className="mt-16 lg:mt-20">
-      <div className="flex flex-col gap-8 rounded-2xl border border-border/70 bg-card/40 p-8 sm:flex-row sm:items-center">
-        <div className="flex flex-1 items-start gap-4 border-b border-border/50 pb-6 sm:border-b-0 sm:border-r sm:pb-0 sm:pr-8">
-          <svg viewBox="0 0 24 24" className="mt-1 h-6 w-6 shrink-0 text-purple-400" fill="none" stroke="currentColor" strokeWidth="1.4">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M12 7v10M9 10c0-1.5 1.2-2.2 3-2.2s3 .7 3 2c0 1.6-2 1.8-3 2.2-1.4.5-3 1-3 2.6 0 1.3 1.2 2.1 3 2.1s3-.7 3-2.2" />
-          </svg>
-          <p className="font-display text-[15px] leading-relaxed text-ink-300">
-            Inefficient systems don&apos;t just hurt growth — they drain your profits every single day.
-          </p>
-        </div>
+    <div
+      ref={wrapRef}
+      data-reveal
+      className="mt-16 transition-[opacity,transform] duration-700 ease-out will-change-[opacity,transform] lg:mt-20"
+      style={{
+        opacity: revealed ? 1 : 0,
+        transform: revealed ? "translate3d(0,0,0)" : "translate3d(0,16px,0)",
+      }}
+    >
+      <p className="text-center font-sans text-[11px] font-semibold uppercase tracking-[0.25em] text-purple-400 sm:text-left">
+        The cost of inefficiency
+      </p>
+      <p className="mt-3 max-w-[560px] text-center font-display text-[17px] leading-relaxed text-ink-200 sm:text-left">
+        Inefficient systems don&apos;t just slow growth. They quietly drain revenue every day.
+      </p>
 
+      <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-8 rounded-2xl border border-border/70 bg-card/40 p-8 sm:grid-cols-4 sm:gap-x-8">
         {STATS.map((stat) => (
-          <div key={stat.caption} className="flex-1 sm:px-6">
-            <p className="font-display text-2xl font-semibold text-purple-400 sm:text-3xl tabular-nums">
-              <StatValue stat={stat} revealed={revealed} />
+          <div key={stat.label} className="flex flex-col">
+            <p className="font-display text-3xl font-semibold text-purple-400 tabular-nums sm:text-4xl">{stat.value}</p>
+            <div className="mt-3 h-px w-8 bg-border/70" />
+            <p className="mt-3 font-display text-[13px] leading-snug text-ink-300">
+              {stat.label}
             </p>
-            <p className="mt-1 font-display text-[15px] leading-snug text-ink-300">{stat.caption}</p>
+            {stat.source && (
+              <a
+                href={stat.source.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 font-sans text-[10px] uppercase tracking-[0.1em] text-ink-500 no-underline hover:text-purple-400 hover:underline hover:decoration-solid hover:underline-offset-2"
+              >
+                {stat.source.name}
+              </a>
+            )}
           </div>
         ))}
       </div>
-
-      {/*
-        Attribution — a stack of precise-looking percentages with no source
-        reads as invented rather than persuasive. Kept intentionally quiet
-        (small, muted, no borders/cards of its own) so it doesn't compete
-        with the stat bar itself; it exists to be checkable, not to be read
-        as headline copy.
-      */}
-      <p className="mt-3 text-center font-sans text-[10px] uppercase tracking-[0.15em] text-ink-400 sm:text-left">
-        Sources: {SOURCES.join(" · ")}
-      </p>
     </div>
   );
 }
