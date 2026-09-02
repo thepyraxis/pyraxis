@@ -97,16 +97,41 @@ export function useSectionHandoff(
       });
     };
 
-    apply();
-    // Driven by the same Lenis-backed scroll store as every other scroll
-    // reaction in the app (ai/specs/architecture/lenis-smooth-scroll.md) —
-    // no separate scroll/resize listener needed, this just resubscribes on
-    // every store update, matching the store's own rAF-batched cadence.
-    const unsubscribe = scrollStore.subscribe(apply);
+    // Was: every section's every edge (~20 across the site) subscribed to
+    // the scroll store unconditionally, so every Lenis scroll update fired
+    // ~20 getBoundingClientRect() layout reads regardless of whether that
+    // section's boundary was anywhere near the viewport. An edge can only
+    // possibly be inside its ramp distance while the section itself is
+    // within roughly a viewport of the screen, so gate the scroll-store
+    // subscription behind an IntersectionObserver with that margin — far
+    // sections do zero work per scroll tick instead of one geometry read.
+    const section = sectionRef.current;
+    if (!section) return;
+
+    let unsubscribe: (() => void) | null = null;
+    const subscribe = () => {
+      if (unsubscribe) return;
+      apply();
+      unsubscribe = scrollStore.subscribe(apply);
+    };
+    const unsubscribeAll = () => {
+      unsubscribe?.();
+      unsubscribe = null;
+      clearInstruction(instructionId);
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) subscribe();
+        else unsubscribeAll();
+      },
+      { rootMargin: "100% 0px 100% 0px", threshold: 0 },
+    );
+    observer.observe(section);
 
     return () => {
-      unsubscribe();
-      clearInstruction(instructionId);
+      observer.disconnect();
+      unsubscribeAll();
     };
   }, [sourceId, edge, sectionRef, rampFraction, peakDensity, sendInstruction, clearInstruction, scrollStore, reducedMotion]);
 }
