@@ -59,7 +59,7 @@ export default function ProblemWaveBackground({ sectionRef, className }: Problem
     const clock = new THREE.Clock();
 
     const size = 300;
-    const res = 200;
+    const res = 140;
 
     const terrainGeo = new THREE.PlaneGeometry(size, size, res - 1, res - 1);
     terrainGeo.rotateX(-Math.PI / 2);
@@ -179,7 +179,7 @@ export default function ProblemWaveBackground({ sectionRef, className }: Problem
 
     const observer = new IntersectionObserver((entries) => {
       isVisible = entries[0]?.isIntersecting ?? false;
-    }, { threshold: 0, rootMargin: "400px 0px 400px 0px" });
+    }, { threshold: 0, rootMargin: "100px 0px 100px 0px" });
     observer.observe(section);
 
     const onResize = () => {

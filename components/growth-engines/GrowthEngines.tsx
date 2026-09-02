@@ -51,6 +51,7 @@ export default function GrowthEngines() {
 
     let raf = 0;
     let destroyed = false;
+    let running = false;
     // Eased pixel position, separate from the raw scroll-derived target —
     // this is what makes the rail glide between cards instead of jumping
     // to whatever pixel the scroll math lands on this frame.
@@ -102,10 +103,37 @@ export default function GrowthEngines() {
       raf = requestAnimationFrame(tick);
     }
 
-    raf = requestAnimationFrame(tick);
+    function start() {
+      if (running || destroyed) return;
+      running = true;
+      raf = requestAnimationFrame(tick);
+    }
+    function stop() {
+      running = false;
+      cancelAnimationFrame(raf);
+    }
+
+    // Was: unconditional RAF forever, paying a layout read
+    // (getBoundingClientRect) + a rail.scrollLeft write every single frame
+    // for the lifetime of the page, even while this pinned section is
+    // nowhere near the viewport. Gate scheduling with an IntersectionObserver
+    // (generous ~1-viewport margin so the pin/rail state is already correct
+    // the instant it becomes reachable by scroll).
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) start();
+        else {
+          stop();
+          setIsSectionVisible(false);
+        }
+      },
+      { rootMargin: "100% 0px 100% 0px", threshold: 0 },
+    );
+    observer.observe(section);
 
     return () => {
       destroyed = true;
+      observer.disconnect();
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", measureMaxScrollLeft);
     };

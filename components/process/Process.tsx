@@ -151,12 +151,18 @@ export default function Process() {
 
   // Scroll-driven progress through the stack: which card is "active"
   // (nearest the sticky top offset) and how far the energy rail fills.
+  // Gated by IntersectionObserver (generous margin) — was an unconditional
+  // RAF running forever regardless of scroll position, paying a layout
+  // read (getBoundingClientRect) every frame even when Process is nowhere
+  // near the viewport. Only schedule the loop while the stack is within
+  // ~1 viewport of being visible.
   useEffect(() => {
     const stack = stackRef.current;
     if (!stack) return;
 
     let raf = 0;
     let destroyed = false;
+    let running = false;
 
     function tick() {
       if (destroyed || !stack) return;
@@ -173,9 +179,28 @@ export default function Process() {
       raf = requestAnimationFrame(tick);
     }
 
-    raf = requestAnimationFrame(tick);
+    function start() {
+      if (running || destroyed) return;
+      running = true;
+      raf = requestAnimationFrame(tick);
+    }
+    function stop() {
+      running = false;
+      cancelAnimationFrame(raf);
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) start();
+        else stop();
+      },
+      { rootMargin: "100% 0px 100% 0px", threshold: 0 },
+    );
+    observer.observe(stack);
+
     return () => {
       destroyed = true;
+      observer.disconnect();
       cancelAnimationFrame(raf);
     };
   }, []);

@@ -1,7 +1,7 @@
 "use client";
 import type React from "react";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import type { ProjectData, ProjectPreviewIcon } from "./projects";
 import { CARD_HOVER_LIFT_PX, CARD_HOVER_SCALE, CARD_HOVER_EASE } from "./motion";
@@ -39,17 +39,63 @@ interface ProjectCardProps {
  */
 export default function ProjectCard({ project, index }: ProjectCardProps) {
   const cardRef = useRef<HTMLDivElement | null>(null);
-  const [glow, setGlow] = useState({ x: 50, y: 50 });
+  const glowRef = useRef<HTMLDivElement | null>(null);
+  const rectRef = useRef<DOMRect | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const pendingRef = useRef<{ x: number; y: number } | null>(null);
   const [hovered, setHovered] = useState(false);
 
+  // Was: getBoundingClientRect() + setState on every mousemove — a forced
+  // synchronous layout read plus a full React re-render for every pixel of
+  // pointer movement, on every card in the grid at once. Same fix as
+  // ProblemIcons.tsx: cache the rect once on enter, write the glow position
+  // straight to the DOM (transform only, compositor thread), coalesced to
+  // one write per animation frame. No React state involved in tracking.
+  const flush = useCallback(() => {
+    rafRef.current = null;
+    const glow = glowRef.current;
+    const pending = pendingRef.current;
+    if (!glow || !pending) return;
+    glow.style.background = `radial-gradient(220px circle at ${pending.x}% ${pending.y}%, ${project.accent}14, transparent 70%)`;
+  }, [project.accent]);
+
+  const handlePointerEnter = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    setHovered(true);
+    const rect = cardRef.current?.getBoundingClientRect() ?? null;
+    rectRef.current = rect;
+    if (rect) {
+      pendingRef.current = {
+        x: ((e.clientX - rect.left) / rect.width) * 100,
+        y: ((e.clientY - rect.top) / rect.height) * 100,
+      };
+      flush();
+    }
+  }, [flush]);
+
   const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    const card = cardRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    setGlow({
+    const rect = rectRef.current;
+    if (!rect) return;
+    pendingRef.current = {
       x: ((e.clientX - rect.left) / rect.width) * 100,
       y: ((e.clientY - rect.top) / rect.height) * 100,
-    });
+    };
+    if (rafRef.current === null) {
+      rafRef.current = requestAnimationFrame(flush);
+    }
+  }, [flush]);
+
+  const handlePointerLeave = useCallback(() => {
+    setHovered(false);
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   const lifted = hovered;
@@ -63,9 +109,9 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
       aria-label={`${project.name}, ${project.category}${project.industry ? `, ${project.industry}` : ""}${
         project.problem && project.solution ? `. Before: ${project.problem} Built: ${project.solution}` : ""
       }, result: ${project.statValue} ${project.statLabel}`}
-      onMouseEnter={() => setHovered(true)}
-      onMouseMove={handlePointerMove}
-      onMouseLeave={() => setHovered(false)}
+      onPointerEnter={handlePointerEnter}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
       onFocus={() => setHovered(true)}
       onBlur={() => setHovered(false)}
       style={{
@@ -77,10 +123,11 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
       }`}
     >
       <div
+        ref={glowRef}
         aria-hidden="true"
         className={`pointer-events-none absolute inset-0 z-10 transition-opacity duration-300 ${lifted ? "opacity-100" : "opacity-0"}`}
         style={{
-          background: `radial-gradient(220px circle at ${glow.x}% ${glow.y}%, ${project.accent}14, transparent 70%)`,
+          background: `radial-gradient(220px circle at 50% 50%, ${project.accent}14, transparent 70%)`,
         }}
       />
 

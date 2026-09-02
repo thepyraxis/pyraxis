@@ -64,7 +64,8 @@ export default function ParticleEngine({ instructionStore }: Props) {
     window.addEventListener("resize", resize);
 
     let lastTime = performance.now();
-    let rafId: number;
+    let rafId = 0;
+    let running = false;
 
     const tierBudget = densityBudget[tier].max;
 
@@ -237,17 +238,14 @@ export default function ParticleEngine({ instructionStore }: Props) {
       const snapshot = instructionStore.getSnapshot();
       reconcile(snapshot);
 
-      // PERF: nobody in this codebase currently calls sendInstruction()
-      // (grep confirms it), so in practice this engine idles at 0 active
-      // particles and 0 instructions on every page load — but was still
-      // doing a full-window clearRect + iterating all 8000 pool slots +
-      // scanning for connections every single frame, forever, for
-      // literally nothing rendered. That's a constant, invisible
-      // main-thread cost on top of everything else on the page. Skip the
-      // whole draw pass when there's truly nothing to show; still keep
-      // ticking (cheap) so a future instruction wakes it up next frame.
+      // Genuinely dormant when idle: previously this kept calling
+      // requestAnimationFrame forever even at 0 active particles / 0
+      // instructions, which is a permanent (if individually cheap)
+      // main-thread cost. Now the loop just stops scheduling itself and
+      // a subscription to the instruction store (below) wakes it back up
+      // the moment something actually asks for particles.
       if (pool.activeCount === 0 && snapshot.size === 0) {
-        rafId = requestAnimationFrame(loop);
+        running = false;
         return;
       }
 
@@ -259,10 +257,23 @@ export default function ParticleEngine({ instructionStore }: Props) {
       draw();
       rafId = requestAnimationFrame(loop);
     };
-    rafId = requestAnimationFrame(loop);
+
+    const start = () => {
+      if (running) return;
+      running = true;
+      lastTime = performance.now();
+      rafId = requestAnimationFrame(loop);
+    };
+
+    start();
+    // Wake the loop back up whenever an instruction is sent/cleared while
+    // it's dormant (setState() on the instruction store fires listeners
+    // synchronously — see createExternalStore).
+    const unsubscribe = instructionStore.subscribe(start);
 
     return () => {
       window.removeEventListener("resize", resize);
+      unsubscribe();
       cancelAnimationFrame(rafId);
     };
   }, [instructionStore, mouseStore, tier, reducedMotion]);

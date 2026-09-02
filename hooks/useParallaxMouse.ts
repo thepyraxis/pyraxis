@@ -34,6 +34,39 @@ function releaseListener() {
   }
 }
 
+// Shared animation scheduler — every consumer below (parallax, tilt, cursor
+// glow) used to start its OWN requestAnimationFrame loop off the same
+// module-level mouseState. Two calls to useParallaxMouse in Hero.tsx alone
+// meant two independent RAF loops running forever, and every additional
+// consumer added another. They all just want "run my per-frame update
+// function every tick" against the same clock, so that's now one shared
+// loop with a registry of callbacks — one RAF regardless of how many
+// components are subscribed, same lifecycle contract (ref-counted
+// start/stop) as the mousemove listener above.
+type FrameFn = () => void;
+const frameCallbacks = new Set<FrameFn>();
+let schedulerRaf = 0;
+
+function schedulerTick() {
+  frameCallbacks.forEach((cb) => cb());
+  if (frameCallbacks.size > 0) {
+    schedulerRaf = requestAnimationFrame(schedulerTick);
+  } else {
+    schedulerRaf = 0;
+  }
+}
+
+function registerFrame(cb: FrameFn) {
+  frameCallbacks.add(cb);
+  if (schedulerRaf === 0) {
+    schedulerRaf = requestAnimationFrame(schedulerTick);
+  }
+}
+
+function unregisterFrame(cb: FrameFn) {
+  frameCallbacks.delete(cb);
+}
+
 type ParallaxOptions = {
   /** Max travel in px at the extreme edge of the viewport. */
   depth: number;
@@ -58,13 +91,10 @@ export function useParallaxMouse<T extends HTMLElement>(
 
     acquireListener();
 
-    let raf = 0;
-    let destroyed = false;
     let curX = 0;
     let curY = 0;
 
     function tick() {
-      if (destroyed) return;
       const targetX = mouseState.active ? mouseState.nx * depth : 0;
       const targetY = mouseState.active ? mouseState.ny * depth : 0;
       curX += (targetX - curX) * ease;
@@ -74,13 +104,11 @@ export function useParallaxMouse<T extends HTMLElement>(
       if (el && (Math.abs(curX) > 0.01 || Math.abs(curY) > 0.01)) {
         el.style.transform = `translate3d(${curX.toFixed(2)}px, ${curY.toFixed(2)}px, 0)`;
       }
-      raf = requestAnimationFrame(tick);
     }
-    raf = requestAnimationFrame(tick);
+    registerFrame(tick);
 
     return () => {
-      destroyed = true;
-      cancelAnimationFrame(raf);
+      unregisterFrame(tick);
       releaseListener();
     };
   }, [ref, depth, ease, disabled]);
@@ -101,13 +129,10 @@ export function useTiltMouse<T extends HTMLElement>(
 
     acquireListener();
 
-    let raf = 0;
-    let destroyed = false;
     let curX = 0;
     let curY = 0;
 
     function tick() {
-      if (destroyed) return;
       const targetY = mouseState.active ? mouseState.nx * maxDeg : 0; // left/right -> rotateY
       const targetX = mouseState.active ? -mouseState.ny * maxDeg : 0; // up/down -> rotateX
       curX += (targetX - curX) * ease;
@@ -117,13 +142,11 @@ export function useTiltMouse<T extends HTMLElement>(
       if (el) {
         el.style.transform = `perspective(1200px) rotateX(${curX.toFixed(3)}deg) rotateY(${curY.toFixed(3)}deg)`;
       }
-      raf = requestAnimationFrame(tick);
     }
-    raf = requestAnimationFrame(tick);
+    registerFrame(tick);
 
     return () => {
-      destroyed = true;
-      cancelAnimationFrame(raf);
+      unregisterFrame(tick);
       releaseListener();
     };
   }, [ref, maxDeg, ease, disabled]);
@@ -144,25 +167,20 @@ export function useCursorGlow(
 
     acquireListener();
 
-    let raf = 0;
-    let destroyed = false;
     let curX = window.innerWidth / 2;
     let curY = window.innerHeight / 2;
 
     function tick() {
-      if (destroyed) return;
       const targetX = ((mouseState.nx + 1) / 2) * window.innerWidth;
       const targetY = ((mouseState.ny + 1) / 2) * window.innerHeight;
       curX += (targetX - curX) * ease;
       curY += (targetY - curY) * ease;
       onFrame(curX, curY, mouseState.active);
-      raf = requestAnimationFrame(tick);
     }
-    raf = requestAnimationFrame(tick);
+    registerFrame(tick);
 
     return () => {
-      destroyed = true;
-      cancelAnimationFrame(raf);
+      unregisterFrame(tick);
       releaseListener();
     };
   }, [onFrame, ease, disabled]);
