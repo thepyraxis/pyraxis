@@ -20,7 +20,11 @@ import { useEffect, useRef } from "react";
  * No-WebGL / prefers-reduced-motion: renders a single static frame (or
  * nothing) instead of animating — never a blocking failure.
  */
-export default function HeroFieldBackground({ className = "" }: { className?: string }) {
+export default function HeroFieldBackground({
+  className = "",
+}: {
+  className?: string;
+}) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -31,15 +35,22 @@ export default function HeroFieldBackground({ className = "" }: { className?: st
 
     let gl: WebGLRenderingContext | null = null;
     try {
-      gl = cv.getContext("webgl", { alpha: true, antialias: false, depth: false });
+      gl = cv.getContext("webgl", {
+        alpha: true,
+        antialias: false,
+        depth: false,
+      });
     } catch {
       gl = null;
     }
+
     if (!gl) return;
 
     const RIPS = 5;
 
-    const VS = "attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0.,1.);}";
+    const VS =
+      "attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0.,1.);}";
+
     const FS = [
       "#ifdef GL_FRAGMENT_PRECISION_HIGH",
       "precision highp float;",
@@ -99,39 +110,53 @@ export default function HeroFieldBackground({ className = "" }: { className?: st
       const s = gl!.createShader(type)!;
       gl!.shaderSource(s, src);
       gl!.compileShader(s);
+
       if (!gl!.getShaderParameter(s, gl!.COMPILE_STATUS)) {
         console.warn("[field shader]", gl!.getShaderInfoLog(s));
         return null;
       }
+
       return s;
     }
 
     const v = compile(gl.VERTEX_SHADER, VS);
     const f = compile(gl.FRAGMENT_SHADER, FS);
+
     if (!v || !f) return;
 
     const pr = gl.createProgram()!;
     gl.attachShader(pr, v);
     gl.attachShader(pr, f);
     gl.linkProgram(pr);
+
     if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) {
       console.warn("[field link]", gl.getProgramInfoLog(pr));
       return;
     }
+
     gl.useProgram(pr);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     const buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
+      gl.STATIC_DRAW
+    );
+
     const posLoc = gl.getAttribLocation(pr, "a_position");
     gl.enableVertexAttribArray(posLoc);
     gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 
     function locA(name: string) {
-      return gl!.getUniformLocation(pr, name + "[0]") || gl!.getUniformLocation(pr, name);
+      return (
+        gl!.getUniformLocation(pr, name + "[0]") ||
+        gl!.getUniformLocation(pr, name)
+      );
     }
+
     const uRes = gl.getUniformLocation(pr, "u_resolution");
     const uT = gl.getUniformLocation(pr, "u_time");
     const uMou = gl.getUniformLocation(pr, "u_mouse");
@@ -139,14 +164,25 @@ export default function HeroFieldBackground({ className = "" }: { className?: st
     const uRipT = locA("u_ripT");
 
     const HOME = { x: 0.5, y: 0.45 };
-    const mouse = { x: HOME.x, y: HOME.y };
-    const target = { x: HOME.x, y: HOME.y };
+
+    const mouse = {
+      x: HOME.x,
+      y: HOME.y,
+    };
+
+    const target = {
+      x: HOME.x,
+      y: HOME.y,
+    };
+
     const t0 = performance.now();
+
     let lastMoveAt = -1e9;
     let rippleEnd = 0;
 
     const ripXY = new Float32Array(RIPS * 2);
     const ripT = new Float32Array(RIPS);
+
     for (let i = 0; i < RIPS; i++) {
       ripT[i] = -1000;
       ripXY[i * 2] = HOME.x;
@@ -155,7 +191,11 @@ export default function HeroFieldBackground({ className = "" }: { className?: st
 
     function nrm(e: PointerEvent) {
       const r = cv!.getBoundingClientRect();
-      return { x: (e.clientX - r.left) / r.width, y: 1 - (e.clientY - r.top) / r.height };
+
+      return {
+        x: (e.clientX - r.left) / r.width,
+        y: 1 - (e.clientY - r.top) / r.height,
+      };
     }
 
     function render(tSec: number, mx: number, my: number) {
@@ -167,18 +207,23 @@ export default function HeroFieldBackground({ className = "" }: { className?: st
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const rect = cv!.getBoundingClientRect();
+
       cv!.width = Math.round(rect.width * dpr);
       cv!.height = Math.round(rect.height * dpr);
+
       gl!.viewport(0, 0, cv!.width, cv!.height);
       gl!.uniform2f(uRes, cv!.width, cv!.height);
+
       render(0, mouse.x, mouse.y);
     }
 
     function onPointerMove(e: PointerEvent) {
       const p = nrm(e);
+
       target.x = p.x;
       target.y = p.y;
       lastMoveAt = performance.now();
+
       if (RM) {
         mouse.x = p.x;
         mouse.y = p.y;
@@ -188,26 +233,41 @@ export default function HeroFieldBackground({ className = "" }: { className?: st
 
     function onPointerDown(e: PointerEvent) {
       if (RM) return;
+
       const p = nrm(e);
       const now = (performance.now() - t0) * 0.001;
+
       let idx = 0;
       let leastRemaining = Infinity;
+
       for (let i = 0; i < RIPS; i++) {
-        if (ripT[i] < now - 3.0) {
+        const rippleTime = ripT[i] ?? -1000;
+
+        if (rippleTime < now - 3.0) {
           idx = i;
           break;
         }
-        const rem = ripT[i] + 2.4 - now;
+
+        const rem = rippleTime + 2.4 - now;
+
         if (rem < leastRemaining) {
           leastRemaining = rem;
           idx = i;
         }
       }
+
       ripXY[idx * 2] = p.x;
       ripXY[idx * 2 + 1] = p.y;
       ripT[idx] = now;
-      if (uRip) gl!.uniform2fv(uRip, ripXY);
-      if (uRipT) gl!.uniform1fv(uRipT, ripT);
+
+      if (uRip) {
+        gl!.uniform2fv(uRip, ripXY);
+      }
+
+      if (uRipT) {
+        gl!.uniform1fv(uRipT, ripT);
+      }
+
       rippleEnd = performance.now() + 2400;
     }
 
@@ -215,6 +275,7 @@ export default function HeroFieldBackground({ className = "" }: { className?: st
       target.x = HOME.x;
       target.y = HOME.y;
     }
+
     function onPointerUp(e: PointerEvent) {
       if (e.pointerType !== "mouse") {
         target.x = HOME.x;
@@ -222,21 +283,37 @@ export default function HeroFieldBackground({ className = "" }: { className?: st
       }
     }
 
-    if (uRip) gl.uniform2fv(uRip, ripXY);
-    if (uRipT) gl.uniform1fv(uRipT, ripT);
+    if (uRip) {
+      gl.uniform2fv(uRip, ripXY);
+    }
+
+    if (uRipT) {
+      gl.uniform1fv(uRipT, ripT);
+    }
 
     const ro = new ResizeObserver(resize);
     ro.observe(cv);
+
     resize();
 
-    cv.addEventListener("pointermove", onPointerMove, { passive: true });
-    cv.addEventListener("pointerdown", onPointerDown, { passive: true });
+    cv.addEventListener("pointermove", onPointerMove, {
+      passive: true,
+    });
+
+    cv.addEventListener("pointerdown", onPointerDown, {
+      passive: true,
+    });
+
     cv.addEventListener("mouseleave", onMouseLeave);
-    cv.addEventListener("pointerup", onPointerUp, { passive: true });
+
+    cv.addEventListener("pointerup", onPointerUp, {
+      passive: true,
+    });
 
     if (RM) {
       return () => {
         ro.disconnect();
+
         cv.removeEventListener("pointermove", onPointerMove);
         cv.removeEventListener("pointerdown", onPointerDown);
         cv.removeEventListener("mouseleave", onMouseLeave);
@@ -246,33 +323,48 @@ export default function HeroFieldBackground({ className = "" }: { className?: st
 
     let last = 0;
     let raf = 0;
+
     function frame(t: number) {
       raf = requestAnimationFrame(frame);
+
       const now = performance.now();
       const busy = now - lastMoveAt < 700 || now < rippleEnd;
+
       if (t - last < (busy ? 0 : 33.3)) return;
+
       last = t;
+
       mouse.x += (target.x - mouse.x) * 0.085;
       mouse.y += (target.y - mouse.y) * 0.085;
+
       render((t - t0) * 0.001, mouse.x, mouse.y);
     }
+
     function play() {
-      if (!raf) raf = requestAnimationFrame(frame);
+      if (!raf) {
+        raf = requestAnimationFrame(frame);
+      }
     }
+
     function pause() {
       cancelAnimationFrame(raf);
       raf = 0;
     }
+
     function onVisibility() {
       document.hidden ? pause() : play();
     }
+
     document.addEventListener("visibilitychange", onVisibility);
+
     play();
 
     return () => {
       pause();
       ro.disconnect();
+
       document.removeEventListener("visibilitychange", onVisibility);
+
       cv.removeEventListener("pointermove", onPointerMove);
       cv.removeEventListener("pointerdown", onPointerDown);
       cv.removeEventListener("mouseleave", onMouseLeave);
