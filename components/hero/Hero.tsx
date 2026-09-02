@@ -4,7 +4,6 @@ import { useRef } from "react";
 import HeroText from "./HeroText";
 import HeroButtons from "./HeroButtons";
 import HeroLogo from "./HeroLogo";
-import HeroAmbientParticles from "./HeroAmbientParticles";
 import { useParallaxMouse } from "@/hooks/useParallaxMouse";
 import { useEdgeFadeOpacity } from "@/hooks/useEdgeFadeOpacity";
 import { useSectionHandoff } from "@/hooks/useSectionHandoff";
@@ -60,16 +59,16 @@ export default function Hero() {
       aria-label="Hero"
       className="relative z-20 flex min-h-screen items-center bg-[#020205] px-header"
     >
-      {/* Particle field — backmost layer, same slot the original occupied,
-          confined to exactly Hero's own box (absolute inset-0 of a
-          same-sized wrapper, no bleed). */}
+      {/* Ambient dust particle field removed per request — wrapper kept
+          (empty) since useEdgeFadeOpacity below still targets this ref
+          for the Hero->Problem crossfade; removing the div itself would
+          break that hook's target, not just the particles. */}
       <div
         ref={particlesWrapRef}
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-0"
-      >
-        <HeroAmbientParticles className="absolute inset-0 h-full w-full" variant="back" />
-      </div>
+      />
+
 
       {/* .hero-background — noise/glow/logo only now; clipped to exactly
           Hero's own box via its own overflow-hidden (section no longer

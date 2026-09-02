@@ -4,7 +4,6 @@ import { useRef } from "react";
 import ProblemHeadline from "./ProblemHeadline";
 import ProblemIcons from "./ProblemIcons";
 import ProblemStatBar from "./ProblemStatBar";
-import ProblemAmbientParticles from "./ProblemAmbientParticles";
 import ProblemWaveBackground from "./ProblemWaveBackground";
 import ResponsiveCanvas from "@/components/common/ResponsiveCanvas";
 import { useEdgeFadeOpacity } from "@/hooks/useEdgeFadeOpacity";
@@ -44,19 +43,15 @@ export default function Problem() {
       className="z-0 flex min-h-[70vh] items-center bg-[#020205]"
     >
       {/*
-        Problem's own ambient dust field — same palette as Hero's for
-        atmospheric continuity, but its own particles, confined to its own
-        box, faded in from the outside (see useEdgeFadeOpacity above).
-        Sits behind the noise/vignette layer, same backmost slot Hero's
-        field occupies relative to Hero's own noise/glow.
+        Ambient dust particle field removed per request — wrapper kept
+        (empty) since useEdgeFadeOpacity above still targets this ref for
+        the Hero->Problem crossfade.
       */}
       <div
         ref={particlesWrapRef}
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10"
-      >
-        <ProblemAmbientParticles className="absolute inset-0 h-full w-full" />
-      </div>
+      />
 
       {/*
         MASTER_MOTION_BIBLE Part A §4 / Part B "Lighting Rules" previously
@@ -67,7 +62,25 @@ export default function Problem() {
         visual. Noise texture below kept as-is underneath it.
       */}
       <ResponsiveCanvas>
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        {/*
+          Bleeds ~24vh past Problem's own bottom edge into GrowthSystem's
+          space instead of hard-cutting at the section boundary — both
+          sections share the same #020205 body background (see
+          globals.css), so the extension reads as one continuous surface,
+          not a second visible box. Masked to fade to fully transparent
+          before the extension ends, so the terrain tapers off instead of
+          stopping on a hard line. Camera/scroll math inside
+          ProblemWaveBackground still keys off Problem's real
+          getBoundingClientRect(), unaffected by this taller wrapper.
+        */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[calc(100%+24vh)]"
+          style={{
+            maskImage: "linear-gradient(to bottom, black 0%, black 82%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 82%, transparent 100%)",
+          }}
+        >
           <ProblemWaveBackground sectionRef={sectionRef} />
         </div>
       </ResponsiveCanvas>
