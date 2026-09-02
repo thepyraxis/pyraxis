@@ -24,7 +24,8 @@ import { useEffect, useRef } from "react";
 
 const RIPS = 5;
 
-const VS = "attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0.,1.);}";
+const VS =
+  "attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0.,1.);}";
 
 const FS = [
   "#ifdef GL_FRAGMENT_PRECISION_HIGH",
@@ -86,164 +87,435 @@ type GrowthSystemFieldBackgroundProps = {
   className?: string;
 };
 
-export default function GrowthSystemFieldBackground({ sectionRef, className }: GrowthSystemFieldBackgroundProps) {
+export default function GrowthSystemFieldBackground({
+  sectionRef,
+  className,
+}: GrowthSystemFieldBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const section = sectionRef.current;
+
     if (!canvas || !section) return;
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
     let gl: WebGLRenderingContext | null = null;
+
     try {
-      gl = canvas.getContext("webgl", { alpha: true, antialias: false, depth: false });
+      gl = canvas.getContext("webgl", {
+        alpha: true,
+        antialias: false,
+        depth: false,
+      });
     } catch {
       gl = null;
     }
+
     if (!gl) return;
 
     function compile(type: number, src: string) {
       const s = gl!.createShader(type)!;
+
       gl!.shaderSource(s, src);
       gl!.compileShader(s);
+
       if (!gl!.getShaderParameter(s, gl!.COMPILE_STATUS)) {
-        console.warn("[growth field shader]", gl!.getShaderInfoLog(s));
+        console.warn(
+          "[growth field shader]",
+          gl!.getShaderInfoLog(s),
+        );
         return null;
       }
+
       return s;
     }
 
     const v = compile(gl.VERTEX_SHADER, VS);
     const f = compile(gl.FRAGMENT_SHADER, FS);
+
     if (!v || !f) return;
 
     const program = gl.createProgram()!;
+
     gl.attachShader(program, v);
     gl.attachShader(program, f);
     gl.linkProgram(program);
+
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.warn("[growth field link]", gl.getProgramInfoLog(program));
+      console.warn(
+        "[growth field link]",
+        gl.getProgramInfoLog(program),
+      );
       return;
     }
+
     gl.useProgram(program);
 
     const buf = gl.createBuffer();
+
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
-    const posLoc = gl.getAttribLocation(program, "a_position");
+
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([
+        -1,
+        -1,
+        1,
+        -1,
+        -1,
+        1,
+        1,
+        1,
+      ]),
+      gl.STATIC_DRAW,
+    );
+
+    const posLoc = gl.getAttribLocation(
+      program,
+      "a_position",
+    );
+
     gl.enableVertexAttribArray(posLoc);
-    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 
-    const locA = (name: string) => gl!.getUniformLocation(program, `${name}[0]`) || gl!.getUniformLocation(program, name);
+    gl.vertexAttribPointer(
+      posLoc,
+      2,
+      gl.FLOAT,
+      false,
+      0,
+      0,
+    );
 
-    const uRes = gl.getUniformLocation(program, "u_resolution");
-    const uT = gl.getUniformLocation(program, "u_time");
-    const uMou = gl.getUniformLocation(program, "u_mouse");
+    const locA = (name: string) =>
+      gl!.getUniformLocation(
+        program,
+        `${name}[0]`,
+      ) ||
+      gl!.getUniformLocation(
+        program,
+        name,
+      );
+
+    const uRes = gl.getUniformLocation(
+      program,
+      "u_resolution",
+    );
+
+    const uT = gl.getUniformLocation(
+      program,
+      "u_time",
+    );
+
+    const uMou = gl.getUniformLocation(
+      program,
+      "u_mouse",
+    );
+
     const uRip = locA("u_rip");
     const uRipT = locA("u_ripT");
 
-    const HOME = { x: 0.5, y: 0.45 };
-    const mouse = { x: HOME.x, y: HOME.y };
-    const target = { x: HOME.x, y: HOME.y };
+    const HOME = {
+      x: 0.5,
+      y: 0.45,
+    };
+
+    const mouse = {
+      x: HOME.x,
+      y: HOME.y,
+    };
+
+    const target = {
+      x: HOME.x,
+      y: HOME.y,
+    };
+
     const t0 = performance.now();
+
     let lastMoveAt = -1e9;
     let rippleEnd = 0;
 
-    const ripXY = new Float32Array(RIPS * 2);
-    const ripT = new Float32Array(RIPS);
+    const ripXY = new Float32Array(
+      RIPS * 2,
+    );
+
+    const ripT = new Float32Array(
+      RIPS,
+    );
+
     for (let i = 0; i < RIPS; i++) {
       ripT[i] = -1000;
+
       ripXY[i * 2] = HOME.x;
       ripXY[i * 2 + 1] = HOME.y;
     }
-    if (uRip) gl.uniform2fv(uRip, ripXY);
-    if (uRipT) gl.uniform1fv(uRipT, ripT);
 
-    function nrm(clientX: number, clientY: number) {
-      const rect = canvas!.getBoundingClientRect();
-      return { x: (clientX - rect.left) / rect.width, y: 1 - (clientY - rect.top) / rect.height };
+    if (uRip) {
+      gl.uniform2fv(
+        uRip,
+        ripXY,
+      );
     }
 
-    function render(tSec: number, mx: number, my: number) {
-      gl!.uniform1f(uT, tSec);
-      gl!.uniform2f(uMou, mx, my);
-      gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
+    if (uRipT) {
+      gl.uniform1fv(
+        uRipT,
+        ripT,
+      );
+    }
+
+    function nrm(
+      clientX: number,
+      clientY: number,
+    ) {
+      const rect =
+        canvas!.getBoundingClientRect();
+
+      return {
+        x:
+          (clientX - rect.left) /
+          rect.width,
+        y:
+          1 -
+          (clientY - rect.top) /
+            rect.height,
+      };
+    }
+
+    function render(
+      tSec: number,
+      mx: number,
+      my: number,
+    ) {
+      gl!.uniform1f(
+        uT,
+        tSec,
+      );
+
+      gl!.uniform2f(
+        uMou,
+        mx,
+        my,
+      );
+
+      gl!.drawArrays(
+        gl!.TRIANGLE_STRIP,
+        0,
+        4,
+      );
     }
 
     function resize() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const rect = canvas!.getBoundingClientRect();
-      canvas!.width = Math.round(rect.width * dpr);
-      canvas!.height = Math.round(rect.height * dpr);
-      gl!.viewport(0, 0, canvas!.width, canvas!.height);
-      gl!.uniform2f(uRes, canvas!.width, canvas!.height);
-      render(0, mouse.x, mouse.y);
+      const dpr = Math.min(
+        window.devicePixelRatio || 1,
+        2,
+      );
+
+      const rect =
+        canvas!.getBoundingClientRect();
+
+      canvas!.width =
+        Math.round(
+          rect.width * dpr,
+        );
+
+      canvas!.height =
+        Math.round(
+          rect.height * dpr,
+        );
+
+      gl!.viewport(
+        0,
+        0,
+        canvas!.width,
+        canvas!.height,
+      );
+
+      gl!.uniform2f(
+        uRes,
+        canvas!.width,
+        canvas!.height,
+      );
+
+      render(
+        0,
+        mouse.x,
+        mouse.y,
+      );
     }
 
     let isVisible = false;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        isVisible = entries[0]?.isIntersecting ?? false;
-      },
-      { threshold: 0, rootMargin: "200px 0px 200px 0px" },
-    );
+
+    const observer =
+      new IntersectionObserver(
+        (entries) => {
+          isVisible =
+            entries[0]?.isIntersecting ??
+            false;
+        },
+        {
+          threshold: 0,
+          rootMargin:
+            "200px 0px 200px 0px",
+        },
+      );
+
     observer.observe(section);
 
-    const onResize = () => resize();
-    window.addEventListener("resize", onResize);
+    const onResize = () =>
+      resize();
 
-    const onPointerMove = (e: PointerEvent) => {
-      const p = nrm(e.clientX, e.clientY);
+    window.addEventListener(
+      "resize",
+      onResize,
+    );
+
+    const onPointerMove = (
+      e: PointerEvent,
+    ) => {
+      const p = nrm(
+        e.clientX,
+        e.clientY,
+      );
+
       target.x = p.x;
       target.y = p.y;
-      lastMoveAt = performance.now();
+
+      lastMoveAt =
+        performance.now();
+
       if (reduceMotion) {
         mouse.x = p.x;
         mouse.y = p.y;
-        render(0, mouse.x, mouse.y);
+
+        render(
+          0,
+          mouse.x,
+          mouse.y,
+        );
       }
     };
-    const onPointerDown = (e: PointerEvent) => {
+
+    const onPointerDown = (
+      e: PointerEvent,
+    ) => {
       if (reduceMotion) return;
-      const p = nrm(e.clientX, e.clientY);
-      const now = (performance.now() - t0) * 0.001;
+
+      const p = nrm(
+        e.clientX,
+        e.clientY,
+      );
+
+      const now =
+        (performance.now() - t0) *
+        0.001;
+
       let idx = 0;
-      let leastRemaining = Infinity;
-      for (let i = 0; i < RIPS; i++) {
-        if (ripT[i] < now - 3.0) {
+      let leastRemaining =
+        Infinity;
+
+      for (
+        let i = 0;
+        i < RIPS;
+        i++
+      ) {
+        const rippleTime =
+          ripT[i] ?? -1000;
+
+        if (
+          rippleTime <
+          now - 3.0
+        ) {
           idx = i;
           break;
         }
-        const rem = ripT[i] + 2.4 - now;
-        if (rem < leastRemaining) {
-          leastRemaining = rem;
+
+        const rem =
+          rippleTime +
+          2.4 -
+          now;
+
+        if (
+          rem <
+          leastRemaining
+        ) {
+          leastRemaining =
+            rem;
+
           idx = i;
         }
       }
-      ripXY[idx * 2] = p.x;
-      ripXY[idx * 2 + 1] = p.y;
+
+      ripXY[idx * 2] =
+        p.x;
+
+      ripXY[idx * 2 + 1] =
+        p.y;
+
       ripT[idx] = now;
-      if (uRip) gl!.uniform2fv(uRip, ripXY);
-      if (uRipT) gl!.uniform1fv(uRipT, ripT);
-      rippleEnd = performance.now() + 2400;
+
+      if (uRip) {
+        gl!.uniform2fv(
+          uRip,
+          ripXY,
+        );
+      }
+
+      if (uRipT) {
+        gl!.uniform1fv(
+          uRipT,
+          ripT,
+        );
+      }
+
+      rippleEnd =
+        performance.now() +
+        2400;
     };
-    const onPointerLeave = () => {
-      target.x = HOME.x;
-      target.y = HOME.y;
-    };
-    const onPointerUp = (e: PointerEvent) => {
-      if (e.pointerType !== "mouse") {
+
+    const onPointerLeave =
+      () => {
+        target.x = HOME.x;
+        target.y = HOME.y;
+      };
+
+    const onPointerUp = (
+      e: PointerEvent,
+    ) => {
+      if (
+        e.pointerType !==
+        "mouse"
+      ) {
         target.x = HOME.x;
         target.y = HOME.y;
       }
     };
 
-    section.addEventListener("pointermove", onPointerMove, { passive: true });
-    section.addEventListener("pointerdown", onPointerDown, { passive: true });
-    section.addEventListener("pointerleave", onPointerLeave);
-    section.addEventListener("pointerup", onPointerUp, { passive: true });
+    section.addEventListener(
+      "pointermove",
+      onPointerMove,
+      { passive: true },
+    );
+
+    section.addEventListener(
+      "pointerdown",
+      onPointerDown,
+      { passive: true },
+    );
+
+    section.addEventListener(
+      "pointerleave",
+      onPointerLeave,
+    );
+
+    section.addEventListener(
+      "pointerup",
+      onPointerUp,
+      { passive: true },
+    );
 
     resize();
 
@@ -252,50 +524,153 @@ export default function GrowthSystemFieldBackground({ sectionRef, className }: G
     let destroyed = false;
 
     function frame(t: number) {
-      raf = requestAnimationFrame(frame);
-      if (destroyed || !isVisible) return;
-      const now = performance.now();
-      const busy = now - lastMoveAt < 700 || now < rippleEnd;
-      if (t - last < (busy ? 0 : 33.3)) return;
+      raf =
+        requestAnimationFrame(
+          frame,
+        );
+
+      if (
+        destroyed ||
+        !isVisible
+      ) {
+        return;
+      }
+
+      const now =
+        performance.now();
+
+      const busy =
+        now - lastMoveAt <
+          700 ||
+        now < rippleEnd;
+
+      if (
+        t - last <
+        (busy ? 0 : 33.3)
+      ) {
+        return;
+      }
+
       last = t;
-      mouse.x += (target.x - mouse.x) * 0.085;
-      mouse.y += (target.y - mouse.y) * 0.085;
-      render((t - t0) * 0.001, mouse.x, mouse.y);
+
+      mouse.x +=
+        (target.x -
+          mouse.x) *
+        0.085;
+
+      mouse.y +=
+        (target.y -
+          mouse.y) *
+        0.085;
+
+      render(
+        (t - t0) * 0.001,
+        mouse.x,
+        mouse.y,
+      );
     }
 
     if (!reduceMotion) {
       const play = () => {
-        if (!raf) raf = requestAnimationFrame(frame);
+        if (!raf) {
+          raf =
+            requestAnimationFrame(
+              frame,
+            );
+        }
       };
+
       const pause = () => {
-        cancelAnimationFrame(raf);
+        cancelAnimationFrame(
+          raf,
+        );
+
         raf = 0;
       };
-      const onVisibility = () => (document.hidden ? pause() : play());
-      document.addEventListener("visibilitychange", onVisibility);
+
+      const onVisibility =
+        () =>
+          document.hidden
+            ? pause()
+            : play();
+
+      document.addEventListener(
+        "visibilitychange",
+        onVisibility,
+      );
+
       play();
 
       return () => {
         destroyed = true;
-        cancelAnimationFrame(raf);
-        document.removeEventListener("visibilitychange", onVisibility);
+
+        cancelAnimationFrame(
+          raf,
+        );
+
+        document.removeEventListener(
+          "visibilitychange",
+          onVisibility,
+        );
+
         observer.disconnect();
-        window.removeEventListener("resize", onResize);
-        section.removeEventListener("pointermove", onPointerMove);
-        section.removeEventListener("pointerdown", onPointerDown);
-        section.removeEventListener("pointerleave", onPointerLeave);
-        section.removeEventListener("pointerup", onPointerUp);
+
+        window.removeEventListener(
+          "resize",
+          onResize,
+        );
+
+        section.removeEventListener(
+          "pointermove",
+          onPointerMove,
+        );
+
+        section.removeEventListener(
+          "pointerdown",
+          onPointerDown,
+        );
+
+        section.removeEventListener(
+          "pointerleave",
+          onPointerLeave,
+        );
+
+        section.removeEventListener(
+          "pointerup",
+          onPointerUp,
+        );
       };
     }
 
     return () => {
       destroyed = true;
+
       observer.disconnect();
-      window.removeEventListener("resize", onResize);
-      section.removeEventListener("pointermove", onPointerMove);
-      section.removeEventListener("pointerdown", onPointerDown);
-      section.removeEventListener("pointerleave", onPointerLeave);
-      section.removeEventListener("pointerup", onPointerUp);
+
+      window.removeEventListener(
+        "resize",
+        onResize,
+      );
+
+      section.removeEventListener(
+        "pointermove",
+        onPointerMove,
+      );
+
+      section.removeEventListener(
+        "pointerdown",
+        onPointerDown,
+      );
+
+      section.removeEventListener(
+        "pointerleave",
+        onPointerLeave,
+      );
+
+      section.removeEventListener(
+        "pointerup",
+        onPointerUp,
+      );
     };
   }, [sectionRef]);
 
@@ -304,7 +679,9 @@ export default function GrowthSystemFieldBackground({ sectionRef, className }: G
       ref={canvasRef}
       aria-hidden="true"
       role="presentation"
-      className={`pointer-events-none absolute inset-0 -z-10 h-full w-full ${className ?? ""}`}
+      className={`pointer-events-none absolute inset-0 -z-10 h-full w-full ${
+        className ?? ""
+      }`}
     />
   );
 }

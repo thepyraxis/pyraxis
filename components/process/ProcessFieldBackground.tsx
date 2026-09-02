@@ -22,7 +22,9 @@ import { usePrefersReducedMotion } from "@/providers/AnimationProvider";
 
 const RIPS = 5;
 
-const VS = "attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0.,1.);}";
+const VS =
+  "attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0.,1.);}";
+
 const FS = [
   "#ifdef GL_FRAGMENT_PRECISION_HIGH",
   "precision highp float;",
@@ -73,7 +75,7 @@ const FS = [
   " topo*=1.0+inf*1.4+ring*1.6;",
   " vec2 vc=(uv-vec2(0.5,0.5))*vec2(u_resolution.x/u_resolution.y,1.0);",
   " float vig=smoothstep(1.05,0.32,length(vc));",
-  " vec3 tint=vec3(0.545,0.361,0.965);", // purple-400-ish, matches site accent
+  " vec3 tint=vec3(0.545,0.361,0.965);",
   " gl_FragColor=vec4(tint*topo*vig,topo*vig*0.9);",
   "}",
 ].join("\n");
@@ -83,46 +85,77 @@ type ProcessFieldBackgroundProps = {
   className?: string;
 };
 
-export default function ProcessFieldBackground({ sectionRef, className }: ProcessFieldBackgroundProps) {
+export default function ProcessFieldBackground({
+  sectionRef,
+  className,
+}: ProcessFieldBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const reducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const section = sectionRef.current;
+
     if (!canvas || !section) return;
 
     let gl: WebGLRenderingContext | null = null;
+
     try {
-      gl = canvas.getContext("webgl", { alpha: true, antialias: false, depth: false });
+      gl = canvas.getContext("webgl", {
+        alpha: true,
+        antialias: false,
+        depth: false,
+      });
     } catch {
       gl = null;
     }
+
     if (!gl) return;
 
     function sh(type: number, src: string) {
       const s = gl!.createShader(type);
+
       if (!s) return null;
+
       gl!.shaderSource(s, src);
       gl!.compileShader(s);
-      if (!gl!.getShaderParameter(s, gl!.COMPILE_STATUS)) return null;
+
+      if (!gl!.getShaderParameter(s, gl!.COMPILE_STATUS)) {
+        return null;
+      }
+
       return s;
     }
+
     const v = sh(gl.VERTEX_SHADER, VS);
     const f = sh(gl.FRAGMENT_SHADER, FS);
+
     if (!v || !f) return;
+
     const pr = gl.createProgram();
+
     if (!pr) return;
+
     gl.attachShader(pr, v);
     gl.attachShader(pr, f);
     gl.linkProgram(pr);
+
     if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return;
+
     gl.useProgram(pr);
 
     const buf = gl.createBuffer();
+
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
+      gl.STATIC_DRAW
+    );
+
     const loc = gl.getAttribLocation(pr, "a_position");
+
     gl.enableVertexAttribArray(loc);
     gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
@@ -130,23 +163,41 @@ export default function ProcessFieldBackground({ sectionRef, className }: Proces
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     function locA(name: string) {
-      return gl!.getUniformLocation(pr!, name + "[0]") || gl!.getUniformLocation(pr!, name);
+      return (
+        gl!.getUniformLocation(pr!, name + "[0]") ||
+        gl!.getUniformLocation(pr!, name)
+      );
     }
+
     const uRes = gl.getUniformLocation(pr, "u_resolution");
     const uT = gl.getUniformLocation(pr, "u_time");
     const uMou = gl.getUniformLocation(pr, "u_mouse");
     const uRip = locA("u_rip");
     const uRipT = locA("u_ripT");
 
-    const HOME = { x: 0.5, y: 0.5 };
-    const mouse = { x: HOME.x, y: HOME.y };
-    const target = { x: HOME.x, y: HOME.y };
+    const HOME = {
+      x: 0.5,
+      y: 0.5,
+    };
+
+    const mouse = {
+      x: HOME.x,
+      y: HOME.y,
+    };
+
+    const target = {
+      x: HOME.x,
+      y: HOME.y,
+    };
+
     const t0 = performance.now();
+
     let lastMoveAt = -1e9;
     let rippleEnd = 0;
 
     const ripXY = new Float32Array(RIPS * 2);
     const ripT = new Float32Array(RIPS);
+
     for (let i = 0; i < RIPS; i++) {
       ripT[i] = -1000;
       ripXY[i * 2] = HOME.x;
@@ -155,6 +206,7 @@ export default function ProcessFieldBackground({ sectionRef, className }: Proces
 
     function nrm(clientX: number, clientY: number) {
       const rect = section!.getBoundingClientRect();
+
       return {
         x: (clientX - rect.left) / rect.width,
         y: 1 - (clientY - rect.top) / rect.height,
@@ -170,50 +222,96 @@ export default function ProcessFieldBackground({ sectionRef, className }: Proces
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const rect = section!.getBoundingClientRect();
+
       canvas!.width = Math.max(1, Math.round(rect.width * dpr));
       canvas!.height = Math.max(1, Math.round(rect.height * dpr));
-      gl!.viewport(0, 0, canvas!.width, canvas!.height);
-      gl!.uniform2f(uRes, canvas!.width, canvas!.height);
+
+      gl!.viewport(
+        0,
+        0,
+        canvas!.width,
+        canvas!.height
+      );
+
+      gl!.uniform2f(
+        uRes,
+        canvas!.width,
+        canvas!.height
+      );
+
       render(0, mouse.x, mouse.y);
     }
 
     function onPointerMove(e: PointerEvent) {
       const p = nrm(e.clientX, e.clientY);
-      const inBounds = p.x >= 0 && p.x <= 1 && p.y >= 0 && p.y <= 1;
+
+      const inBounds =
+        p.x >= 0 &&
+        p.x <= 1 &&
+        p.y >= 0 &&
+        p.y <= 1;
+
       if (!inBounds) return;
+
       target.x = p.x;
       target.y = p.y;
       lastMoveAt = performance.now();
+
       if (reducedMotion) {
         mouse.x = p.x;
         mouse.y = p.y;
+
         render(0, mouse.x, mouse.y);
       }
     }
 
     function onPointerDown(e: PointerEvent) {
       if (reducedMotion) return;
+
       const p = nrm(e.clientX, e.clientY);
-      if (p.x < 0 || p.x > 1 || p.y < 0 || p.y > 1) return;
+
+      if (
+        p.x < 0 ||
+        p.x > 1 ||
+        p.y < 0 ||
+        p.y > 1
+      ) {
+        return;
+      }
+
       const now = (performance.now() - t0) * 0.001;
+
       let idx = 0;
       let leastRemaining = Infinity;
+
       for (let i = 0; i < RIPS; i++) {
-        if (ripT[i] < now - 3.0) {
+        const rippleTime = ripT[i] ?? -1000;
+
+        if (rippleTime < now - 3.0) {
           idx = i;
           break;
         }
-        const rem = ripT[i] + 2.4 - now;
+
+        const rem = rippleTime + 2.4 - now;
+
         if (rem < leastRemaining) {
           leastRemaining = rem;
           idx = i;
         }
       }
+
       ripXY[idx * 2] = p.x;
       ripXY[idx * 2 + 1] = p.y;
       ripT[idx] = now;
-      if (uRip) gl!.uniform2fv(uRip, ripXY);
-      if (uRipT) gl!.uniform1fv(uRipT, ripT);
+
+      if (uRip) {
+        gl!.uniform2fv(uRip, ripXY);
+      }
+
+      if (uRipT) {
+        gl!.uniform1fv(uRipT, ripT);
+      }
+
       rippleEnd = performance.now() + 2400;
     }
 
@@ -222,21 +320,51 @@ export default function ProcessFieldBackground({ sectionRef, className }: Proces
       target.y = HOME.y;
     }
 
-    if (uRip) gl.uniform2fv(uRip, ripXY);
-    if (uRipT) gl.uniform1fv(uRipT, ripT);
+    if (uRip) {
+      gl.uniform2fv(uRip, ripXY);
+    }
+
+    if (uRipT) {
+      gl.uniform1fv(uRipT, ripT);
+    }
+
     resize();
 
     window.addEventListener("resize", resize);
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
-    window.addEventListener("pointerdown", onPointerDown, { passive: true });
-    section.addEventListener("pointerleave", onLeave);
+
+    window.addEventListener(
+      "pointermove",
+      onPointerMove,
+      { passive: true }
+    );
+
+    window.addEventListener(
+      "pointerdown",
+      onPointerDown,
+      { passive: true }
+    );
+
+    section.addEventListener(
+      "pointerleave",
+      onLeave
+    );
 
     if (reducedMotion) {
       return () => {
         window.removeEventListener("resize", resize);
-        window.removeEventListener("pointermove", onPointerMove);
-        window.removeEventListener("pointerdown", onPointerDown);
-        section.removeEventListener("pointerleave", onLeave);
+        window.removeEventListener(
+          "pointermove",
+          onPointerMove
+        );
+        window.removeEventListener(
+          "pointerdown",
+          onPointerDown
+        );
+
+        section.removeEventListener(
+          "pointerleave",
+          onLeave
+        );
       };
     }
 
@@ -246,15 +374,33 @@ export default function ProcessFieldBackground({ sectionRef, className }: Proces
 
     function frame(t: number) {
       raf = requestAnimationFrame(frame);
+
       if (!isVisible) return;
+
       const now = performance.now();
-      const busy = now - lastMoveAt < 700 || now < rippleEnd;
-      if (t - last < (busy ? 0 : 33.3)) return;
+      const busy =
+        now - lastMoveAt < 700 ||
+        now < rippleEnd;
+
+      if (t - last < (busy ? 0 : 33.3)) {
+        return;
+      }
+
       last = t;
-      mouse.x += (target.x - mouse.x) * 0.085;
-      mouse.y += (target.y - mouse.y) * 0.085;
-      render((t - t0) * 0.001, mouse.x, mouse.y);
+
+      mouse.x +=
+        (target.x - mouse.x) * 0.085;
+
+      mouse.y +=
+        (target.y - mouse.y) * 0.085;
+
+      render(
+        (t - t0) * 0.001,
+        mouse.x,
+        mouse.y
+      );
     }
+
     raf = requestAnimationFrame(frame);
 
     const io = new IntersectionObserver(
@@ -263,17 +409,36 @@ export default function ProcessFieldBackground({ sectionRef, className }: Proces
           isVisible = entry.isIntersecting;
         });
       },
-      { threshold: 0 },
+      {
+        threshold: 0,
+      }
     );
+
     io.observe(section);
 
     return () => {
       cancelAnimationFrame(raf);
       io.disconnect();
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerdown", onPointerDown);
-      section.removeEventListener("pointerleave", onLeave);
+
+      window.removeEventListener(
+        "resize",
+        resize
+      );
+
+      window.removeEventListener(
+        "pointermove",
+        onPointerMove
+      );
+
+      window.removeEventListener(
+        "pointerdown",
+        onPointerDown
+      );
+
+      section.removeEventListener(
+        "pointerleave",
+        onLeave
+      );
     };
   }, [sectionRef, reducedMotion]);
 
@@ -281,7 +446,9 @@ export default function ProcessFieldBackground({ sectionRef, className }: Proces
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className={`pointer-events-none absolute inset-0 z-0 h-full w-full ${className ?? ""}`}
+      className={`pointer-events-none absolute inset-0 z-0 h-full w-full ${
+        className ?? ""
+      }`}
     />
   );
 }

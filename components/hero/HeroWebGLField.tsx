@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-
 import { usePerformanceTierOnly } from "@/providers/PerformanceProvider";
 
 type HeroWebGLFieldProps = {
@@ -39,6 +38,7 @@ export default function HeroWebGLField({ className }: HeroWebGLFieldProps) {
     if (tier === "mobile") return;
 
     let gl: WebGLRenderingContext | null = null;
+
     try {
       gl = canvasEl.getContext("webgl", {
         alpha: true,
@@ -48,11 +48,14 @@ export default function HeroWebGLField({ className }: HeroWebGLFieldProps) {
     } catch {
       gl = null;
     }
+
     if (!gl) return;
 
     const RIPS = 5;
 
-    const VS = "attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0.,1.);}";
+    const VS =
+      "attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0.,1.);}";
+
     const FS = [
       "#ifdef GL_FRAGMENT_PRECISION_HIGH",
       "precision highp float;",
@@ -111,52 +114,80 @@ export default function HeroWebGLField({ className }: HeroWebGLFieldProps) {
     function compile(type: number, src: string) {
       const s = gl!.createShader(type);
       if (!s) return null;
+
       gl!.shaderSource(s, src);
       gl!.compileShader(s);
+
       if (!gl!.getShaderParameter(s, gl!.COMPILE_STATUS)) {
         return null;
       }
+
       return s;
     }
 
     const v = compile(gl.VERTEX_SHADER, VS);
     const f = compile(gl.FRAGMENT_SHADER, FS);
+
     if (!v || !f) return;
 
     const pr = gl.createProgram();
     if (!pr) return;
+
     gl.attachShader(pr, v);
     gl.attachShader(pr, f);
     gl.linkProgram(pr);
+
     if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return;
+
     gl.useProgram(pr);
 
     const buf = gl.createBuffer();
+
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.bufferData(
       gl.ARRAY_BUFFER,
       new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
       gl.STATIC_DRAW
     );
+
     const posLoc = gl.getAttribLocation(pr, "a_position");
+
     gl.enableVertexAttribArray(posLoc);
     gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 
     function locA(name: string) {
-      return gl!.getUniformLocation(pr!, `${name}[0]`) || gl!.getUniformLocation(pr!, name);
+      return (
+        gl!.getUniformLocation(pr!, `${name}[0]`) ||
+        gl!.getUniformLocation(pr!, name)
+      );
     }
+
     const uRes = gl.getUniformLocation(pr, "u_resolution");
     const uT = gl.getUniformLocation(pr, "u_time");
     const uMou = gl.getUniformLocation(pr, "u_mouse");
     const uRip = locA("u_rip");
     const uRipT = locA("u_ripT");
+
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    const HOME = { x: 0.5, y: 0.45 };
-    const mouse = { x: HOME.x, y: HOME.y };
-    const target = { x: HOME.x, y: HOME.y };
+    const HOME = {
+      x: 0.5,
+      y: 0.45,
+    };
+
+    const mouse = {
+      x: HOME.x,
+      y: HOME.y,
+    };
+
+    const target = {
+      x: HOME.x,
+      y: HOME.y,
+    };
+
     const t0 = performance.now();
+
     let lastMoveAt = -1e9;
     let rippleEnd = 0;
     let destroyed = false;
@@ -164,6 +195,7 @@ export default function HeroWebGLField({ className }: HeroWebGLFieldProps) {
 
     const ripXY = new Float32Array(RIPS * 2);
     const ripT = new Float32Array(RIPS);
+
     for (let i = 0; i < RIPS; i++) {
       ripT[i] = -1000;
       ripXY[i * 2] = HOME.x;
@@ -172,6 +204,7 @@ export default function HeroWebGLField({ className }: HeroWebGLFieldProps) {
 
     function nrm(clientX: number, clientY: number) {
       const rect = canvasEl!.getBoundingClientRect();
+
       return {
         x: (clientX - rect.left) / rect.width,
         y: 1 - (clientY - rect.top) / rect.height,
@@ -192,19 +225,35 @@ export default function HeroWebGLField({ className }: HeroWebGLFieldProps) {
 
     function resize() {
       const rect = canvasEl!.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 1) * RENDER_SCALE;
+      const dpr =
+        Math.min(window.devicePixelRatio || 1, 1) * RENDER_SCALE;
+
       canvasEl!.width = Math.max(1, Math.round(rect.width * dpr));
       canvasEl!.height = Math.max(1, Math.round(rect.height * dpr));
-      gl!.viewport(0, 0, canvasEl!.width, canvasEl!.height);
-      gl!.uniform2f(uRes, canvasEl!.width, canvasEl!.height);
+
+      gl!.viewport(
+        0,
+        0,
+        canvasEl!.width,
+        canvasEl!.height
+      );
+
+      gl!.uniform2f(
+        uRes,
+        canvasEl!.width,
+        canvasEl!.height
+      );
+
       render(0, mouse.x, mouse.y);
     }
 
     function onPointerMove(e: PointerEvent) {
       const p = nrm(e.clientX, e.clientY);
+
       target.x = p.x;
       target.y = p.y;
       lastMoveAt = performance.now();
+
       if (RM) {
         mouse.x = p.x;
         mouse.y = p.y;
@@ -214,26 +263,41 @@ export default function HeroWebGLField({ className }: HeroWebGLFieldProps) {
 
     function onPointerDown(e: PointerEvent) {
       if (RM) return;
+
       const p = nrm(e.clientX, e.clientY);
       const now = (performance.now() - t0) * 0.001;
+
       let idx = 0;
       let leastRemaining = Infinity;
+
       for (let i = 0; i < RIPS; i++) {
-        if (ripT[i] < now - 3.0) {
+        const rippleTime = ripT[i] ?? -1000;
+
+        if (rippleTime < now - 3.0) {
           idx = i;
           break;
         }
-        const rem = ripT[i] + 2.4 - now;
+
+        const rem = rippleTime + 2.4 - now;
+
         if (rem < leastRemaining) {
           leastRemaining = rem;
           idx = i;
         }
       }
+
       ripXY[idx * 2] = p.x;
       ripXY[idx * 2 + 1] = p.y;
       ripT[idx] = now;
-      if (uRip) gl!.uniform2fv(uRip, ripXY);
-      if (uRipT) gl!.uniform1fv(uRipT, ripT);
+
+      if (uRip) {
+        gl!.uniform2fv(uRip, ripXY);
+      }
+
+      if (uRipT) {
+        gl!.uniform1fv(uRipT, ripT);
+      }
+
       rippleEnd = performance.now() + 2400;
     }
 
@@ -242,8 +306,14 @@ export default function HeroWebGLField({ className }: HeroWebGLFieldProps) {
       target.y = HOME.y;
     }
 
-    if (uRip) gl.uniform2fv(uRip, ripXY);
-    if (uRipT) gl.uniform1fv(uRipT, ripT);
+    if (uRip) {
+      gl.uniform2fv(uRip, ripXY);
+    }
+
+    if (uRipT) {
+      gl.uniform1fv(uRipT, ripT);
+    }
+
     resize();
 
     // Listened on window, not the canvas: the canvas sits in a
@@ -251,9 +321,17 @@ export default function HeroWebGLField({ className }: HeroWebGLFieldProps) {
     // on real content), so it must read the page's pointer globally, same
     // as the reference's own window-level listeners.
     window.addEventListener("resize", resize);
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
-    window.addEventListener("pointerdown", onPointerDown, { passive: true });
-    document.documentElement.addEventListener("mouseleave", onPointerLeave);
+    window.addEventListener("pointermove", onPointerMove, {
+      passive: true,
+    });
+    window.addEventListener("pointerdown", onPointerDown, {
+      passive: true,
+    });
+
+    document.documentElement.addEventListener(
+      "mouseleave",
+      onPointerLeave
+    );
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -263,6 +341,7 @@ export default function HeroWebGLField({ className }: HeroWebGLFieldProps) {
       },
       { threshold: 0 }
     );
+
     observer.observe(canvasEl);
 
     if (RM) {
@@ -270,24 +349,40 @@ export default function HeroWebGLField({ className }: HeroWebGLFieldProps) {
         window.removeEventListener("resize", resize);
         window.removeEventListener("pointermove", onPointerMove);
         window.removeEventListener("pointerdown", onPointerDown);
-        document.documentElement.removeEventListener("mouseleave", onPointerLeave);
+
+        document.documentElement.removeEventListener(
+          "mouseleave",
+          onPointerLeave
+        );
+
         observer.disconnect();
       };
     }
 
     let last = 0;
     let raf = 0;
+
     function frame(t: number) {
       raf = requestAnimationFrame(frame);
+
       if (destroyed || !canvasActive) return;
+
       // Was uncapped ("busy") while hovering/rippling — full rAF rate on a
       // per-pixel shader is exactly the lag. Flat 30fps cap always now.
       if (t - last < 33.3) return;
+
       last = t;
+
       mouse.x += (target.x - mouse.x) * 0.085;
       mouse.y += (target.y - mouse.y) * 0.085;
-      render((t - t0) * 0.001, mouse.x, mouse.y);
+
+      render(
+        (t - t0) * 0.001,
+        mouse.x,
+        mouse.y
+      );
     }
+
     raf = requestAnimationFrame(frame);
 
     function onVisibility() {
@@ -298,19 +393,41 @@ export default function HeroWebGLField({ className }: HeroWebGLFieldProps) {
         raf = requestAnimationFrame(frame);
       }
     }
-    document.addEventListener("visibilitychange", onVisibility);
+
+    document.addEventListener(
+      "visibilitychange",
+      onVisibility
+    );
 
     return () => {
       destroyed = true;
+
       cancelAnimationFrame(raf);
+
       window.removeEventListener("resize", resize);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerdown", onPointerDown);
-      document.documentElement.removeEventListener("mouseleave", onPointerLeave);
-      document.removeEventListener("visibilitychange", onVisibility);
+
+      document.documentElement.removeEventListener(
+        "mouseleave",
+        onPointerLeave
+      );
+
+      document.removeEventListener(
+        "visibilitychange",
+        onVisibility
+      );
+
       observer.disconnect();
     };
   }, [tier]);
 
-  return <canvas ref={canvasRef} className={className} aria-hidden="true" role="presentation" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      className={className}
+      aria-hidden="true"
+      role="presentation"
+    />
+  );
 }
