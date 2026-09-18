@@ -959,6 +959,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
 #leadForm input:focus,#leadForm select:focus{border-color:var(--pud);outline:none}
 #leadForm input.bad{border-color:rgba(124,92,255,.7)}
 .f-err{font:400 10.5px var(--mono);color:var(--pu2);margin:-6px 0 14px}
+.f-consent{display:flex;gap:10px;align-items:flex-start;margin:2px 0 16px;font:400 11.5px/1.6 var(--sans);color:var(--mut);letter-spacing:0;text-transform:none}
+#leadForm .f-consent input{display:inline-block;width:16px;height:16px;flex:none;margin:2px 0 0;padding:0;accent-color:var(--pu)}
+.f-consent a{color:var(--pu2)}
 .btn-wide{width:100%;justify-content:center;margin-top:8px}
 .m-done{text-align:center;padding:16px 0 6px}
 .m-done svg{width:44px;height:44px;color:var(--pu);margin:0 auto 18px}
@@ -1586,8 +1589,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
     <div class="wrap">
       <header class="sec-head" data-reveal>
         <p class="kicker">Recent Deployments</p>
-        <h2 class="h2" id="deploy-h">Real systems. <em>Real results.</em></h2>
-        <p class="lede">A few examples of how we&#39;ve helped businesses streamline, automate, and scale.</p>
+        <h2 class="h2" id="deploy-h">Selected <em>work.</em></h2>
+        <p class="lede">A few examples of what we build — live systems, not mockups. Full case studies on request.</p>
       </header>
       <div data-reveal>
         <a class="btn btn-ghost btn-sm" href="#process">View All Projects
@@ -1614,7 +1617,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
         </article>
         </div>
         <div data-reveal>
-        <article class="deploy-card" tabindex="0" role="group" aria-label="ServicePro AI Agent, AI Automation and Lead Engagement, result: 0 Missed Leads">
+        <article class="deploy-card" tabindex="0" role="group" aria-label="ServicePro AI Agent, AI Automation and Lead Engagement, case study available on request">
           <span class="deploy-num" aria-hidden="true">02</span>
           <i class="deploy-glow" aria-hidden="true"></i>
           <div class="deploy-body">
@@ -1629,13 +1632,13 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
             </div>
           </div>
           <div class="deploy-stat">
-            <b>0</b>
-            <span>Missed Leads</span>
+            <b>On request</b>
+            <span>Full case study</span>
           </div>
         </article>
         </div>
         <div data-reveal>
-        <article class="deploy-card" tabindex="0" role="group" aria-label="StayVista Retreats, Booking System and Automation, result: +58 percent Direct Bookings">
+        <article class="deploy-card" tabindex="0" role="group" aria-label="StayVista Retreats, Booking System and Automation, case study available on request">
           <span class="deploy-num" aria-hidden="true">03</span>
           <i class="deploy-glow" aria-hidden="true"></i>
           <div class="deploy-body">
@@ -1650,8 +1653,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
             </div>
           </div>
           <div class="deploy-stat">
-            <b>+58%</b>
-            <span>Direct Bookings</span>
+            <b>On request</b>
+            <span>Full case study</span>
           </div>
         </article>
         </div>
@@ -1916,13 +1919,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
           <label>How do customers find you today?<input type="text" name="src" placeholder="Google, Instagram, walk-ins, QR codes…"></label>
           <label>WhatsApp or email<input type="text" name="contact" autocomplete="email" placeholder="+91… or you@company.com"></label>
           <p class="f-err" id="fErr" hidden></p>
+          <label class="f-consent"><input type="checkbox" name="consent"><span>Submitting opens a pre-filled WhatsApp message containing what you entered — review it before sending. See our <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</span></label>
           <button class="btn btn-solid btn-wide" type="submit">Request my system</button>
         </form>
       </div>
       <div id="mDone" class="m-done" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="10.5"/><path d="M7.5 12.5l3 3 6-7"/></svg>
-        <h4>Request received.</h4>
-        <p>We'll reach out within one business day to map your system.</p>
+        <h4>Your message is ready.</h4>
+        <p>Review it in WhatsApp and press send to complete your enquiry — nothing reaches us until you do.</p>
         <button class="btn btn-ghost btn-wide" type="button" data-close-modal>Close</button>
       </div>
     </div>
@@ -3188,7 +3192,7 @@ function startOnSeen(el, play){
   });
   if(form) form.addEventListener('submit',function(e){
     e.preventDefault();
-    var name=form.elements.name, contact=form.elements.contact, bad=null;
+    var name=form.elements.name, contact=form.elements.contact, consent=form.elements.consent, bad=null;
     if(!name.value.trim()) bad=name; else if(!contact.value.trim()) bad=contact;
     name.classList.remove('bad'); contact.classList.remove('bad');
     if(err) err.hidden=true;
@@ -3196,6 +3200,10 @@ function startOnSeen(el, play){
       bad.classList.add('bad');
       if(err){ err.textContent='Please add your '+(bad===name?'name':'WhatsApp or email')+'.'; err.hidden=false; }
       bad.focus(); return;
+    }
+    if(consent&&!consent.checked){
+      if(err){ err.textContent='Please confirm you are happy to continue via WhatsApp.'; err.hidden=false; }
+      consent.focus(); return;
     }
     /* Delivered as a pre-filled WhatsApp message — the form never stores
        data, so there is no backend to run. */
@@ -3209,7 +3217,7 @@ function startOnSeen(el, play){
     if(mDone) mDone.hidden=false;
     var doneBtn=mDone ? mDone.querySelector('button') : null;
     if(doneBtn) doneBtn.focus();
-    toast('Request received — we\u2019ll be in touch.');
+    toast('WhatsApp opened — review and send to complete your enquiry.');
   });
 })();
 
@@ -3469,8 +3477,10 @@ document.addEventListener('visibilitychange',function(){
 });
 })();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js"></script>
-<script>window.THREE||document.write('<script src="https://unpkg.com/three@0.159.0/build/three.min.js"><\/script>');</script>
+<!-- Self-hosted Three.js r159 (public/vendor): no CDN dependency, no SRI to
+     rotate, no document.write fallback. If the file is ever missing, the
+     WebGL sections below degrade gracefully via their own guards. -->
+<script src="public/vendor/three-r159.min.js"></script>
 <script>
 /* ============================================================
    THE EMBER FIELD — the PYRAXIS mark, built from its own pixels,
@@ -3535,8 +3545,12 @@ try{
   document.head.appendChild(link);
 }catch(e){}
 
-const CDN_LATEST='https://z-cdn-media.chatglm.cn/files/effd164a-e075-4f7c-8093-f4cd503de854.png?auth_key=1888377950-2e691a40573e4785ae1ea33097b8f779-0-ce9c539f960a5c56d2fa42488dea9b40';
-const CDN_PREV='https://z-cdn-media.chatglm.cn/files/dc41dcfe-5479-4fdf-b9da-4e5e372c7b11.png?auth_key=1888377950-f40a7e3f2ee04ec5a7d66eb56bc07026-0-5c4a1573fee076d7806ad5a3688ffb26';
+/* Archived local portrait — the remote PREV signing key already expired
+   (403 on fetch), so both slots point at the local file. The embedded
+   SVG mark above is primary; these are fallback-of-fallback only. */
+const LOCAL_PORTRAIT='public/img/founder-latest.png';
+const CDN_LATEST=LOCAL_PORTRAIT;
+const CDN_PREV=LOCAL_PORTRAIT;
 const relay=u=>`https://wsrv.nl/?url=${encodeURIComponent(u)}`;
 
 /* The genesis world holds the REFERENCE violet — it does NOT follow the
@@ -4281,8 +4295,9 @@ function buildGenesisFromEarth(img){
 }
 
 function bootEarth(){
-  const SRC='https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg';
-  const srcs=[SRC,'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r159/examples/textures/planets/earth_atmos_2048.jpg',relay(SRC)];
+  const LOCAL='public/img/earth-2048.jpg';
+  const NET='https://cdn.jsdelivr.net/gh/mrdoob/three.js@r159/examples/textures/planets/earth_atmos_2048.jpg';
+  const srcs=[LOCAL,NET,'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg',relay(NET)];
   let i=0;
   const next=()=>{
     if(i>=srcs.length)return;  /* graceful: dark world + rim embers only */
