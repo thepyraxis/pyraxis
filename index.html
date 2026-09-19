@@ -76,7 +76,7 @@ body[data-cstate="text"] #cDot .d{width:2px;height:24px;margin:-12px 0 0 -1px;bo
 
 /* ============ WEBGL EMBER FIELD — quiet, warm, behind content ============ */
 #gl{position:fixed;inset:0;z-index:0;opacity:0;transition:opacity .8s ease .1s}
-#gl.on{opacity:.5}
+#gl.on{opacity:var(--gl-o,.5)}
 #topo{position:fixed;inset:0;width:100%;height:100%;opacity:0;transition:opacity 1.4s ease;pointer-events:none;z-index:0}
 #topo.live{opacity:.28}
 #hero>.wrap{position:relative;z-index:1}
@@ -4009,6 +4009,7 @@ const ndc=new THREE.Vector2(0,0),ndcT=new THREE.Vector2(0,0);
 let ptrBoost=0,rotFree=0,curP=0;
 let lastActive=performance.now(),rippleEnd=0;
 const ripT=[-1000,-1000,-1000,-1000,-1000];  /* ripple pool birth times, shader clock */
+let lastGlO='';
 let globeMix=0,globeMixS=0,globeSpin=0,globeTilt=0,globeDragX=0,globeDragY=0,globeDragging=false,grabHint=false;
 /* late-texture melt: if the earth map resolves mid-finale, the particle
    target crossfades in instead of teleporting the swarm */
@@ -4211,7 +4212,7 @@ try{
            shaded by the map so regions keep their own contrast; oceans
            near-black, so the contrast carries the look */
         float lit=max(dot(vNw,normalize(vec3(.5,.3,1.))),0.);
-        vec3 land=mix(uMain,vec3(.92,.92,1.),.3)*(.7+.45*shade)*(.85+.15*lit);
+        vec3 land=mix(uMain,vec3(.97,.96,1.),.5)*(1.0+.55*shade)*(.85+.15*lit);
         vec3 col=mix(vec3(.004,.004,.009),land,landMask);
         /* the limb owns the surface's added light */
         float fres=pow(1.-max(dot(vNw,vView),0.),2.5);
@@ -4221,7 +4222,7 @@ try{
         col+=(fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453)-.5)/160.;
         /* GLASS — deliberately translucent so the embers above and the
            dust behind read through it: a world made from its particles */
-        gl_FragColor=vec4(col,uFade*${GLOBE_GLASS.toFixed(2)});
+        gl_FragColor=vec4(col,uFade*mix(${GLOBE_GLASS.toFixed(2)},.9,landMask));
       }`,
     transparent:true,depthWrite:false,depthTest:false
   });
@@ -4235,31 +4236,44 @@ try{
      annulus OUTSIDE the body's silhouette (vNormal.z gated): the ring
      runs projected radius ≈ 7.7→8.9, so the backside center can never
      glow — no depth buffer needed, and nothing pops. */
+  const ATM_MESH=GLOBE_R*1.5;    /* geometry — a bit bigger than the glow's reach */
+  const ATM_OUT=GLOBE_R*1.4;     /* where the glow has fully faded to nothing */
   const atmMat=new THREE.ShaderMaterial({
-    uniforms:{uColor:{value:new THREE.Color(GLOBE_VIOLET)},uFade:{value:0}},
+    uniforms:{uColor:{value:new THREE.Color(GLOBE_VIOLET)},uFade:{value:0},
+      uB:{value:GLOBE_R*.985},uO:{value:ATM_OUT}},
     vertexShader:`
-      varying vec3 vNormal;
+      varying vec3 vPos;varying vec3 vC;
       void main(){
-        vNormal=normalize(normalMatrix*normal);
-        gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);
+        vec4 mv=modelViewMatrix*vec4(position,1.);
+        vPos=mv.xyz;
+        vC=(modelViewMatrix*vec4(0.,0.,0.,1.)).xyz;
+        gl_Position=projectionMatrix*mv;
       }`,
     fragmentShader:`
       uniform vec3 uColor;
-      uniform float uFade;
-      varying vec3 vNormal;
+      uniform float uFade,uB,uO;
+      varying vec3 vPos;varying vec3 vC;
       void main(){
-        float intensity=pow(.72-dot(vNormal,vec3(0.,0.,1.)),3.5);
-        intensity*=smoothstep(-.5,-.12,vNormal.z);
+        /* perspective-correct angular distance from the globe's centre,
+           mapped so d=0 is the body's edge and d=1 is where light is gone */
+        float dC=length(vC);
+        float ang=acos(clamp(dot(normalize(vPos),vC/dC),-1.,1.));
+        float angB=asin(uB/dC),angO=asin(min(uO/dC,.999));
+        float d=(ang-angB)/(angO-angB);
+        /* light fades with distance: bright at the limb, long soft tail
+           (zero value AND zero slope at d=1, so no visible outer edge) */
+        float g=pow(clamp(1.-max(d,0.),0.,1.),2.6);
+        g*=smoothstep(-.4,0.,d);          /* ease in over the body's rim */
         vec3 c=mix(uColor,vec3(.93,.93,1.),.3);
         /* premultiplied additive: alpha tracks glow strength, so where the
            glow is ~0 the canvas stays transparent (no opaque black disc) */
-        float k=intensity*.55*uFade;
+        float k=g*.36*uFade;
         gl_FragColor=vec4(c*k,k);
       }`,
     side:THREE.BackSide,transparent:true,depthWrite:false,depthTest:false,
     blending:THREE.CustomBlending,blendEquation:THREE.AddEquation,blendSrc:THREE.OneFactor,blendDst:THREE.OneFactor
   });
-  const globeAtm=new THREE.Mesh(new THREE.SphereGeometry(GLOBE_R*1.115,gseg,gseg),atmMat);
+  const globeAtm=new THREE.Mesh(new THREE.SphereGeometry(ATM_MESH,gseg,gseg),atmMat);
   globeAtm.renderOrder=1;
   globeAtm.visible=false;
   globeAtm.frustumCulled=false;
@@ -4599,6 +4613,10 @@ function tick(now){
         gb.material.uniforms.uHasTex.value=texFade;
       }
       if(ga.visible)ga.material.uniforms.uFade.value=atmFade;
+      /* the formed world reads brighter: lift the canvas' overall opacity
+         (0.5 everywhere else) as the globe condenses, ease back on leave */
+      const glO=(.5+.3*bodyFade).toFixed(2);
+      if(glO!==lastGlO){lastGlO=glO;document.documentElement.style.setProperty('--gl-o',glO);}
     }
     const wantGrab=globeMixS>.5;
     if(wantGrab!==grabHint){
