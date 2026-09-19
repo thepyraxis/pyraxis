@@ -75,8 +75,8 @@ body[data-cstate="text"] #cDot .d{width:2px;height:24px;margin:-12px 0 0 -1px;bo
 @media (hover:none),(pointer:coarse){#cDot,#cRing{display:none}}
 
 /* ============ WEBGL EMBER FIELD — quiet, warm, behind content ============ */
-#gl{position:fixed;inset:0;z-index:0;opacity:0;transition:opacity .8s ease .1s}
-#gl.on{opacity:var(--gl-o,.5)}
+#gl{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:0;transition:opacity .8s ease .1s}
+#gl.on{opacity:var(--gl-o,.8)}  /* JS sets --gl-o: lower on phones */
 #topo{position:fixed;inset:0;width:100%;height:100%;opacity:0;transition:opacity 1.4s ease;pointer-events:none;z-index:0}
 #topo.live{opacity:.28}
 #hero>.wrap{position:relative;z-index:1}
@@ -798,7 +798,10 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .pf-cta p{font:italic 400 .95rem var(--serif);color:var(--mut)}
 
 /* ============ 14 compounding ============ */
-#compounding{background:transparent}
+.comp-scrim{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 42%,rgba(5,4,10,.88),rgba(5,4,10,.62) 52%,rgba(5,4,10,.25) 72%,transparent 88%)}
+/* the scrim is positioned, so it would paint over the static header —
+   lift the content wrapper above it */
 #compounding>.wrap{position:relative;z-index:1}
 .wheel{position:relative;max-width:860px;margin:0 auto}
 .wheel-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:0}
@@ -959,6 +962,121 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .js [data-reveal]{opacity:1;transform:none}
 }
+
+/* ============ PREMIUM DEVICE (titanium frame · glass · depth) ============ */
+.device{
+  padding:12px;border-radius:58px;
+  background:
+    linear-gradient(140deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,0) 16%,rgba(255,255,255,0) 84%,rgba(255,255,255,.32) 100%),
+    linear-gradient(160deg,#8e8f9c 0%,#3b3c46 13%,#16161c 34%,#0a0a0e 55%,#24252d 82%,#7f808c 100%);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.16),
+    0 0 0 2.5px rgba(0,0,0,.8),
+    inset 0 0 0 1.5px rgba(255,255,255,.2),
+    inset 0 0 0 3.5px rgba(0,0,0,.6),
+    inset 0 0 16px rgba(0,0,0,.65),
+    0 70px 90px -34px rgba(0,0,0,.92),
+    0 32px 50px -22px rgba(0,0,0,.75),
+    0 0 100px -24px rgba(124,92,255,.32);
+  transform-style:preserve-3d;will-change:transform;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.device::before{right:-4.5px;top:168px;width:4.5px;height:86px;border-radius:0 3px 3px 0;
+  background:linear-gradient(90deg,#63646f,#18181d 85%);
+  box-shadow:1px 0 2px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.35)}
+.device::after{left:-4.5px;top:150px;width:4.5px;height:54px;border-radius:3px 0 0 3px;
+  background:linear-gradient(270deg,#63646f,#18181d 85%);
+  box-shadow:-1px 0 2px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.35),
+    0 68px 0 0 #2b2b33,-1px 68px 2px rgba(0,0,0,.7)}
+.d-scr{border-radius:46px;
+  box-shadow:0 0 0 4px #000,0 0 0 4.5px rgba(255,255,255,.05),inset 0 0 0 1px rgba(255,255,255,.07)}
+.d-scr::before{
+  background:
+    radial-gradient(420px circle at var(--gx,28%) var(--gy,-6%),rgba(255,255,255,.10),rgba(255,255,255,0) 55%),
+    linear-gradient(118deg,rgba(255,255,255,.075) 0%,rgba(255,255,255,.015) 22%,rgba(255,255,255,0) 40%,rgba(255,255,255,0) 72%,rgba(255,255,255,.04) 100%)}
+.d-scr::after{content:"";position:absolute;inset:0;z-index:49;pointer-events:none;border-radius:inherit;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 46px rgba(0,0,0,.4)}
+.d-island{top:18px;width:102px;height:29px;border-radius:16px;background:#000;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.05),0 1px 0 rgba(255,255,255,.04)}
+.d-island::before{content:"";position:absolute;left:15px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,#151722,#030306 70%);box-shadow:inset 0 0 2px rgba(255,255,255,.12)}
+.d-island::after{width:11px;height:11px;margin-right:2px;
+  background:radial-gradient(circle at 34% 32%,#4a5c92 0,#141830 34%,#04050a 68%);
+  box-shadow:0 0 0 2px #0b0c12,inset 0 0 3px rgba(130,160,255,.55)}
+.d-status{background:linear-gradient(180deg,#182228 0%,#1e2a31 100%)}
+.d-home{position:absolute;bottom:21px;left:50%;transform:translateX(-50%);width:122px;height:4.5px;margin:0;
+  background:rgba(255,255,255,.6);border-radius:3px;z-index:60;box-shadow:0 0 6px rgba(255,255,255,.15)}
+.wa{position:relative}
+.wa::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(120% 55% at 50% 0%,rgba(124,92,255,.11),transparent 62%),
+             radial-gradient(90% 45% at 50% 108%,rgba(0,168,132,.08),transparent 66%)}
+.wa-hd,.wa-body,.wa-ft{position:relative;z-index:1}
+.wa-hd{background:linear-gradient(180deg,#1e2a31,#1b262d);
+  box-shadow:0 1px 0 rgba(255,255,255,.045),0 10px 20px -10px rgba(0,0,0,.7);z-index:3}
+.wa-av{background:linear-gradient(140deg,#9a83ff,#4a36c9);
+  box-shadow:0 0 0 1.5px rgba(255,255,255,.14),0 5px 12px -3px rgba(124,92,255,.55),inset 0 1px 0 rgba(255,255,255,.3)}
+.wa-msg{transform:translateY(14px) scale(.94);transform-origin:0 100%;
+  transition:opacity .45s ease,transform .6s cubic-bezier(.2,.9,.25,1.12)}
+.wa-msg.out{transform-origin:100% 100%}
+.wa-msg.show{transform:none}
+.wa-msg.in{background:linear-gradient(180deg,#27353d,#1f2c33);
+  box-shadow:0 1px 1px rgba(0,0,0,.4),0 8px 16px -10px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.055)}
+.wa-msg.out{background:linear-gradient(155deg,#0b806a,#005c4b 72%);
+  box-shadow:0 1px 1px rgba(0,0,0,.35),0 9px 18px -9px rgba(0,168,132,.55),inset 0 1px 0 rgba(255,255,255,.14)}
+.wa-msg.in:not(.cont)::after{background:#1f2c33}
+.wa-sys{background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.035)}
+.wa-date{background:linear-gradient(180deg,#22303a,#1b2730);box-shadow:0 1px 2px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.05)}
+.wa-ft{background:linear-gradient(180deg,#1c272e,#202c33);padding-bottom:24px;
+  box-shadow:0 -1px 0 rgba(255,255,255,.04),0 -10px 20px -10px rgba(0,0,0,.6)}
+.wa-field{background:linear-gradient(180deg,#2d3c45,#26343c);box-shadow:inset 0 1px 2px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.03)}
+.wa-mic{background:linear-gradient(160deg,#17c29c,#00856b);
+  box-shadow:0 6px 14px -4px rgba(0,168,132,.65),inset 0 1px 0 rgba(255,255,255,.35)}
+.wa-mic .fic{color:#effffa}
+@media (max-width:640px){
+  .device{padding:10px;border-radius:52px}
+  .d-scr{border-radius:42px}
+}
+
+
+/* ============ REAL PHONE — straight-on, solid, lit like metal & glass (no motion, no mouse) ============ */
+.device{
+  transform:none;transition:none;animation:none;will-change:auto;
+  padding:12px;border-radius:58px;
+  /* titanium band: bright vertical edges, darker centre — reads as a solid rounded slab */
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.34) 0,rgba(255,255,255,.06) 1.6%,rgba(0,0,0,0) 4%,rgba(0,0,0,0) 96%,rgba(255,255,255,.05) 98.4%,rgba(255,255,255,.28) 100%),
+    linear-gradient(180deg,rgba(255,255,255,.38) 0,rgba(255,255,255,.05) 1.4%,rgba(0,0,0,0) 4%,rgba(0,0,0,0) 96%,rgba(255,255,255,.04) 98.6%,rgba(255,255,255,.22) 100%),
+    linear-gradient(160deg,#5b5c67 0%,#2a2b33 16%,#121217 40%,#0b0b0f 60%,#1c1d24 84%,#4e4f5a 100%);
+  box-shadow:
+    /* machined edge: outer rim → chamfer → inner shadow line */
+    0 0 0 1px rgba(255,255,255,.2),
+    0 0 0 2px rgba(0,0,0,.85),
+    inset 0 0 0 1px rgba(255,255,255,.26),
+    inset 0 0 0 2.5px rgba(0,0,0,.55),
+    inset 0 2px 3px rgba(255,255,255,.12),
+    inset 0 -2px 3px rgba(0,0,0,.6),
+    /* body thickness: a stepped metal lip under the frame */
+    0 1px 0 2px #3d3e47,0 2px 0 2px #25262c,0 3px 0 2px #15151a,
+    /* grounded shadows: contact → mid → ambient, plus faint brand glow */
+    0 10px 14px -4px rgba(0,0,0,.75),
+    0 34px 44px -18px rgba(0,0,0,.85),
+    0 70px 90px -34px rgba(0,0,0,.9),
+    0 0 90px -30px rgba(124,92,255,.22)}
+/* side buttons — raised metal with highlights */
+.device::before{right:-4.5px;top:168px;width:4.5px;height:86px;border-radius:0 3px 3px 0;
+  background:linear-gradient(90deg,#6a6b77 0%,#2b2b33 55%,#101014 100%);
+  box-shadow:1px 0 2px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(0,0,0,.5)}
+.device::after{left:-4.5px;top:150px;width:4.5px;height:54px;border-radius:3px 0 0 3px;
+  background:linear-gradient(270deg,#6a6b77 0%,#2b2b33 55%,#101014 100%);
+  box-shadow:-1px 0 2px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(0,0,0,.5),
+    0 68px 0 0 #2a2a32,-1px 68px 2px rgba(0,0,0,.7),
+    0 -50px 0 -1px #2a2a32}
+/* glass: recessed screen behind a black bezel, fixed soft reflection */
+.d-scr{border-radius:46px;
+  box-shadow:0 0 0 4px #000,0 0 0 5px rgba(255,255,255,.07),0 0 0 6px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.08)}
+.d-scr::before{
+  background:
+    linear-gradient(118deg,rgba(255,255,255,.085) 0%,rgba(255,255,255,.02) 20%,rgba(255,255,255,0) 38%,rgba(255,255,255,0) 74%,rgba(255,255,255,.035) 100%)}
+.d-scr::after{box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 38px rgba(0,0,0,.45),inset 0 0 8px rgba(0,0,0,.5)}
 </style>
 </head>
 <body id="hero-top">
@@ -1795,6 +1913,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
 
   <!-- ============ 14 COMPOUNDING GROWTH ============ -->
   <section class="sec" id="compounding" aria-labelledby="comp-h">
+    <div class="comp-scrim" aria-hidden="true"></div>
     <div class="wrap">
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="17">After launch</p>
@@ -1910,6 +2029,32 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="cRing" aria-hidden="true"><div class="r"><span class="r-label" id="rLabel"></span></div></div>
 <div id="cDot" aria-hidden="true"><div class="d"></div></div>
+<script>
+/* MOBILE "AUTO-RELOAD" FIX — on phones the URL bar sliding in/out fires a height-only
+   'resize' on nearly every scroll. Every resize listener on the page rebuilt its
+   canvas / SVG paths, so animations visibly restarted (read as the page reloading).
+   Touch devices now ignore height-only resizes under 220px; real changes (rotation,
+   width change, big height change) still pass through. Desktop is untouched. */
+(function(){
+  var coarse=false;try{coarse=matchMedia('(pointer: coarse)').matches;}catch(e){}
+  if(!coarse)return;
+  var lw=innerWidth,lh=innerHeight,add=window.addEventListener;
+  function noise(e){
+    if(e.__pxNoise===undefined){
+      var w=innerWidth,h=innerHeight;
+      e.__pxNoise=(w===lw&&Math.abs(h-lh)<220);
+      if(!e.__pxNoise){lw=w;lh=h;}
+    }
+    return e.__pxNoise;
+  }
+  window.addEventListener=function(type,fn,opt){
+    if(type==='resize'&&typeof fn==='function'){
+      return add.call(window,type,function(e){if(noise(e))return;return fn.call(this,e);},opt);
+    }
+    return add.call(window,type,fn,opt);
+  };
+})();
+</script>
 <script>
 (function(){
 'use strict';
@@ -3811,6 +3956,14 @@ setTimeout(()=>{if(!PIXELS_OK)fieldLive=true;},2400);
 const COARSE=window.matchMedia&&matchMedia('(pointer: coarse)').matches;
 const N=COARSE?3000:(innerWidth<720?12000:20000);
 const isMobile=innerWidth<720;
+/* PHONES/TOUCH: same world, but far fewer px of screen and only 3000 embers —
+   each one reads bigger and brighter (additive) than on desktop, and the
+   hero mark sits right behind the copy. Dim + shrink so mobile matches PC. */
+const DIM=isMobile||COARSE;
+const GL_BASE=DIM?.62:.8;     /* canvas opacity outside the globe */
+const GL_GLOBE=DIM?.74:.92;   /* canvas opacity once the world is formed */
+const SZ_MUL=DIM?.76:1;        /* ember sprite size */
+const DUST_MUL=DIM?.65:1;     /* background star brightness */
 function gauss(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(TAU*v);}
 
 const GLOBE_R=8;      /* the genesis world's radius */
@@ -3953,14 +4106,19 @@ void main(){
   vec2 c=gl_PointCoord-.5;
   float d=length(c);
   if(d>.5)discard;
-  float a=1.-smoothstep(.02,.5,d);
-  a*=a;
-  a*=.82+.18*sin(uTime*2.6+vSeed*37.);
+  /* SHARP SPRITE — crisp bright core + small soft halo (was one wide
+     blurry falloff), livelier per-particle twinkle */
+  float core=1.-smoothstep(.15,.33,d);
+  float halo=1.-smoothstep(0.,.5,d);
+  halo*=halo;
+  float a=min(core*.95+halo*.4,1.);
+  a*=.68+.32*sin(uTime*(1.8+vSeed*2.6)+vSeed*37.);
   a*=1.-smoothstep(40.,88.,vDepth);
   a*=smoothstep(.4,3.5,vDepth);
   vec3 col=mix(uColB,uColA,clamp(vMix*.72+vGlow,0.,1.));
   col+=uColA*vGlow*.9;
   col=mix(col,uAcc*(.75+vGlow*.5),vAcc*.85);
+  col=mix(col,vec3(1.),core*.28);          /* hot white centre — spark */
   /* GENESIS — the world IS its particles. Landed embers become the skin:
      a dim violet interior floor (texture, not glow — city-light sparkle)
      and a bright limb. The gate is radius-based (vShell), so the flying
@@ -3968,7 +4126,8 @@ void main(){
   if(uGlobe>.001){
     float land=clamp(vLand,0.,1.);
     float limb=smoothstep(.32,.75,vFres);
-    vec3 gcol=uGViolet*(.05+.22*land)*(.3+.7*vSeed*vSeed);
+    vec3 gcol=uGViolet*(.08+.34*land)*(.3+.7*vSeed*vSeed);
+    gcol=mix(gcol,vec3(.85,.82,1.)*(.25+.5*land),core*vSeed*vSeed*.35);  /* city-light glints */
     gcol+=uGViolet*pow(vFres,1.8)*.6;
     gcol*=.97+.03*sin(uTime*.5);
     col=mix(col,min(gcol,vec3(1.)),uGlobe);
@@ -3988,7 +4147,7 @@ const CAM=[
   [[0,1.2,26.5],[0,-1,0]],
 ];
 const WOB=[.02,.5,.1,1.5,.28,.14];
-const SIZ=[1.12,.8,.92,.7,.85,1];
+const SIZ=[1.15,.98,1.05,.88,1.0,1.05];
 const ROT=[0,.015,.16,.03,.08,.05];
 /* GLOBE_HOME_Y — local Y rotation (radians) that faces India toward the
    camera once the globe has formed. Derived from the earth texture's
@@ -3997,8 +4156,8 @@ const ROT=[0,.015,.16,.03,.08,.05];
    Nagpur): rot = PI/2 - ph. Single knob — nudge by a small amount (radians)
    and re-check if India isn't quite centred; a full turn is TAU (~6.283). */
 const GLOBE_HOME_Y=-2.95;
-const CA=['#f8f6ff','#dcd8ee','#efecff','#d4cdf4','#e9e4ff','#f4f2fa'].map(c=>new THREE.Color(c));
-const CB=['#8a5cff','#322c48','#4b3f82','#39306e','#5a3ad0','#403c52'].map(c=>new THREE.Color(c));
+const CA=['#ffffff','#f0eeff','#ffffff','#ece6ff','#ffffff','#faf9ff'].map(c=>new THREE.Color(c));
+const CB=['#9d74ff','#7a68c8','#8a72ec','#7c66dc','#9468ff','#8a82b4'].map(c=>new THREE.Color(c));
 
 /* ================= interaction state ================= */
 const ndc=new THREE.Vector2(0,0),ndcT=new THREE.Vector2(0,0);
@@ -4068,7 +4227,7 @@ try{
   const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:false,powerPreference:'high-performance'});
   renderer.setClearColor(0x0a0a0d,0);  /* transparent: the topo field behind stays visible */
   renderer.setPixelRatio(Math.min(devicePixelRatio||1,COARSE?1:2));
-  renderer.setSize(innerWidth,innerHeight);
+  renderer.setSize(innerWidth,innerHeight,false);
 
   const scene=new THREE.Scene();
   const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,240);
@@ -4090,7 +4249,7 @@ try{
     sg.setAttribute('aTw',new THREE.BufferAttribute(twk,1));
     const du={
       uTime:{value:0},uScaleH:{value:1},uAmp:{value:reduced?.18:1},
-      uOpacity:{value:.35},uCol:{value:new THREE.Color(0x9a94c9)}
+      uOpacity:{value:.5},uCol:{value:new THREE.Color(0x9a94c9)}
     };
     const dmat=new THREE.ShaderMaterial({
       uniforms:du,transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending,
@@ -4121,8 +4280,8 @@ try{
           vec2 c=gl_PointCoord-.5;
           float d=length(c);
           if(d>.5)discard;
-          float a=1.-smoothstep(.05,.5,d);
-          a*=a;
+          float a=1.-smoothstep(.12,.36,d);
+          a=min(a+.25*(1.-smoothstep(0.,.5,d)),1.);
           a*=smoothstep(10.,26.,vDepth);
           a*=(1.-smoothstep(95.,160.,vDepth));
           vec3 col=mix(uCol,vec3(.97,.96,1.),vSeed*.55);
@@ -4442,7 +4601,7 @@ addEventListener('resize',()=>{
   if(engine){
     engine.camera.aspect=innerWidth/innerHeight;
     engine.camera.updateProjectionMatrix();
-    engine.renderer.setSize(innerWidth,innerHeight);
+    engine.renderer.setSize(innerWidth,innerHeight,false);
     engine.updateScale();
   }
   /* width-gated: mobile URL-bar show/hide fires height-only resizes — those
@@ -4563,7 +4722,7 @@ function tick(now){
 
     u.uTime.value=now/1000;
     u.uWobble.value=wob;
-    u.uSize.value=siz*(1+introGlow*.3);
+    u.uSize.value=siz*(1+introGlow*.3)*SZ_MUL;
     const energy=Math.sin(Math.PI*f)*clamp(Math.abs(vel)*1.4,0,1);
     u.uEnergy.value=Math.min(1.3,lerp(u.uEnergy.value,(reduced?energy*.4:energy)+introGlow,.25));
     u.uColA.value.copy(CA[i]).lerp(CA[i+1],e);
@@ -4611,7 +4770,7 @@ function tick(now){
       if(ga.visible)ga.material.uniforms.uFade.value=atmFade;
       /* the formed world reads brighter: lift the canvas' overall opacity
          (0.5 everywhere else) as the globe condenses, ease back on leave */
-      const glO=(.5+.3*bodyFade).toFixed(2);
+      const glO=(GL_BASE+(GL_GLOBE-GL_BASE)*bodyFade).toFixed(2);
       if(glO!==lastGlO){lastGlO=glO;document.documentElement.style.setProperty('--gl-o',glO);}
     }
     const wantGrab=globeMixS>.5;
@@ -4664,7 +4823,7 @@ function tick(now){
     if(dust){
       const tS=now/1000;
       dust.uniforms.uTime.value=tS;
-      dust.uniforms.uOpacity.value=.35+u.uEnergy.value*.2;
+      dust.uniforms.uOpacity.value=(.5+u.uEnergy.value*.25)*DUST_MUL;
       dust.group.rotation.y=tS*.006+rotFree*.18+curP*.12;
       dust.group.rotation.x=curP*.08;
       dust.group.rotation.z=Math.sin(tS*.07)*.03;
@@ -5024,5 +5183,7 @@ setInterval(render,500);
 push('debug overlay active');
 })();
 </script>
+
+
 </body>
 </html>
