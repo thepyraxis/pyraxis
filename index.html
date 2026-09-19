@@ -4251,9 +4251,13 @@ try{
         float intensity=pow(.72-dot(vNormal,vec3(0.,0.,1.)),3.5);
         intensity*=smoothstep(-.5,-.12,vNormal.z);
         vec3 c=mix(uColor,vec3(.93,.93,1.),.3);
-        gl_FragColor=vec4(c*intensity*.55*uFade,1.);
+        /* premultiplied additive: alpha tracks glow strength, so where the
+           glow is ~0 the canvas stays transparent (no opaque black disc) */
+        float k=intensity*.55*uFade;
+        gl_FragColor=vec4(c*k,k);
       }`,
-    side:THREE.BackSide,blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,depthTest:false
+    side:THREE.BackSide,transparent:true,depthWrite:false,depthTest:false,
+    blending:THREE.CustomBlending,blendEquation:THREE.AddEquation,blendSrc:THREE.OneFactor,blendDst:THREE.OneFactor
   });
   const globeAtm=new THREE.Mesh(new THREE.SphereGeometry(GLOBE_R*1.115,gseg,gseg),atmMat);
   globeAtm.renderOrder=1;
