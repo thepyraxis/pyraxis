@@ -1893,7 +1893,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
         <h3 id="mTitle">Get your system.</h3>
         <p class="m-lede">Tell us how customers find you today — we map it and show it running.</p>
         <form id="leadForm" novalidate>
-          <label>Your name<input type="text" name="name" autocomplete="name" maxlength="80"></label>
+          <label>Your name<input type="text" name="name" autocomplete="name" maxlength="80" spellcheck="false" autocorrect="off" autocapitalize="words"></label>
           <label>Business type
             <select name="type">
               <option>Restaurant</option><option>Salon</option><option>Clinic</option><option>Gym</option>
@@ -3129,7 +3129,34 @@ function startOnSeen(el, play){
   var LEAD_TO_EMAIL="thepyaxis@gmail.com";
   var pendingMsg="";
   var lastFocus=null;
-  function open(){
+  var DRAFT_KEY='pyraxis-lead-draft';
+  /* Half-filled forms survive crashes, reloads and accidental closes:
+     every keystroke is mirrored to sessionStorage (same tab only). */
+  function isDirty(){
+    if(!form) return false;
+    var names=['name','need','phone','email'], i, el;
+    for(i=0;i<names.length;i++){ el=form.elements[names[i]]; if(el&&el.value&&el.value.trim()) return true; }
+    el=form.elements.type;
+    return !!(el&&el.selectedIndex>0);
+  }
+  function saveDraft(){
+    if(!form) return;
+    try{
+      sessionStorage.setItem(DRAFT_KEY,JSON.stringify({
+        name:form.elements.name.value, type:form.elements.type.value,
+        need:form.elements.need.value, phone:form.elements.phone.value,
+        email:form.elements.email.value
+      }));
+    }catch(e){}
+  }
+  function readDraft(){
+    try{ return JSON.parse(sessionStorage.getItem(DRAFT_KEY)||'null'); }catch(e){ return null; }
+  }
+  function draftHasData(d){
+    return !!(d&&((d.name||'')+(d.need||'')+(d.phone||'')+(d.email||'')).trim());
+  }
+  function clearDraft(){ try{ sessionStorage.removeItem(DRAFT_KEY); }catch(e){} }
+  function open(fromRestore){
     lastFocus=document.activeElement;
     if(mForm) mForm.hidden=false;
     if(mDone) mDone.hidden=true;
@@ -3140,20 +3167,40 @@ function startOnSeen(el, play){
     if(err) err.hidden=true;
     $$('.bad',form).forEach(function(i){ i.classList.remove('bad'); });
     modal.hidden=false;
+    document.body.style.overflow='hidden';  /* background must not scroll under the form on mobile */
     if(form){
-      try{ form.reset(); }catch(e){}
-      var first=$('input,select',form);
-      if(first) setTimeout(function(){ first.focus(); },60);
+      var d=readDraft();
+      if(draftHasData(d)){
+        try{
+          if(form.elements.name) form.elements.name.value=d.name||'';
+          if(form.elements.type&&d.type) form.elements.type.value=d.type;
+          if(form.elements.need) form.elements.need.value=d.need||'';
+          if(form.elements.phone) form.elements.phone.value=d.phone||'';
+          if(form.elements.email) form.elements.email.value=d.email||'';
+        }catch(e){}
+      }else{ try{ form.reset(); }catch(e){} }
+      if(!fromRestore){
+        var first=$('input,select',form);
+        if(first) setTimeout(function(){ first.focus(); },60);
+      }
     }
   }
   function close(){
+    saveDraft();
     modal.hidden=true;
+    document.body.style.overflow='';
     if(lastFocus && document.contains(lastFocus) && lastFocus.focus) lastFocus.focus();
   }
+  if(form) form.addEventListener('input',saveDraft);
   modal.addEventListener('click',function(e){
     var t=e.target;
     while(t && t!==modal){
-      if(t.getAttribute && t.getAttribute('data-close-modal')!==null){ close(); return; }
+      if(t.getAttribute && t.getAttribute('data-close-modal')!==null){
+        /* a stray backdrop tap must never nuke a half-filled form —
+           the X button and Escape still close explicitly */
+        if(t.classList&&t.classList.contains('modal-back')&&isDirty()){ saveDraft(); return; }
+        close(); return;
+      }
       t=t.parentNode;
     }
   });
@@ -3235,7 +3282,7 @@ function startOnSeen(el, play){
     if(mForm) mForm.hidden=false;
   });
   function showDone(channel){
-    if(mChoice) mChoice.hidden=true;
+    clearDraft();    if(mChoice) mChoice.hidden=true;
     if(mForm) mForm.hidden=true;
     if(doneChannel) doneChannel.textContent=channel;
     if(mDone){ mDone.hidden=false; var b=mDone.querySelector('button'); if(b) b.focus(); }
@@ -3252,6 +3299,11 @@ function startOnSeen(el, play){
     showDone('your mail app');
     toast('Your mail app opened — press send there and we will reach you quickly.');
   });
+  /* reloaded / crashed mid-fill? put the visitor straight back into the
+     form with their draft — never strand them on the main menu */
+  try{
+    if(draftHasData(readDraft())) setTimeout(function(){ open(true); },600);
+  }catch(e){}
 })();
 
 (function(){
@@ -4205,7 +4257,7 @@ try{
 
   let lastP=-1;
   function morph(p,force){
-    if(!force&&Math.abs(p-lastP)<.0004)return false;
+    if(!force&&Math.abs(p-lastP)<.00005)return false;
     lastP=p;
     const i=clamp(Math.floor(p),0,4);
     const t=clamp(p-i,0,1);
@@ -4378,8 +4430,11 @@ function tick(now){
   const dt=clamp((now-lastNow)/1000,.001,.05);lastNow=now;
 
   const tgt=window.scrollY||0;
-  cur=coarse||reduced?tgt:cur+(tgt-cur)*Math.min(1,dt*3.2);
-  if(Math.abs(tgt-cur)<.1)cur=tgt;
+  /* single smoothing layer: fast follow so one scroll = one move.
+     The old dt*3.2 + 0.6s glide double-smoothing caused
+     slow-fast-slow (hang) inside a single wheel tick. */
+  cur=coarse||reduced?tgt:cur+(tgt-cur)*Math.min(1,dt*8);
+  if(Math.abs(tgt-cur)<.5)cur=tgt;
   curP=clamp(cur/range,0,1)*(COARSE||innerWidth<640?1.5:5);
   const vel=(curP-lastFrameP)/dt;lastFrameP=curP;
   /* full rate always while visible: the 60→30fps step-down read as lag
@@ -4413,8 +4468,10 @@ function tick(now){
       if(done){P.set(B);introFrom=null;if(window.topoStart)window.topoStart();}
       engine.posAttr.needsUpdate=true;
     }
-    if(engine&&glideT<1&&!introFrom){
-      /* responsive re-layout: glide to the new target, never teleport */
+    if(engine&&glideT<1&&!introFrom&&!dirty){
+      /* responsive re-layout / texture glide ONLY when scroll is idle:
+         never fight an active scroll or it restarts every frame and
+         reads as slow-fast-slow (hang) inside one scroll gesture */
       glideT=Math.min(1,glideT+dt/0.6);
       const e=glideT*glideT*(3-2*glideT);
       const P=engine.posAttr.array,B=engine.baseArr;
@@ -4426,11 +4483,12 @@ function tick(now){
       }
       if(glideT>=1)glideFrom=null;
       engine.posAttr.needsUpdate=true;
-    }else if(dirty&&!introFrom&&!(globeBlendFrom&&globeBlendT<1)){
-      /* scroll moved the target: glide from what's on screen, never snap —
-         the old teleport here fired almost every frame while scrolling
-         and read as the page constantly reloading */
-      if(glideT>=1||!glideFrom){ glideFrom=new Float32Array(engine.posAttr.array); glideT=0; }
+    }else if(!introFrom&&!(globeBlendFrom&&globeBlendT<1)){
+      /* normal scroll path: 1:1 copy of the logical target.
+         Floating/idle motion lives in the vertex shader (uWobble/uTime),
+         so the swarm still breathes when scroll stops. */
+      if(dirty&&glideFrom){glideFrom=null;glideT=1;} /* scroll cancels stale layout glide */
+      if(dirty){engine.posAttr.array.set(engine.baseArr);engine.posAttr.needsUpdate=true;}
     }
     /* LATE-TEXTURE MELT — crossfade whatever is on screen into the new
        continents, staggered per particle; runs alongside scrolling
