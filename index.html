@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0a0a0d">
-<title>PYRAXIS — The Customer Growth System</title>
-<meta name="description" content="PYRAXIS connects every step between customer discovery and customer growth — one automated system that finds, captures, converts, keeps and learns from every customer.">
+<title>PYRAXIS — Customers, kept.</title>
+<meta name="description" content="Pyraxis builds one connected system for local businesses — website, booking, follow-up and reviews around a single customer record.">
 <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
-<meta property="og:title" content="PYRAXIS — The Customer Growth System">
-<meta property="og:description" content="PYRAXIS connects every step between customer discovery and customer growth — one automated system that finds, captures, converts, keeps and learns from every customer.">
+<meta property="og:title" content="PYRAXIS — Customers, kept.">
+<meta property="og:description" content="One connected system for local businesses — website, booking, follow-up and reviews around a single customer record.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="public/og-image.webp">
 <meta property="og:image:width" content="1536">
 <meta property="og:image:height" content="1024">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="PYRAXIS — The Customer Growth System">
-<meta name="twitter:description" content="PYRAXIS connects every step between customer discovery and customer growth — one automated system that finds, captures, converts, keeps and learns from every customer.">
+<meta name="twitter:title" content="PYRAXIS — Customers, kept.">
+<meta name="twitter:description" content="One connected system for local businesses — website, booking, follow-up and reviews around a single customer record.">
 <meta name="twitter:image" content="public/og-image.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   color-scheme:dark;
@@ -28,79 +28,98 @@
   --ink:#f0eee9; --soft:#c9c7ce; --mut:#8e8e98; --mut2:#5c5c66;
   --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.16);
   --pu:#7c5cff; --pu2:#a78bff; --pud:rgba(124,92,255,.35);
-  --serif:'Fraunces',Georgia,serif; --sans:'Archivo',Helvetica,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
-  --rail:86px; --wrap:1160px;
+  --champ:#D8B98A; --champ-dim:rgba(216,185,138,.45);
+  --serif:'Instrument Serif',Georgia,serif; --sans:'Inter Tight',Helvetica,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --rail:86px; --wrap:1200px;
   --w-bg:#0b141a; --w-hd:#202c33; --w-in:#202c33; --w-out:#005c4b; --w-txt:#e9edef; --w-sub:#8696a0; --w-tick:#53bdeb; --w-ac:#00a884;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{background:#0a0a0d;scroll-padding-top:80px}
 @media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 html,body{overflow-x:clip}
-body{background:transparent;color:var(--soft);font:400 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+body{background:#0a0a0d;color:var(--soft);font:400 17px/1.65 var(--sans);letter-spacing:-.011em;-webkit-font-smoothing:antialiased}
 ::selection{background:var(--pu);color:#0a0a0d}
-:focus-visible{outline:2px solid var(--pu2);outline-offset:3px;border-radius:2px}
+:focus-visible{outline:2px solid var(--pu);outline-offset:3px;border-radius:2px}
 ::-webkit-scrollbar{width:9px}::-webkit-scrollbar-thumb{background:#232328;border-radius:5px}
 img,svg{display:block}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 a{color:inherit;text-decoration:none}
 [hidden]{display:none!important}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.skip{position:absolute;left:-9999px;z-index:5000;background:var(--pu);color:#0b0b0e;padding:10px 16px;font:600 11px var(--sans)}
+.skip{position:absolute;left:-9999px;z-index:5000;background:var(--pu);color:#0a0a0d;padding:10px 16px;font:600 11px var(--sans)}
 .skip:focus{left:12px;top:12px}
-.grain{position:fixed;inset:0;z-index:4000;pointer-events:none;opacity:.05;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E")}
+.grain{display:none}
 
-/* ============ WEBGL EMBER FIELD — the scroll-driven mark ============ */
+/* ============ CUSTOM CURSOR — liquid dot + ring, contextual states ============ */
+html.finecur,html.finecur *{cursor:none!important}
+#cDot,#cRing{position:fixed;left:0;top:0;z-index:6000;pointer-events:none;will-change:transform;opacity:0}
+body.cur-on #cDot,body.cur-on #cRing{opacity:1}
+#cDot .d{width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:var(--pu2);box-shadow:0 0 10px rgba(167,139,255,.9);will-change:transform;
+  transition:width .45s cubic-bezier(.19,1,.22,1),height .45s cubic-bezier(.19,1,.22,1),margin .45s cubic-bezier(.19,1,.22,1),border-radius .45s cubic-bezier(.19,1,.22,1)}
+#cRing .r{width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:1.5px solid var(--pu);box-shadow:0 0 14px rgba(124,92,255,.35),inset 0 0 8px rgba(124,92,255,.15);display:flex;align-items:center;justify-content:center;
+  transition:width .5s cubic-bezier(.19,1,.22,1),height .5s cubic-bezier(.19,1,.22,1),margin .5s cubic-bezier(.19,1,.22,1),background-color .35s ease,border-color .35s ease,box-shadow .35s ease;
+  will-change:transform}
+.r-label{font:500 9px var(--sans);letter-spacing:.26em;text-transform:uppercase;opacity:0;transition:opacity .25s ease .05s}
+body.pressing .r,body.pressing .d{scale:.82}
+body[data-cstate="link"] #cRing .r{width:50px;height:50px;margin:-25px 0 0 -25px;background:rgba(124,92,255,.16);border-color:var(--pu2);box-shadow:0 0 22px rgba(124,92,255,.55)}
+body[data-cstate="view"] #cRing{mix-blend-mode:normal}
+body[data-cstate="view"] #cRing .r{width:86px;height:86px;margin:-43px 0 0 -43px;background:var(--pu);border-color:transparent;box-shadow:0 0 34px rgba(124,92,255,.65)}
+body[data-cstate="view"] .r-label{opacity:1;color:#0b0b0e}
+body[data-cstate="view"] #cDot{opacity:0}
+body[data-cstate="text"] #cRing .r{width:0;height:0;margin:0;border-color:transparent}
+body[data-cstate="text"] #cDot .d{width:2px;height:24px;margin:-12px 0 0 -1px;border-radius:2px}
+@media (hover:none),(pointer:coarse){#cDot,#cRing{display:none}}
+
+/* ============ WEBGL EMBER FIELD — quiet, warm, behind content ============ */
 #gl{position:fixed;inset:0;z-index:0;opacity:0;transition:opacity .8s ease .1s}
-#gl.on{opacity:1}
-/* hero topo field — fixed fullscreen BEFORE #gl in DOM so the ember
-   particles always paint in front of it; gated to hero visibility */
+#gl.on{opacity:.5}
 #topo{position:fixed;inset:0;width:100%;height:100%;opacity:0;transition:opacity 1.4s ease;pointer-events:none;z-index:0}
-#topo.live{opacity:.55}
+#topo.live{opacity:.28}
 #hero>.wrap{position:relative;z-index:1}
-.vig{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 44%,transparent 52%,rgba(3,2,7,.6) 100%)}
+.vig{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 44%,transparent 55%,rgba(8,6,4,.55) 100%)}
 #main,footer{position:relative;z-index:2}
 body.globe-live{cursor:grab}
 body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 
 .wrap{max-width:var(--wrap);margin:0 auto;padding-inline:clamp(20px,5vw,48px)}
-.kicker{font:500 11px var(--mono);letter-spacing:.32em;color:var(--mut);text-transform:uppercase;display:flex;align-items:center;gap:12px}
-.kicker::before{content:"";width:26px;height:1px;background:var(--pu);flex:none}
-.kicker.center{justify-content:center}.kicker.center::after{content:"";width:26px;height:1px;background:var(--pu);flex:none}
-h1{font:500 clamp(2.5rem,6vw,4.4rem)/1.06 var(--serif);letter-spacing:-.02em;color:var(--ink);margin:22px 0 14px;text-wrap:balance}
-h1 em{font-style:italic;color:var(--pu2)}
+.kicker{font:600 11px var(--sans);letter-spacing:.18em;color:var(--pu2);text-transform:uppercase;display:flex;align-items:center;gap:12px}
+.kicker::before{content:attr(data-n);font:500 11px var(--mono);letter-spacing:.08em;color:var(--mut2)}
+.kicker::after{content:"";width:40px;height:1px;background:var(--line2);flex:none}
+.kicker.center{justify-content:flex-start}.kicker.center::after{content:"";width:40px;height:1px;background:var(--line2);flex:none}
+h1{font:400 clamp(3.2rem,8vw,6.8rem)/.95 var(--serif);letter-spacing:-.02em;color:var(--ink);margin:26px 0 20px;text-wrap:balance}
+h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 /* hero word-mask reveal (NexusNode pattern): words rise out of overflow masks on load */
 .js #hero h1 .wm{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.12em;margin-bottom:-.12em}
 .js #hero h1 .wi{display:inline-block;transform:translateY(115%);
   transition:transform 1.05s cubic-bezier(.16,1,.3,1);transition-delay:var(--d,0ms)}
 .js #hero h1.in .wi{transform:none}
 @media (prefers-reduced-motion:reduce){.js #hero h1 .wi{transform:none;transition:none}}
-.hero-promise{font:italic 500 clamp(1.1rem,1.9vw,1.4rem)/1.5 var(--serif);color:var(--ink);max-width:38ch;margin:0 0 14px}
+.hero-promise{font:400 clamp(1.25rem,2.2vw,1.7rem)/1.35 var(--serif);color:var(--ink);max-width:26ch;margin:0 0 16px;letter-spacing:-.01em}
 .hero-promise em{font-style:italic;color:var(--pu2)}
-.h2{font:500 clamp(1.9rem,4.5vw,3.3rem)/1.12 var(--serif);letter-spacing:-.015em;color:var(--ink);margin:16px 0 12px;text-wrap:balance}
-.h2 em{font-style:italic;color:var(--pu2)}
-.lede{font-size:clamp(1rem,1.3vw,1.1rem);color:var(--mut);max-width:58ch}
-.pull{font:italic 500 clamp(1.25rem,2.2vw,1.7rem)/1.45 var(--serif);color:var(--ink)}
-.pull.center{text-align:center;max-width:38ch;margin-inline:auto}
-.cap{font:500 10px var(--mono);letter-spacing:.28em;color:var(--mut2);text-transform:uppercase}
-.sec{position:relative;padding:clamp(84px,12vh,140px) 0;border-top:1px solid rgba(255,255,255,.045)}
-.sec-head{max-width:720px;margin-bottom:clamp(40px,5vw,64px)}
+.h2{font:400 clamp(2.4rem,5.5vw,4.2rem)/1.0 var(--serif);letter-spacing:-.02em;color:var(--ink);margin:18px 0 14px;text-wrap:balance;max-width:16ch}
+.h2 em{font-style:italic;font-weight:400;color:var(--pu2)}
+.lede{font-size:1.05rem;line-height:1.6;color:var(--mut);max-width:46ch}
+.pull{font:400 clamp(1.6rem,3vw,2.4rem)/1.25 var(--serif);letter-spacing:-.015em;color:var(--ink);max-width:24ch}
+.pull.center{text-align:left;max-width:24ch;margin-inline:0;border-left:1px solid var(--pu);padding-left:24px}
+.cap{font:500 10px var(--mono);letter-spacing:.18em;color:var(--mut2);text-transform:uppercase}
+.sec{position:relative;padding:clamp(96px,13vh,160px) 0;border-top:1px solid var(--line)}
+.sec-head{max-width:860px;margin-bottom:clamp(48px,6vw,80px)}
 .js [data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,.61,.36,1)}
 .js [data-reveal].in{opacity:1;transform:none}
-.btn{font:600 12px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;display:inline-flex;align-items:center;gap:10px;
-  padding:17px 26px;border-radius:3px;border:1px solid transparent;transition:background .25s,border-color .25s,color .25s,transform .25s}
+.btn{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;display:inline-flex;align-items:center;gap:10px;
+  padding:17px 26px;border-radius:2px;border:1px solid transparent;transition:background .25s,border-color .25s,color .25s,transform .25s}
 .btn svg{width:15px;height:15px;transition:transform .25s}
 .btn:hover svg{transform:translateX(3px)}
-.btn-solid{background:var(--pu);color:#0b0b0e}
-.btn-solid:hover{background:var(--pu2);transform:translateY(-1px)}
+.btn-solid{background:var(--ink);color:#0a0a0d}
+.btn-solid:hover{background:var(--pu);color:#0a0a0d;transform:translateY(-1px)}
 .btn-ghost{border-color:var(--line2);color:var(--ink)}
-.btn-ghost:hover{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.035)}
-.btn-sm{padding:12px 18px;letter-spacing:.14em}
+.btn-ghost:hover{border-color:var(--ink);background:transparent}
+.btn-sm{padding:12px 18px;letter-spacing:.1em}
 .btn-lg{padding:20px 36px;font-size:13px}
 .ic{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .sr-sprite{position:absolute;width:0;height:0;overflow:hidden}
 
-.nav{position:fixed;inset:0 0 auto;z-index:900;height:64px;border-bottom:1px solid transparent;transition:background .35s,border-color .35s}
+.nav{position:fixed;inset:0 0 auto;z-index:900;height:68px;border-bottom:1px solid transparent;transition:background .35s,border-color .35s}
 .nav.scrolled{background:rgba(10,10,13,.8);backdrop-filter:blur(14px);border-color:var(--line)}
 .nav-in{max-width:var(--wrap);margin:0 auto;height:100%;padding-inline:clamp(20px,5vw,48px);display:flex;align-items:center;justify-content:space-between;gap:20px}
 .brand{display:flex;align-items:center;gap:11px;font:700 13px var(--sans);letter-spacing:.34em;color:var(--ink)}
@@ -109,8 +128,10 @@ h1 em{font-style:italic;color:var(--pu2)}
 .nav-links a{font:500 10.5px var(--mono);letter-spacing:.22em;color:var(--mut);text-transform:uppercase;position:relative;padding:6px 0}
 .nav-links a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--pu);transition:width .3s}
 .nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{width:100%}
-.burger{width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--line2);border-radius:3px;color:var(--ink)}
+.burger{width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--line2);border-radius:3px;color:var(--ink);flex:none}
 .burger svg{width:18px;height:18px}
+.nav-cta{display:flex;align-items:center;gap:10px}
+@media(max-width:899px){.nav-cta .btn{padding:11px 14px;font-size:10.5px;letter-spacing:.12em;white-space:nowrap}}
 @media(min-width:900px){.nav-links{display:flex}.burger{display:none}}
 .mnav{position:fixed;inset:0;z-index:880;background:rgba(8,8,11,.96);backdrop-filter:blur(12px);display:flex;flex-direction:column;
   justify-content:center;padding:40px clamp(24px,8vw,60px);gap:6px;opacity:0;visibility:hidden;transform:translateY(-10px);transition:.35s}
@@ -234,32 +255,31 @@ h1 em{font-style:italic;color:var(--pu2)}
 .syslog li svg{width:13px;height:13px;fill:none;stroke:var(--pu);stroke-width:2.2;flex:none}
 
 /* ============ hero ============ */
-#hero{border-top:0;padding-top:clamp(110px,15vh,160px);padding-bottom:clamp(64px,9vh,100px);overflow:clip;
-  -webkit-user-select:none;user-select:none} /* text locked so pointer interacts with the field, not selections */
-.hero-pool{position:absolute;width:min(640px,95vw);aspect-ratio:1;right:-10%;top:0;pointer-events:none;
-  background:radial-gradient(circle,rgba(76,40,160,.12),transparent 62%)}
-.hero-grid{display:grid;gap:clamp(40px,5vw,72px);position:relative;align-items:center}
-@media(min-width:980px){.hero-grid{grid-template-columns:1fr auto}}
-.hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
-.model{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 10px;max-width:980px;margin:clamp(46px,7vh,76px) auto 0}
-.mp{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);border-radius:99px;padding:10px 15px;
-  font:500 10px var(--mono);letter-spacing:.18em;color:var(--soft);text-transform:uppercase;background:rgba(13,13,18,.85)}
-.mp .ic{width:13px;height:13px;color:var(--mut)}
-.mp.key{border-color:var(--pud);color:var(--pu2)}.mp.key .ic{color:var(--pu2)}
-.ma{color:var(--mut2);font:400 11px var(--mono)}
+#hero{border-top:0;padding-top:clamp(130px,16vh,180px);padding-bottom:clamp(56px,8vh,88px);overflow:clip;
+  -webkit-user-select:none;user-select:none} /* hero text fully locked — pointer belongs to the field */
+.hero-pool{display:none}
+.hero-grid{display:grid;gap:clamp(40px,5vw,72px);position:relative;align-items:end;max-width:880px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:36px}
+.model{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:0;max-width:100%;margin:clamp(48px,7vh,72px) 0 0;border-top:1px solid var(--line)}
+.mp{display:inline-flex;align-items:center;gap:10px;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:14px 18px 14px 0;margin-right:18px;
+  font:600 11px var(--sans);letter-spacing:.14em;color:var(--mut);text-transform:uppercase;background:transparent}
+.mp .ic{width:13px;height:13px;color:var(--mut2)}
+.mp.key{border-color:var(--line);border-bottom:1px solid var(--pu);color:var(--ink)}.mp.key .ic{color:var(--pu)}
+.ma{color:var(--mut2);font:400 11px var(--mono);margin-right:18px;display:none}
 .cue{display:flex;align-items:center;gap:14px;margin-top:clamp(40px,7vh,72px)}
 .cue-line{width:1px;height:44px;background:var(--line2);position:relative;overflow:hidden}
 .cue-line i{position:absolute;left:0;width:1px;height:10px;background:var(--pu);animation:cued 2.3s infinite}
-.cue span{font:500 9.5px var(--mono);letter-spacing:.32em;color:var(--mut2)}
+.cue span{font:500 9.5px var(--mono);letter-spacing:.22em;color:var(--mut2)}
 @keyframes cued{0%{top:-12px}70%,100%{top:46px}}
 
-/* ============ marquee ticker (ported back from Next.js MarqueeTicker) ============ */
+/* ============ marquee ticker — quiet editorial rule, not neon ============ */
 .mq{position:relative;z-index:2;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-  padding:20px 0;background:rgba(10,10,13,.72)}
-.mq-track{display:flex;width:max-content;animation:mq 30s linear infinite}
+  padding:16px 0;background:transparent}
+.mq-track{display:flex;width:max-content;animation:mq 42s linear infinite}
 .mq-group{display:flex;align-items:center}
-.mq-group span{margin-right:64px;font:600 10px var(--mono);letter-spacing:.28em;color:var(--mut);
-  text-transform:uppercase;white-space:nowrap;flex:none}
+.mq-group span{margin-right:56px;font:400 15px var(--serif);font-style:italic;letter-spacing:.01em;color:var(--mut);
+  text-transform:none;white-space:nowrap;flex:none}
+.mq-group span:nth-child(even){font-family:var(--sans);font-style:normal;font-weight:600;font-size:10px;letter-spacing:.2em;text-transform:uppercase}
 @keyframes mq{to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.mq-track{animation:none}}
 
@@ -299,12 +319,12 @@ h1 em{font-style:italic;color:var(--pu2)}
 
 /* ============ 03b growth system (ported from Next.js GrowthSystem) ============ */
 .gsys-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:920px;margin:0 auto}
-.gnode{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line2);border-radius:99px;
+.gnode{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line2);border-radius:2px;
   padding:11px 17px;font:500 10px var(--mono);letter-spacing:.16em;color:var(--mut);text-transform:uppercase;
   background:rgba(10,10,13,.9);transition:border-color .3s,color .3s,box-shadow .3s}
 .gnode .ic{width:13px;height:13px;color:var(--mut2);transition:color .3s}
 .gnode:hover{color:var(--ink)}
-.gnode.on{border-color:var(--pu);color:var(--ink);box-shadow:0 0 0 3px rgba(124,92,255,.13)}
+.gnode.on{border-color:var(--pu);color:var(--ink);box-shadow:0 0 0 1px rgba(124,92,255,.35)}
 .gnode.on .ic{color:var(--pu2)}
 .gnode:focus-visible{outline:2px solid var(--pu2);outline-offset:3px}
 .gsys-panel{max-width:360px;margin:34px auto 0;text-align:center;min-height:176px}
@@ -343,17 +363,17 @@ h1 em{font-style:italic;color:var(--pu2)}
 .bus-re:hover{color:var(--ink)}
 .earn{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:30px}
 .earn span{font:500 9.5px var(--mono);letter-spacing:.16em;color:var(--mut);text-transform:uppercase;
-  border:1px solid var(--line);border-radius:99px;padding:8px 13px}
+  border:1px solid var(--line);border-radius:2px;padding:8px 13px}
 .earn b{color:var(--pu2);font-weight:500}
 .earn-cap{text-align:center;margin-top:12px}
 @media(max-width:560px){.mod-num{display:none}.mod-t span{font-size:.86rem}}
 
 /* ============ 05 how it works ============ */
 .jflow{display:flex;flex-wrap:wrap;gap:9px;align-items:center;justify-content:center;max-width:1020px;margin:0 auto 8px}
-.jf{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line2);border-radius:99px;padding:11px 16px;
+.jf{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line2);border-radius:2px;padding:11px 16px;
   font:500 10px var(--mono);letter-spacing:.16em;color:var(--mut);text-transform:uppercase;background:rgba(10,10,13,.9);transition:.3s}
 .jf .ic{width:13px;height:13px}
-.jf.on{border-color:var(--pu);color:var(--ink);box-shadow:0 0 0 3px rgba(124,92,255,.13)}
+.jf.on{border-color:var(--pu);color:var(--ink);box-shadow:0 0 0 1px rgba(124,92,255,.35)}
 .jf.key{color:var(--pu2);border-color:var(--pud)}
 .jf-arr{color:var(--mut2)}
 .how-sub{text-align:center;margin:clamp(36px,5vw,52px) 0 16px}
@@ -362,7 +382,7 @@ h1 em{font-style:italic;color:var(--pu2)}
 .flow-cols{position:relative;z-index:1;display:flex;flex-direction:column;gap:34px}
 .flow-col{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
 .src-chip{font:500 10px var(--mono);letter-spacing:.16em;color:var(--soft);text-transform:uppercase;border:1px solid var(--line2);
-  border-radius:99px;padding:10px 15px;background:rgba(10,10,13,.9);display:inline-flex;align-items:center;gap:9px}
+  border-radius:2px;padding:10px 15px;background:rgba(10,10,13,.9);display:inline-flex;align-items:center;gap:9px}
 .src-chip .ic{width:13px;height:13px;color:var(--mut)}
 .flow-node{position:relative;max-width:330px;width:100%;margin:0 auto;padding:24px 26px;background:rgba(13,13,18,.92);backdrop-filter:blur(6px)}
 .fn-top{display:flex;align-items:center;gap:9px;font:500 9px var(--mono);letter-spacing:.3em;color:var(--mut2);margin-bottom:14px}
@@ -374,7 +394,7 @@ h1 em{font-style:italic;color:var(--pu2)}
 .fn-list li::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--pud);flex:none}
 .flow-term-row{display:flex;justify-content:center;margin-top:26px;position:relative;z-index:1}
 .flow-term{font:500 10px var(--mono);letter-spacing:.26em;color:var(--pu2);text-transform:uppercase;border:1px solid var(--pud);
-  border-radius:99px;padding:11px 20px;display:inline-flex;align-items:center;gap:10px;background:rgba(10,10,13,.92)}
+  border-radius:2px;padding:11px 20px;display:inline-flex;align-items:center;gap:10px;background:rgba(10,10,13,.92)}
 .flow-term i{width:6px;height:6px;border-radius:50%;background:var(--pu)}
 .flow-cap{text-align:center;margin-top:30px}
 @media(min-width:900px){
@@ -527,12 +547,15 @@ h1 em{font-style:italic;color:var(--pu2)}
 .q-hint{margin-top:14px;display:flex;align-items:center;gap:10px;font:500 9px var(--mono);letter-spacing:.24em;color:var(--mut2);text-transform:uppercase}
 .q-hint i{width:6px;height:6px;border-radius:50%;background:var(--pu);animation:blink 2.4s infinite}
 .qr-loop{margin-top:clamp(44px,6vw,70px)}
-.qr-after{margin-top:clamp(36px,5vw,54px);max-width:560px;margin-inline:auto}
-.qa-h{font:500 10px var(--mono);letter-spacing:.26em;color:var(--pu2);text-transform:uppercase}
+.qr-after{margin-top:clamp(36px,5vw,54px);max-width:560px;margin-inline:auto;position:relative}
+.qr-after::before{content:"";position:absolute;inset:-28px -36px;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(4,3,8,.88),rgba(4,3,8,.55) 55%,transparent 75%)}
+.qr-after .qa-h,.qr-after .qa-rows{position:relative}
+.qa-h{font:500 10px var(--sans);letter-spacing:.24em;color:var(--champ);text-transform:uppercase}
 .qa-rows{margin-top:18px}
 .qa-rows>div{display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line);padding:10px 0}
-.qa-rows b{font:500 9px var(--mono);letter-spacing:.18em;color:var(--mut2);text-transform:uppercase}
-.qa-rows span{font:400 11px var(--mono);color:var(--soft)}
+.qa-rows b{font:500 9px var(--mono);letter-spacing:.18em;color:#b6b6c0;text-transform:uppercase;text-shadow:0 1px 10px rgba(0,0,0,.9)}
+.qa-rows span{font:400 11px var(--mono);color:var(--ink);text-shadow:0 1px 10px rgba(0,0,0,.9)}
 
 /* ============ 07 review engine ============ */
 .rev{border:1px solid var(--line2);border-radius:14px;background:rgba(13,13,18,.9);overflow:hidden}
@@ -563,7 +586,7 @@ h1 em{font-style:italic;color:var(--pu2)}
 .rev-ctrl{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:18px 22px;border-top:1px solid var(--line)}
 .rev-ends{display:flex;gap:8px;flex-wrap:wrap}
 .rev-end{font:600 10px var(--mono);letter-spacing:.18em;text-transform:uppercase;padding:11px 16px;border:1px solid var(--line2);
-  border-radius:99px;color:var(--mut);transition:.25s}
+  border-radius:2px;color:var(--mut);transition:.25s}
 .rev-end:hover{color:var(--ink)}
 .rev-end.on{border-color:var(--pu);color:var(--pu2);background:rgba(124,92,255,.08)}
 .rev-end.pulse{animation:endpulse 1.8s infinite}
@@ -832,7 +855,9 @@ h1 em{font-style:italic;color:var(--pu2)}
 #compounding>.wrap{position:relative;z-index:1}
 .wheel{position:relative;max-width:860px;margin:0 auto}
 .wheel-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:0}
-.wheel-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:110px 22px;padding:8px 0}
+.wheel-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:110px 22px;padding:8px 0;pointer-events:none}
+/* gaps fall through to the hub beneath (View cursor); cards stay live */
+.wheel-grid .wh{pointer-events:auto}
 .wh{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;
   border:1px solid var(--line);border-radius:10px;padding:18px 10px 16px;
   background:linear-gradient(180deg,rgba(22,22,30,.94),rgba(12,12,16,.92));
@@ -852,7 +877,7 @@ h1 em{font-style:italic;color:var(--pu2)}
 .wheel-mid{position:absolute;inset:0;display:grid;place-items:center;z-index:0;pointer-events:none}
 /* flywheel hub — the loop's meaningful center: live cycle count plus the
    compounding multiplier, ringed by a slow satellite orbit */
-.hub{position:relative;width:148px;height:148px;display:flex;align-items:center;justify-content:center;background:none;border:0;box-shadow:none}
+.hub{position:relative;width:148px;height:148px;display:flex;align-items:center;justify-content:center;background:none;border:0;box-shadow:none;pointer-events:auto}
 /* the endless cycle — a bold loop arrow in slow rotation */
 .hub-loop{width:60px;height:60px;overflow:visible;filter:drop-shadow(0 0 12px rgba(124,92,255,.55))}
 .hub-spin{transform-box:view-box;transform-origin:60px 60px;animation:loopspin 14s linear infinite}
@@ -879,12 +904,12 @@ h1 em{font-style:italic;color:var(--pu2)}
 .rh-av{width:46px;height:46px;border-radius:50%;border:1px solid var(--pud);display:grid;place-items:center;font:500 17px var(--serif);color:var(--pu2);flex:none}
 .rh-name{font:600 1.05rem var(--sans);color:var(--ink)}
 .rh-name small{display:block;font:400 9px var(--mono);letter-spacing:.18em;color:var(--mut2);margin-top:3px}
-.rh-tag{margin-left:auto;font:500 8.5px var(--mono);letter-spacing:.2em;border:1px solid var(--pud);color:var(--pu2);border-radius:99px;padding:5px 11px;text-transform:uppercase;background:rgba(124,92,255,.1)}
+.rh-tag{margin-left:auto;font:500 8.5px var(--mono);letter-spacing:.2em;border:1px solid var(--pud);color:var(--pu2);border-radius:2px;padding:5px 11px;text-transform:uppercase;background:rgba(124,92,255,.1)}
 .rh-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px 24px;margin-top:20px}
 .rh-grid>div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:8px}
-.rh-grid dt{font:500 8.5px var(--mono);letter-spacing:.16em;color:var(--mut2);text-transform:uppercase}
-.rh-grid dd{font:500 11px var(--mono);color:var(--soft);text-align:right}
-.rh-next{margin-top:18px;display:flex;align-items:center;gap:10px;font:500 9.5px var(--mono);letter-spacing:.16em;color:var(--pu2);text-transform:uppercase}
+.rh-grid dt{font:500 8.5px var(--mono);letter-spacing:.16em;color:#b6b6c0;text-transform:uppercase;text-shadow:0 1px 10px rgba(0,0,0,.9)}
+.rh-grid dd{font:500 11px var(--mono);color:var(--ink);text-align:right;text-shadow:0 1px 10px rgba(0,0,0,.9)}
+.rh-next{margin-top:18px;display:flex;align-items:center;gap:10px;font:500 9.5px var(--sans);letter-spacing:.18em;color:var(--champ);text-transform:uppercase}
 .rh-next .ic{width:14px;height:14px}
 .qa-h2{font:500 10px var(--mono);letter-spacing:.26em;color:var(--mut);text-transform:uppercase;margin-bottom:20px}
 .qa-block{border-top:1px solid var(--line);padding:16px 0}
@@ -919,14 +944,16 @@ h1 em{font-style:italic;color:var(--pu2)}
 }
 
 /* ============ CTA / footer ============ */
-#cta{padding:clamp(110px,16vh,180px) 0;text-align:center}
-.cta-h{font:500 clamp(2.1rem,5vw,3.6rem)/1.14 var(--serif);color:var(--ink);letter-spacing:-.015em;margin:20px 0 0;text-wrap:balance}
-.cta-h em{font-style:italic;color:var(--pu2)}
-.cta-h span{display:block;margin-top:12px;font-size:.52em;font-weight:400;font-style:italic;color:var(--mut)}
-.cta-mach{font:italic 400 clamp(1rem,1.8vw,1.2rem)/1.6 var(--serif);color:var(--mut);max-width:52ch;margin:32px auto 0}
+#cta{padding:clamp(110px,16vh,180px) 0;text-align:left}
+#cta .wrap{max-width:var(--wrap)}
+#cta .kicker.center{justify-content:flex-start}
+.cta-h{font:400 clamp(3rem,7vw,5.6rem)/.98 var(--serif);color:var(--ink);letter-spacing:-.02em;margin:20px 0 0;text-wrap:balance;max-width:12ch}
+.cta-h em{font-style:italic;font-weight:400;color:var(--pu2)}
+.cta-mach{font:400 clamp(1.2rem,2vw,1.5rem)/1.4 var(--serif);color:var(--ink);max-width:28ch;margin:28px 0 0}
+.cta-mach em{color:var(--pu2)}
 #cta .btn{margin-top:36px}
-.cta-sub{margin:24px auto 0;color:var(--mut);font-size:.98rem;max-width:44ch}
-.cta-loop{display:inline-flex;align-items:center;gap:9px;margin-top:40px;font:500 9.5px var(--mono);letter-spacing:.28em;color:var(--mut2)}
+.cta-sub{margin:22px 0 0;color:var(--mut);font-size:1rem;max-width:44ch}
+.cta-loop{display:inline-flex;align-items:center;gap:9px;margin-top:40px;font:500 10px var(--mono);letter-spacing:.18em;color:var(--mut2)}
 .cta-loop svg{width:14px;height:14px}
 .cta-loop:hover{color:var(--ink)}
 footer{border-top:1px solid var(--line);padding:56px 0 44px}
@@ -957,11 +984,13 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   border-radius:4px;padding:13px 15px;color:var(--ink);font:400 .95rem var(--sans);appearance:none}
 #leadForm select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238e8e98' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center}
 #leadForm input:focus,#leadForm select:focus{border-color:var(--pud);outline:none}
+#leadForm select option{background:#fff;color:#14141a} /* native popup is light — force dark-on-light rows */
+#leadForm [type="submit"]{position:sticky;bottom:0;z-index:2} /* always visible — never stranded below the fold */
 #leadForm input.bad{border-color:rgba(124,92,255,.7)}
 .f-err{font:400 10.5px var(--mono);color:var(--pu2);margin:-6px 0 14px}
-.f-consent{display:flex;gap:10px;align-items:flex-start;margin:2px 0 16px;font:400 11.5px/1.6 var(--sans);color:var(--mut);letter-spacing:0;text-transform:none}
-#leadForm .f-consent input{display:inline-block;width:16px;height:16px;flex:none;margin:2px 0 0;padding:0;accent-color:var(--pu)}
-.f-consent a{color:var(--pu2)}
+#leadForm label.f-consent{display:flex;gap:10px;align-items:flex-start;margin:2px 0 16px;font:400 11.5px/1.65 var(--sans);color:var(--mut);letter-spacing:0;text-transform:none}
+.f-note{margin:2px 0 16px;font:400 11.5px/1.65 var(--sans);color:var(--mut)}
+.f-note a,.f-consent a{color:var(--pu2)}
 .btn-wide{width:100%;justify-content:center;margin-top:8px}
 .m-done{text-align:center;padding:16px 0 6px}
 .m-done svg{width:44px;height:44px;color:var(--pu);margin:0 auto 18px}
@@ -1062,7 +1091,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <a href="#how">How it works</a>
   <a href="#qr">Live demo</a>
   <a href="#why">Why PYRAXIS</a>
-  <button class="btn btn-solid" data-open-modal type="button">Build your growth system</button>
+  <button class="btn btn-solid" data-open-modal type="button">Get your system</button>
 </div>
 
 <main id="main" class="journey">
@@ -1070,39 +1099,39 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <div class="spine-m" aria-hidden="true"><i></i><b id="spineFillM"></b></div>
 
   <!-- ============ 01 HERO ============ -->
-  <section class="sec" id="hero" aria-label="PYRAXIS — the customer growth system">
+  <section class="sec" id="hero" aria-label="PYRAXIS — customers, kept">
     <div class="hero-pool" aria-hidden="true"></div>
     <div class="wrap">
       <div class="hero-grid">
         <div>
-          <p class="kicker">The Customer Growth System</p>
-          <h1>Watch a customer<br>get <em>kept</em>.</h1>
-          <p class="hero-promise">PYRAXIS connects every step between customer <em>discovery</em> and customer <em>growth</em>.</p>
-          <p class="lede">Acquisition, AI communication, booking, follow-up, retention, reviews, referrals and customer intelligence — one connected, automated system, running while you run the business.</p>
+          <p class="kicker" data-n="01">Pyraxis — for local business</p>
+          <h1>Every customer,<br><em>remembered.</em></h1>
+          <p class="hero-promise">A website, booking, follow-up and review setup built around one customer record.</p>
+          <p class="lede">For restaurants, clinics and shops. Answered in minutes, booked without phone tag, followed up without spreadsheets.</p>
           <div class="hero-cta">
-            <button class="btn btn-solid" data-open-modal type="button">Build your growth system
+            <button class="btn btn-solid" data-open-modal type="button">Get your system
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
             </button>
-            <a class="btn btn-ghost" href="#how">See how it works</a>
+            <a class="btn btn-ghost" href="#how">See it run</a>
           </div>
         </div>
       </div>
 
       <div class="model" data-reveal aria-label="The PYRAXIS journey">
-        <span class="mp"><svg class="ic"><use href="#i-search"/></svg>ATTRACT</span><span class="ma">→</span>
-        <span class="mp"><svg class="ic"><use href="#i-qr"/></svg>CAPTURE</span><span class="ma">→</span>
-        <span class="mp"><svg class="ic"><use href="#i-card"/></svg>CONVERT</span><span class="ma">→</span>
-        <span class="mp"><svg class="ic"><use href="#i-heart"/></svg>SERVE</span><span class="ma">→</span>
-        <span class="mp"><svg class="ic"><use href="#i-eye"/></svg>UNDERSTAND</span><span class="ma">→</span>
-        <span class="mp"><svg class="ic"><use href="#i-loop"/></svg>RETAIN</span><span class="ma">→</span>
-        <span class="mp"><svg class="ic"><use href="#i-share"/></svg>AMPLIFY</span><span class="ma">→</span>
-        <span class="mp key"><svg class="ic"><use href="#i-chart"/></svg>GROW</span>
+        <span class="mp"><svg class="ic"><use href="#i-search"/></svg>Attract</span><span class="ma">→</span>
+        <span class="mp"><svg class="ic"><use href="#i-qr"/></svg>Capture</span><span class="ma">→</span>
+        <span class="mp"><svg class="ic"><use href="#i-card"/></svg>Book</span><span class="ma">→</span>
+        <span class="mp"><svg class="ic"><use href="#i-heart"/></svg>Serve</span><span class="ma">→</span>
+        <span class="mp"><svg class="ic"><use href="#i-eye"/></svg>Note</span><span class="ma">→</span>
+        <span class="mp"><svg class="ic"><use href="#i-loop"/></svg>Keep</span><span class="ma">→</span>
+        <span class="mp"><svg class="ic"><use href="#i-share"/></svg>Refer</span><span class="ma">→</span>
+        <span class="mp key"><svg class="ic"><use href="#i-chart"/></svg>Repeat</span>
       </div>
-      <p class="cap" style="text-align:center;margin-top:14px" data-reveal>THE WHOLE JOURNEY IN EIGHT WORDS</p>
+      <p class="cap" style="text-align:left;margin-top:14px" data-reveal>Eight steps, one record</p>
 
       <div class="cue" aria-hidden="true">
         <div class="cue-line"><i></i></div>
-        <span>FOLLOW THE STORY</span>
+        <span>SCROLL</span>
       </div>
     </div>
   </section>
@@ -1119,8 +1148,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <section class="sec" id="leak" aria-labelledby="leak-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker">02 · The Problem</p>
-        <h2 class="h2" id="leak-h">Customers don't get lost at the steps. They get lost <em>between</em> them.</h2>
+        <p class="kicker" data-n="02">The problem</p>
+        <h2 class="h2" id="leak-h">The shop is fine. The gaps aren't.</h2>
       </header>
       <div class="gap-grid">
         <div data-reveal>
@@ -1141,8 +1170,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
           </div>
         </div>
         <aside class="gap-aside" data-reveal>
-          <blockquote class="pull">A customer should never be lost between discovery and referral.</blockquote>
-          <p class="lede">It's never one big thing. It's six small ones — a late reply, a forgotten follow-up, a happy regular who quietly became a stranger. PYRAXIS exists to close them.</p>
+          <blockquote class="pull">Nobody leaves over one big thing. They drift over six small ones.</blockquote>
+          <p class="lede">A late reply, a missed follow-up, a regular quietly gone. We close those gaps.</p>
         </aside>
       </div>
     </div>
@@ -1152,9 +1181,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <section class="sec" id="system" aria-labelledby="system-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker">03 · What It Is</p>
-        <h2 class="h2" id="system-h">Not seven tools. <em>One system.</em></h2>
-        <p class="lede">Every tool you already use holds one piece of each customer. Watch all seven pieces find each other.</p>
+        <p class="kicker" data-n="03">What it is</p>
+        <h2 class="h2" id="system-h">Seven scattered tools, <em>one page.</em></h2>
+        <p class="lede">Google knows one half, WhatsApp knows the other. We put it together.</p>
       </header>
 
       <div class="merge" id="merge" data-reveal>
@@ -1198,9 +1227,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <section class="sec" id="growth" aria-labelledby="growth-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker">The Solution</p>
-        <h2 class="h2" id="growth-h">One system. <em>Every stage covered.</em></h2>
-        <p class="lede">Strangers become leads. Leads become customers. Customers come back — without you touching a spreadsheet.</p>
+        <p class="kicker" data-n="04">The work</p>
+        <h2 class="h2" id="growth-h">What happens after hello.</h2>
+        <p class="lede">First visit to fifth. No spreadsheet.</p>
       </header>
       <div data-reveal>
         <div class="gsys-row" id="gsysRow">
@@ -1225,9 +1254,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <section class="sec" id="builds" aria-labelledby="builds-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker">04 · What PYRAXIS Builds</p>
-        <h2 class="h2" id="builds-h">Nine components. <em>One system.</em></h2>
-        <p class="lede">Not a service list — a bill of materials. Every module plugs into the same customer record, and powers on together.</p>
+        <p class="kicker" data-n="05">What gets built</p>
+        <h2 class="h2" id="builds-h">What we actually install.</h2>
+        <p class="lede">Nine parts, wired to one record. Switched on together.</p>
       </header>
 
       <div class="bus" id="bus" data-reveal>
@@ -1266,8 +1295,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <section class="sec" id="how" aria-labelledby="how-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker">05 · How It Works</p>
-        <h2 class="h2" id="how-h">One path from stranger to <em>regular.</em></h2>
+        <p class="kicker" data-n="06">How it works</p>
+        <h2 class="h2" id="how-h">Tuesday night, 11:31 PM.</h2>
       </header>
 
       <div class="jflow" id="jflow" data-reveal aria-label="The complete system flow">
@@ -1379,9 +1408,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <section class="sec" id="qr" aria-labelledby="qr-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker">06 · A Real Business</p>
-        <h2 class="h2" id="qr-h">A scan becomes a <em>relationship</em>.</h2>
-        <p class="lede">A restaurant, a QR code on the table — and the whole system in motion. This is a live demo: tap anything.</p>
+        <p class="kicker" data-n="07">On the table</p>
+        <h2 class="h2" id="qr-h">Dinner, billed and remembered.</h2>
+        <p class="lede">A restaurant table, a QR code. Tap through it — it all runs.</p>
       </header>
       <div class="qr-grid" id="qrGrid">
         <div data-reveal>
@@ -1439,7 +1468,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
           <div><b>Last visit</b><span>25 days ago</span></div>
         </div>
       </div>
-      <blockquote class="pull center" style="margin-top:clamp(40px,6vw,60px)" data-reveal>A normal QR opens a PDF menu from 2017. A PYRAXIS QR opens a relationship.</blockquote>
+      <blockquote class="pull center" style="margin-top:clamp(40px,6vw,60px)" data-reveal>A paper menu sits still. Ours keeps the table.</blockquote>
     </div>
   </section>
 
@@ -1447,9 +1476,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <section class="sec" id="reviews" aria-labelledby="reviews-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker">07 · Feedback + Reviews</p>
-        <h2 class="h2" id="reviews-h">One question after every visit. <em>Two endings.</em></h2>
-        <p class="lede">Both endings play below — and notice: the public review link is offered to every customer, in both.</p>
+        <p class="kicker" data-n="08">Reviews</p>
+        <h2 class="h2" id="reviews-h">Ask everyone. Fix fast.</h2>
+        <p class="lede">Watch both endings. The unhappy customer gets a call, not silence.</p>
       </header>
 
       <div class="rev" id="rev" data-reveal>
@@ -1520,9 +1549,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <section class="sec" id="retain" aria-labelledby="retain-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker">08 · Follow-Up &amp; Retention</p>
-        <h2 class="h2" id="retain-h">"I'll think about it" shouldn't mean <em>goodbye</em>.</h2>
-        <p class="lede">The system remembers the interested, and gives the served a reason to return — automatically, never spammy.</p>
+        <p class="kicker" data-n="09">Follow-up</p>
+        <h2 class="h2" id="retain-h">Day 10 still matters.</h2>
+        <p class="lede">Most sales close on the third nudge. We send it for you.</p>
       </header>
 
       <div class="dtx" id="dtx" data-reveal>
@@ -1580,7 +1609,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
           <p class="rw-cap">One relationship. Compounding.</p>
         </div>
       </div>
-      <blockquote class="pull center" style="margin-top:clamp(40px,6vw,60px)" data-reveal>Stop renting customers. Start keeping them.</blockquote>
+      <blockquote class="pull center" style="margin-top:clamp(40px,6vw,60px)" data-reveal>One visit pays once. A regular pays for years.</blockquote>
     </div>
   </section>
 
@@ -1588,9 +1617,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <section class="sec" id="deployments" aria-labelledby="deploy-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker">Recent Deployments</p>
-        <h2 class="h2" id="deploy-h">Selected <em>work.</em></h2>
-        <p class="lede">A few examples of what we build — live systems, not mockups. Full case studies on request.</p>
+        <p class="kicker" data-n="10">Recent work</p>
+        <h2 class="h2" id="deploy-h">Installed, not mocked.</h2>
+        <p class="lede">Live builds. The rest we show on a call.</p>
       </header>
       <div data-reveal>
         <a class="btn btn-ghost btn-sm" href="#process">View All Projects
@@ -1668,8 +1697,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
       <div class="purpose-grid">
         <div>
           <header class="sec-head" style="margin-bottom:0;--d:0s" data-purpose>
-            <p class="kicker">Purpose</p>
-            <h2 class="h2" id="purpose-h">Why <em>PYRAXIS</em> exists.</h2>
+            <p class="kicker" data-n="11">Purpose</p>
+            <h2 class="h2" id="purpose-h">Why this exists.</h2>
           </header>
           <p class="purpose-statement" data-purpose style="--d:.1s">Every disconnected tool is a customer waiting to leave.</p>
           <div class="purpose-support" data-purpose style="--d:.2s">
@@ -1696,8 +1725,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <section class="sec" id="intel" aria-labelledby="intel-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker">09 · Customer Intelligence</p>
-        <h2 class="h2" id="intel-h">Stop guessing. <em>Know</em> your customers.</h2>
+        <p class="kicker" data-n="12">Customer record</p>
+        <h2 class="h2" id="intel-h">Rahul, on one card.</h2>
       </header>
       <div class="stats" data-reveal aria-label="Customer base overview — demonstration data">
         <div class="stat"><label>Customers</label><output data-count="2483">2,483</output></div>
@@ -1744,8 +1773,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <section class="sec" id="industries" aria-labelledby="ind-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker">10 · Any Business</p>
-        <h2 class="h2" id="ind-h">The loop stays the same. The <em>workflow</em> adapts.</h2>
+        <p class="kicker" data-n="13">Industries</p>
+        <h2 class="h2" id="ind-h">Same record. Your workflow.</h2>
       </header>
       <div class="ind" data-reveal>
         <div class="ind-tabs" id="indTabs" role="tablist" aria-label="Business types"></div>
@@ -1758,8 +1787,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <section class="sec" id="why" aria-labelledby="why-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker">11 · Why PYRAXIS</p>
-        <h2 class="h2" id="why-h">How we think, <em>before we build.</em></h2>
+        <p class="kicker" data-n="14">Principles</p>
+        <h2 class="h2" id="why-h">First look, then build.</h2>
       </header>
       <div class="why" data-reveal>
         <div class="why-item">
@@ -1786,8 +1815,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <section class="sec" id="process" aria-labelledby="process-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker">12 · How We Build It</p>
-        <h2 class="h2" id="process-h">What happens after <em>you contact us.</em></h2>
+        <p class="kicker" data-n="15">Process</p>
+        <h2 class="h2" id="process-h">After you write in.</h2>
       </header>
       <div class="proc" id="proc" data-reveal>
         <i class="proc-rail" aria-hidden="true"></i><i class="proc-fill" aria-hidden="true"></i><i class="proc-dot" id="procDot" aria-hidden="true"></i>
@@ -1806,9 +1835,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <section class="sec" id="proof" aria-labelledby="proof-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker">13 · Proof</p>
-        <h2 class="h2" id="proof-h">No fake logos. <em>No invented numbers.</em></h2>
-        <p class="lede">Everything demonstrating on this page is real, running code — that's the standard we build to. We won't dress that up with testimonials that don't exist.</p>
+        <p class="kicker" data-n="16">Proof</p>
+        <h2 class="h2" id="proof-h">Judge the running page.</h2>
+        <p class="lede">This page is the portfolio. No borrowed logos, no made-up lifts.</p>
       </header>
       <div class="pf" data-reveal>
         <span class="pf-tag">CASE STUDY Nº 01 — RESERVED</span>
@@ -1833,9 +1862,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
     <div class="comp-scrim" aria-hidden="true"></div>
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker">14 · Compounding Growth</p>
-        <h2 class="h2" id="comp-h">Launch isn't the <em>finish line.</em></h2>
-        <p class="lede">A PYRAXIS system keeps earning after launch: every customer it serves makes the next one easier to win — and to keep.</p>
+        <p class="kicker" data-n="17">After launch</p>
+        <h2 class="h2" id="comp-h">Kept customers compound.</h2>
+        <p class="lede">Each visit makes the next one easier to earn.</p>
       </header>
 
       <div class="wheel" id="wheel" data-reveal>
@@ -1869,14 +1898,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <!-- ============ 15 FINAL CTA ============ -->
   <section class="sec" id="cta" aria-labelledby="cta-h">
     <div class="wrap">
-      <p class="kicker center">15 · Begin</p>
-      <h2 class="cta-h" id="cta-h">Your customers are <em>already</em> looking.<span>Make sure your business is ready.</span></h2>
-      <p class="cta-mach">The website, the AI, the QR codes, the follow-ups — they're not the story. They're the <em>machinery inside the story</em>.</p>
-      <button class="btn btn-solid btn-lg" data-open-modal type="button">Build your growth system
+      <p class="kicker center" data-n="18">Begin</p>
+      <h2 class="cta-h" id="cta-h">Bring one regular<br>back next week.</h2>
+      <p class="cta-mach">Website, booking, follow-up, reviews — installed as <em>one record,</em> not four tools.</p>
+      <button class="btn btn-solid btn-lg" data-open-modal type="button">Get your system
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
       </button>
-      <p class="cta-sub">Tell us how customers find you today. We'll map the system around it — and show it running.</p>
-      <a class="cta-loop" href="#hero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 12a8 8 0 1 1-2.5-5.8M20 3.5V8h-4.5"/></svg>RETURN TO THE LOOP</a>
+      <p class="cta-sub">Tell us how customers find you today. We map it and show it running.</p>
+      <a class="cta-loop" href="#hero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 12a8 8 0 1 1-2.5-5.8M20 3.5V8h-4.5"/></svg>BACK TO TOP</a>
     </div>
   </section>
 </main>
@@ -1905,21 +1934,21 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
     </button>
     <div id="modalBody">
       <div id="mForm">
-        <p class="kicker">PYRAXIS</p>
-        <h3 id="mTitle">Build your growth system.</h3>
-        <p class="m-lede">Tell us how customers find you today — we'll map the system around it and show it to you, running.</p>
+        <p class="kicker" data-n="✳">Pyraxis</p>
+        <h3 id="mTitle">Get your system.</h3>
+        <p class="m-lede">Tell us how customers find you today — we map it and show it running.</p>
         <form id="leadForm" novalidate>
-          <label>Your name<input type="text" name="name" autocomplete="name"></label>
+          <label>Your name<input type="text" name="name" autocomplete="name" maxlength="80"></label>
           <label>Business type
             <select name="type">
               <option>Restaurant</option><option>Salon</option><option>Clinic</option><option>Gym</option>
               <option>Hotel</option><option>Car service</option><option>Home services</option><option>Consultant / coach</option><option>E-commerce</option><option>Other</option>
             </select>
           </label>
-          <label>How do customers find you today?<input type="text" name="src" placeholder="Google, Instagram, walk-ins, QR codes…"></label>
-          <label>WhatsApp or email<input type="text" name="contact" autocomplete="email" placeholder="+91… or you@company.com"></label>
+          <label>How do customers find you today?<input type="text" name="src" placeholder="Google, Instagram, walk-ins, QR codes…" maxlength="140"></label>
+          <label>WhatsApp or email<input type="text" name="contact" autocomplete="email" placeholder="+91… or you@company.com" maxlength="120"></label>
           <p class="f-err" id="fErr" hidden></p>
-          <label class="f-consent"><input type="checkbox" name="consent"><span>Submitting opens a pre-filled WhatsApp message containing what you entered — review it before sending. See our <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</span></label>
+          <p class="f-note">Opens WhatsApp with your message ready — you press send. See our <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</p>
           <button class="btn btn-solid btn-wide" type="submit">Request my system</button>
         </form>
       </div>
@@ -1934,6 +1963,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="cRing" aria-hidden="true"><div class="r"><span class="r-label" id="rLabel"></span></div></div>
+<div id="cDot" aria-hidden="true"><div class="d"></div></div>
 <script>
 (function(){
 'use strict';
@@ -2983,7 +3014,7 @@ function startOnSeen(el, play){
     var x=IND[i];
     panel.classList.remove('in');
     raf2(function(){
-      panel.innerHTML='<p class="kicker">WORKFLOW · ADAPTED</p><h3 class="ind-title">'+x[0]+'</h3>'+
+      panel.innerHTML='<p class="kicker" data-n="↳">Workflow, adapted</p><h3 class="ind-title">'+x[0]+'</h3>'+
         '<p class="ind-desc">'+x[2]+'</p>'+
         '<div class="ind-flow">'+x[3].map(function(f,k){
           return '<span class="fl-chip'+(k===x[3].length-1?' key':'')+'" style="--i:'+k+'">'+f+'</span>';
@@ -3192,7 +3223,7 @@ function startOnSeen(el, play){
   });
   if(form) form.addEventListener('submit',function(e){
     e.preventDefault();
-    var name=form.elements.name, contact=form.elements.contact, consent=form.elements.consent, bad=null;
+    var name=form.elements.name, contact=form.elements.contact, bad=null;
     if(!name.value.trim()) bad=name; else if(!contact.value.trim()) bad=contact;
     name.classList.remove('bad'); contact.classList.remove('bad');
     if(err) err.hidden=true;
@@ -3201,9 +3232,17 @@ function startOnSeen(el, play){
       if(err){ err.textContent='Please add your '+(bad===name?'name':'WhatsApp or email')+'.'; err.hidden=false; }
       bad.focus(); return;
     }
-    if(consent&&!consent.checked){
-      if(err){ err.textContent='Please confirm you are happy to continue via WhatsApp.'; err.hidden=false; }
-      consent.focus(); return;
+    /* The field accepts either an email or a phone number — validate by kind. */
+    var cval=contact.value.trim(), cErr="";
+    if(cval.indexOf('@')>-1){
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(cval)) cErr='Please enter a valid email address.';
+    }else if(cval.replace(/\D/g,'').length<7){
+      cErr='Please enter a valid phone number (at least 7 digits).';
+    }
+    if(cErr){
+      contact.classList.add('bad');
+      if(err){ err.textContent=cErr; err.hidden=false; }
+      contact.focus(); return;
     }
     /* Delivered as a pre-filled WhatsApp message — the form never stores
        data, so there is no backend to run. */
@@ -3551,7 +3590,6 @@ try{
 const LOCAL_PORTRAIT='public/img/founder-latest.png';
 const CDN_LATEST=LOCAL_PORTRAIT;
 const CDN_PREV=LOCAL_PORTRAIT;
-const relay=u=>`https://wsrv.nl/?url=${encodeURIComponent(u)}`;
 
 /* The genesis world holds the REFERENCE violet — it does NOT follow the
    mark's purple, which can drift pink. One place, one truth. */
@@ -3703,7 +3741,9 @@ function bootMark(){
   img.src=MARK_URI;
 }
 function cdnFallback(){
-  const srcs=[CDN_LATEST,relay(CDN_LATEST),CDN_PREV,relay(CDN_PREV)];
+  /* Local archived portrait only — the old remote signing keys expired,
+     and the embedded SVG mark above is primary anyway. */
+  const srcs=[CDN_LATEST];
   let i=0;
   const next=()=>{
     if(i>=srcs.length){fieldLive=true;return;}
@@ -3714,7 +3754,11 @@ function cdnFallback(){
 setTimeout(()=>{if(!PIXELS_OK)fieldLive=true;},2400);
 
 /* ================= formations ================= */
-const N=innerWidth<720?12000:20000;
+/* Touch devices get a reduced GPU budget (fewer embers, lower DPR below):
+   low-end mobile GPUs are fill-rate bound, and a fullscreen 20k-point
+   field at DPR 2 is what turns scroll into slideshow. Desktop keeps all. */
+const COARSE=window.matchMedia&&matchMedia('(pointer: coarse)').matches;
+const N=COARSE?8000:(innerWidth<720?12000:20000);
 const isMobile=innerWidth<720;
 function gauss(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(TAU*v);}
 
@@ -3964,7 +4008,7 @@ addEventListener('pointercancel',endDrag,{passive:true});
 try{
   const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:false,powerPreference:'high-performance'});
   renderer.setClearColor(0x0a0a0d,0);  /* transparent: the topo field behind stays visible */
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,COARSE?1.5:2));
   renderer.setSize(innerWidth,innerHeight);
 
   const scene=new THREE.Scene();
@@ -4285,19 +4329,18 @@ function buildGenesisFromEarth(img){
       landAttr.array.set(land);landAttr.needsUpdate=true;
       if(engine){
         engine.morph(curP,true);
-        if(!introFrom){
-          engine.posAttr.array.set(engine.baseArr);
-          engine.posAttr.needsUpdate=true;
-        }
+        /* texture arrived: glide from what's on screen — the old snap here
+           teleported the swarm at a random moment after load */
+        if(!introFrom){ glideFrom=new Float32Array(engine.posAttr.array); glideT=0; }
       }
     }
   }
 }
 
 function bootEarth(){
-  const LOCAL='public/img/earth-2048.jpg';
-  const NET='https://cdn.jsdelivr.net/gh/mrdoob/three.js@r159/examples/textures/planets/earth_atmos_2048.jpg';
-  const srcs=[LOCAL,NET,'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg',relay(NET)];
+  /* Local texture only — no external fallbacks. If it ever fails to load,
+     the chain ends gracefully (dark world + rim embers, per trySrc). */
+  const srcs=['public/img/earth-2048.jpg'];
   let i=0;
   const next=()=>{
     if(i>=srcs.length)return;  /* graceful: dark world + rim embers only */
@@ -4389,9 +4432,11 @@ function tick(now){
       }
       if(glideT>=1)glideFrom=null;
       engine.posAttr.needsUpdate=true;
-    }else if(dirty&&!(globeBlendFrom&&globeBlendT<1)){
-      engine.posAttr.array.set(engine.baseArr);
-      engine.posAttr.needsUpdate=true;
+    }else if(dirty&&!introFrom&&!(globeBlendFrom&&globeBlendT<1)){
+      /* scroll moved the target: glide from what's on screen, never snap —
+         the old teleport here fired almost every frame while scrolling
+         and read as the page constantly reloading */
+      if(glideT>=1||!glideFrom){ glideFrom=new Float32Array(engine.posAttr.array); glideT=0; }
     }
     /* LATE-TEXTURE MELT — crossfade whatever is on screen into the new
        continents, staggered per particle; runs alongside scrolling
@@ -4665,6 +4710,112 @@ requestAnimationFrame(tick);
       if(raf!==null){ cancelAnimationFrame(raf); raf=null; }
     });
   });
+})();
+</script>
+<script>
+/* ============ CUSTOM CURSOR — liquid dot + ring, contextual states ============
+   Fine pointers only; touch devices keep the native behavior. States:
+   default (dot + trailing ring) · link (ring swells) · view (labeled
+   disc over preview targets) · text (caret over inputs). */
+(function(){
+'use strict';
+var fine=window.matchMedia&&matchMedia('(pointer: fine)').matches;
+if(!fine) return;
+var cDot=document.getElementById('cDot'), cRing=document.getElementById('cRing'), rLabel=document.getElementById('rLabel');
+if(!cDot||!cRing||!rLabel) return;
+document.documentElement.classList.add('finecur');
+var rEl=cRing.firstElementChild;
+var MX=innerWidth/2, MY=innerHeight/2, cstate='default', seen=false;
+var LABELS={view:'View'};
+function setState(s){
+  if(s===cstate) return;
+  cstate=s;
+  document.body.dataset.cstate=s;
+  rLabel.textContent=LABELS[s]||'';
+}
+var textPend=false;
+function resolveText(){
+  textPend=false;
+  if(elState||document.hidden)return; /* link/view states win */
+  var tg=document.elementFromPoint?document.elementFromPoint(MX,MY):null;
+  if(tg&&tg.closest&&tg.closest('input,textarea')){setState('text');return;}
+  setState(textAt(MX,MY)?'text':'default');
+}
+function queueResolve(){ if(textPend)return; textPend=true; requestAnimationFrame(resolveText); }
+addEventListener('mousemove',function(e){
+  MX=e.clientX; MY=e.clientY;
+  if(!seen){seen=true;document.body.classList.add('cur-on');}
+  queueResolve();
+},{passive:true});
+addEventListener('scroll',queueResolve,{passive:true});
+addEventListener('mousedown',function(){document.body.classList.add('pressing');});
+addEventListener('mouseup',function(){document.body.classList.remove('pressing');});
+document.addEventListener('mouseleave',function(){document.body.classList.remove('cur-on');});
+document.addEventListener('mouseenter',function(){if(seen)document.body.classList.add('cur-on');});
+/* element-level states (links, views) ride mouseover; TEXT uses a per-frame
+   glyph hit-test below — block boxes stretch past their glyphs, so closest()
+   alone showed the beam in empty space far from any letter (see hero) */
+var elState=null;
+function textAt(x,y){
+  var r=null;
+  try{
+    if(document.caretRangeFromPoint){
+      r=document.caretRangeFromPoint(x,y);
+    }else if(document.caretPositionFromPoint){
+      var cp=document.caretPositionFromPoint(x,y);
+      if(cp&&cp.offsetNode){
+        r=document.createRange();
+        var max=cp.offsetNode.textContent?cp.offsetNode.textContent.length:0;
+        r.setStart(cp.offsetNode,Math.min(cp.offset,max));
+        r.collapse(true);
+      }
+    }
+  }catch(_){r=null;}
+  if(!r||!r.startContainer)return null;
+  /* snapped carets lie: the API returns the NEAREST text even for empty
+     space, so only trust it if the caret rect actually holds the pointer */
+  var rects=null;
+  try{rects=r.getClientRects();}catch(_){rects=null;}
+  var hit=false;
+  if(rects&&rects.length){
+    for(var i=0;i<rects.length;i++){var b=rects[i];
+      if(x>=b.left-3&&x<=b.right+3&&y>=b.top-2&&y<=b.bottom+2){hit=true;break;}}
+  }
+  if(!hit)return null;
+  var n=r.startContainer, el=n.nodeType===3?n.parentElement:n;
+  if(!el||!el.closest)return null;
+  if(el.closest('#hero'))return null; /* hero locked — never promise selection there */
+  if(el.closest('a,button,select,input,textarea,[role="button"],#cDot,#cRing'))return null;
+  return el.closest('p,h1,h2,h3,h4,h5,h6,li,blockquote,dd,dt');
+}
+document.addEventListener('mouseover',function(e){
+  var tg=e.target;
+  if(!tg||!tg.closest){elState=null;return;}
+  var t=tg.closest('[data-cursor]');
+  if(t){elState=t.dataset.cursor;setState(elState);return;}
+  if(tg.closest('#wheel .hub, .deploy-prev a')){elState='view';setState('view');return;}
+  if(tg.closest('a,button,select,[role="button"]')){elState='link';setState('link');return;}
+  elState=null;
+});
+var dX=MX, dY=MY, rX=MX, rY=MY, pvx=MX, pvy=MY, stretch=0, last=0, lastMX=MX, lastMY=MY;
+function frame(now){
+  requestAnimationFrame(frame);
+  var dt=now-last; last=now;
+  if(dt>48)dt=48; if(dt<1)dt=1;
+  var kd=1-Math.pow(0.16,dt/16.7), kr=1-Math.pow(0.72,dt/16.7);
+  dX+=(MX-dX)*kd; dY+=(MY-dY)*kd;
+  rX+=(MX-rX)*kr; rY+=(MY-rY)*kr;
+  var sp=Math.hypot(rX-pvx,rY-pvy); pvx=rX; pvy=rY;
+  var want=sp*0.011; if(want>0.22)want=0.22;
+  stretch+=(want-stretch)*0.18;
+  /* mouse parked and trail settled: skip DOM writes until it moves again */
+  var moved=(MX!==lastMX||MY!==lastMY); lastMX=MX; lastMY=MY;
+  if(!moved&&Math.abs(MX-dX)<0.05&&Math.abs(MY-dY)<0.05&&Math.abs(MX-rX)<0.05&&Math.abs(MY-rY)<0.05&&stretch<0.002) return;
+  cDot.style.transform='translate3d('+dX.toFixed(1)+'px,'+dY.toFixed(1)+'px,0)';
+  cRing.style.transform='translate3d('+rX.toFixed(1)+'px,'+rY.toFixed(1)+'px,0)';
+  rEl.style.transform='scaleX('+(1+stretch).toFixed(3)+') scaleY('+(1-stretch*0.6).toFixed(3)+')';
+}
+requestAnimationFrame(function(now){last=now;requestAnimationFrame(frame);});
 })();
 </script>
 </body>
