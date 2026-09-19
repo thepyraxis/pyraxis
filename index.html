@@ -67,8 +67,8 @@ body.cur-on #cDot,body.cur-on #cRing{opacity:1}
 body.pressing .r,body.pressing .d{scale:.82}
 body[data-cstate="link"] #cRing .r{width:50px;height:50px;margin:-25px 0 0 -25px;background:rgba(124,92,255,.16);border-color:var(--pu2);box-shadow:0 0 22px rgba(124,92,255,.55)}
 body[data-cstate="view"] #cRing{mix-blend-mode:normal}
-body[data-cstate="view"] #cRing .r{width:86px;height:86px;margin:-43px 0 0 -43px;background:var(--pu);border-color:transparent;box-shadow:0 0 34px rgba(124,92,255,.65)}
-body[data-cstate="view"] .r-label{opacity:1;color:#0b0b0e}
+body[data-cstate="view"] #cRing .r{width:44px;height:44px;margin:-22px 0 0 -22px;background:rgba(124,92,255,.08);border:1px solid var(--pu2);box-shadow:0 0 12px rgba(124,92,255,.25)}
+body[data-cstate="view"] .r-label{opacity:1;color:var(--pu2);font-size:7px;letter-spacing:.22em}
 body[data-cstate="view"] #cDot{opacity:0}
 body[data-cstate="text"] #cRing .r{width:0;height:0;margin:0;border-color:transparent}
 body[data-cstate="text"] #cDot .d{width:2px;height:24px;margin:-12px 0 0 -1px;border-radius:2px}
@@ -798,10 +798,7 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .pf-cta p{font:italic 400 .95rem var(--serif);color:var(--mut)}
 
 /* ============ 14 compounding ============ */
-.comp-scrim{position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 42%,rgba(5,4,10,.88),rgba(5,4,10,.62) 52%,rgba(5,4,10,.25) 72%,transparent 88%)}
-/* the scrim is positioned, so it would paint over the static header —
-   lift the content wrapper above it */
+#compounding{background:transparent}
 #compounding>.wrap{position:relative;z-index:1}
 .wheel{position:relative;max-width:860px;margin:0 auto}
 .wheel-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:0}
@@ -1913,7 +1910,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
 
   <!-- ============ 14 COMPOUNDING GROWTH ============ -->
   <section class="sec" id="compounding" aria-labelledby="comp-h">
-    <div class="comp-scrim" aria-hidden="true"></div>
     <div class="wrap">
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="17">After launch</p>
@@ -3477,7 +3473,7 @@ cv.addEventListener('webglcontextlost',function(e){
 },false);
 cv.addEventListener('webglcontextrestored',function(){
   glLost=false;
-  try{ initTopoProgram(); resize(); if(started)render((performance.now()-t0)*0.001,mouse.x,mouse.y); }
+  try{ initTopoProgram(); resize(); if(started)render(topoTime,mouse.x,mouse.y); }
   catch(e){}
   if(window.PYRAXIS_DEBUG)window.PYRAXIS_DEBUG.log('topo: context restored');
 },false);
@@ -3593,6 +3589,10 @@ if(!initTopoProgram()) return;
 var HOME={x:0.5,y:0.45};
 var mouse={x:HOME.x,y:HOME.y}, target={x:HOME.x,y:HOME.y};
 var t0=performance.now(), lastMoveAt=-1e9, rippleEnd=0;
+/* pause-aware clock: u_time advances only while frames actually render, so
+   scrolling away (IntersectionObserver pause), hiding the tab, or a context
+   loss never snaps the pattern to a new phase on return (read as restart) */
+var topoTime=0, lastT=-1;
 
 var ripXY=new Float32Array(RIPS*2), ripT=new Float32Array(RIPS);
 for(var i=0;i<RIPS;i++){ ripT[i]=-1000; ripXY[i*2]=HOME.x; ripXY[i*2+1]=HOME.y; }
@@ -3612,7 +3612,7 @@ function resize(){
   cv.height=Math.round(innerHeight*dpr);
   gl.viewport(0,0,cv.width,cv.height);
   gl.uniform2f(uRes,cv.width,cv.height);
-  if(started) render((performance.now()-t0)*0.001,mouse.x,mouse.y);
+  if(started) render(topoTime,mouse.x,mouse.y);
 }
 addEventListener('resize',resize);
 
@@ -3623,7 +3623,7 @@ addEventListener('pointermove',function(e){
 },{passive:true});
 addEventListener('pointerdown',function(e){
   if(RM||!started) return;
-  var p=nrm(e), now=(performance.now()-t0)*0.001;
+  var p=nrm(e), now=topoTime;
   var idx=0, leastRemaining=Infinity;
   for(var j=0;j<RIPS;j++){
     if(ripT[j]<now-3.0){ idx=j; break; }
@@ -3664,12 +3664,16 @@ function frame(t){
   if(glLost) return;  /* GPU context lost: wait for 'webglcontextrestored' */
   /* fully faded out by scroll: hold the last frame, skip GL work */
   if(started&&(window.__topoVis||0)<=0.005) return;
+  if(lastT<0)lastT=t;
+  var dt=(t-lastT)*0.001;lastT=t;
+  if(dt<0)dt=0; if(dt>0.1)dt=0.1;  /* background tab / pause: resume, don't leap */
+  topoTime+=dt;
   var now=performance.now();
   mouse.x+=(target.x-mouse.x)*0.085;
   mouse.y+=(target.y-mouse.y)*0.085;
-  render((t-t0)*0.001,mouse.x,mouse.y);
+  render(topoTime,mouse.x,mouse.y);
 }
-function play(){ if(!raf) raf=requestAnimationFrame(frame); }
+function play(){ lastT=-1; if(!raf) raf=requestAnimationFrame(frame); }
 function pause(){ cancelAnimationFrame(raf); raf=0; }
 if('IntersectionObserver' in window){
   new IntersectionObserver(function(es){
@@ -4147,7 +4151,7 @@ const CAM=[
   [[0,1.2,26.5],[0,-1,0]],
 ];
 const WOB=[.02,.5,.1,1.5,.28,.14];
-const SIZ=[1.15,.98,1.05,.88,1.0,1.05];
+const SIZ=[1.25,1.07,1.14,.96,1.09,1.14];
 const ROT=[0,.015,.16,.03,.08,.05];
 /* GLOBE_HOME_Y — local Y rotation (radians) that faces India toward the
    camera once the globe has formed. Derived from the earth texture's
