@@ -132,6 +132,14 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .burger svg{width:18px;height:18px}
 .nav-cta{display:flex;align-items:center;gap:10px}
 @media(max-width:899px){.nav-cta .btn{padding:11px 14px;font-size:10.5px;letter-spacing:.12em;white-space:nowrap}}
+@media(max-width:430px){
+  .nav-in{padding-inline:14px;gap:8px}
+  .brand{font-size:11px;letter-spacing:.22em;gap:8px}
+  .brand svg{width:20px;height:20px}
+  .nav-cta{gap:8px}
+  .nav-cta .btn{padding:10px 11px;font-size:9.5px;letter-spacing:.08em}
+  .burger{width:38px;height:38px}
+}
 @media(min-width:900px){.nav-links{display:flex}.burger{display:none}}
 .mnav{position:fixed;inset:0;z-index:880;background:rgba(8,8,11,.96);backdrop-filter:blur(12px);display:flex;flex-direction:column;
   justify-content:center;padding:40px clamp(24px,8vw,60px);gap:6px;opacity:0;visibility:hidden;transform:translateY(-10px);transition:.35s}
@@ -420,78 +428,27 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 
 /* ============ 03 merge ============ */
 .merge{max-width:640px;margin:0 auto}
-.merge-stage{position:relative;display:grid;place-items:center;padding:34px 0;min-height:430px}
-.msc-layer{position:absolute;inset:0;pointer-events:none;z-index:2}
-.msc{position:absolute;transform:translate(-50%,-50%) rotate(var(--r,0deg));
-  display:flex;align-items:center;padding:10px 13px;border:1px solid var(--line2);border-radius:5px;
-  background:rgba(14,14,18,.92);backdrop-filter:blur(4px);white-space:nowrap;
-  transition:left .85s cubic-bezier(.55,.05,.3,1),top .85s cubic-bezier(.55,.05,.3,1),
-    transform .85s cubic-bezier(.55,.05,.3,1),opacity .6s ease}
-.msc-in{display:flex;align-items:center;gap:9px}
-.msc .ic{width:13px;height:13px;color:var(--mut)}
-.msc b{font:600 10px var(--mono);letter-spacing:.18em;color:var(--ink);text-transform:uppercase}
-.msc span{font:italic 400 10.5px var(--mono);color:var(--mut2)}
-.msc1{left:17%;top:8%;--r:-6deg}
-.msc2{left:83%;top:14%;--r:5deg}
-.msc3{left:50%;top:4%;--r:-2deg}
-.msc4{left:16%;top:50%;--r:6deg}
-.msc5{left:84%;top:58%;--r:-5deg}
-.msc6{left:20%;top:84%;--r:4deg}
-.msc7{left:76%;top:90%;--r:-6deg}
-.merged .msc{left:50%;top:50%;transform:translate(-50%,-50%) scale(.22);opacity:0;
-  transition-delay:calc(var(--i,0)*70ms)}
-.msc-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  display:flex;flex-direction:column;align-items:center;gap:12px;transition:opacity .35s}
-.msc-core i{width:9px;height:9px;background:var(--pu);transform:rotate(45deg);
-  box-shadow:0 0 0 0 rgba(124,92,255,.5);animation:corepulse 2.2s infinite}
-@keyframes corepulse{70%{box-shadow:0 0 0 13px rgba(124,92,255,0)}100%{box-shadow:0 0 0 13px rgba(124,92,255,0)}}
-.msc-core span{font:500 9px var(--mono);letter-spacing:.3em;color:var(--mut2);text-transform:uppercase}
-.merged .msc-core{opacity:0}
+.merge-stage{position:relative;display:grid;place-items:center;padding:34px 0}
+/* scattered-chips stage removed — the record shows directly */
 .mc{width:min(560px,100%);border:1px solid var(--line2);border-radius:12px;position:relative;z-index:3;
-  background:rgba(13,13,18,.92);backdrop-filter:blur(6px);
-  opacity:0;transform:translateY(26px) scale(.97);
-  transition:opacity .7s ease,transform .7s cubic-bezier(.22,.61,.36,1),box-shadow .7s}
-.merged .mc{opacity:1;transform:none;transition-delay:.5s;
-  box-shadow:0 0 0 1px rgba(124,92,255,.18),0 30px 80px rgba(0,0,0,.55)}
+  background:#101014;box-shadow:0 24px 60px rgba(0,0,0,.5)}
 .mc-hd{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--line)}
 .mc-hd i{width:7px;height:7px;border-radius:50%;background:var(--pu);flex:none;animation:blink 2.4s infinite}
 .mc-hd strong{font:600 11px var(--mono);letter-spacing:.24em;color:var(--ink);text-transform:uppercase}
-.mc-hd em{margin-left:auto;font:italic 500 14px var(--serif);color:var(--pu2)}
+.mc-hd em{margin-left:auto;font:italic 500 14px var(--serif);color:var(--pu2);white-space:nowrap}
 .mc-rows{list-style:none}
 .mc-rows li{display:grid;grid-template-columns:122px 1fr;align-items:center;gap:14px;
   padding:13px 20px;border-bottom:1px solid var(--line)}
 .mc-src{display:flex;align-items:center;gap:9px;font:600 9.5px var(--mono);letter-spacing:.16em;color:var(--mut);text-transform:uppercase}
 .mc-src .ic{width:13px;height:13px;color:var(--mut)}
-.mc-val{font:500 10.5px var(--mono);letter-spacing:.08em;color:var(--ink);text-align:right;
-  opacity:0;transform:translateX(-10px);transition:opacity .5s,transform .5s}
-.merged .mc-val{opacity:1;transform:none;transition-delay:calc(.95s + var(--i)*.11s)}
+.mc-val{font:500 10.5px var(--mono);letter-spacing:.08em;color:var(--ink);text-align:right}
 .mc-stars{color:var(--pu2);letter-spacing:2px}
 .mc-ft{padding:14px 20px;font:500 8.5px var(--mono);letter-spacing:.26em;color:var(--mut2);text-transform:uppercase;
   display:flex;align-items:center;gap:9px}
 .mc-ft .ic{width:12px;height:12px;color:var(--pu)}
 .merge-cap{text-align:center;font:500 10px var(--mono);letter-spacing:.22em;color:var(--mut2);text-transform:uppercase;
-  margin-top:22px;min-height:14px}
-.merge-cap .b{display:none;color:var(--pu2)}
-.merged .merge-cap .a{display:none}
-.merged .merge-cap .b{display:inline}
-.merge-re{display:flex;width:fit-content;margin:18px auto 0;align-items:center;gap:9px;
-  font:500 9.5px var(--mono);letter-spacing:.24em;color:var(--mut);text-transform:uppercase;
-  opacity:0;pointer-events:none;transition:opacity .5s}
-.merged .merge-re{opacity:1;pointer-events:auto}
-.merge-re svg{width:13px;height:13px}
-.merge-re:hover{color:var(--ink)}
+  margin-top:22px}
 @media(max-width:640px){
-  .msc span{display:none}
-  .msc{padding:9px 11px}
-  .msc b{font-size:9px;letter-spacing:.14em}
-  .msc1{left:27%;top:5%}
-  .msc2{left:73%;top:11%}
-  .msc3{left:50%;top:19%}
-  .msc4{left:27%;top:45%}
-  .msc5{left:73%;top:52%}
-  .msc6{left:30%;top:74%}
-  .msc7{left:70%;top:84%}
-  .merge-stage{min-height:480px}
   .mc-rows li{grid-template-columns:96px 1fr;padding:12px 14px;gap:10px}
   .mc-hd{padding:14px}
   .mc-ft{padding:12px 14px}
@@ -573,7 +530,12 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .rev-steps li.on i{background:var(--pu);border-color:var(--pu);color:#0b0b0e}
 .rev-steps span{font:500 8px var(--mono);letter-spacing:.18em;color:var(--mut2);text-transform:uppercase;text-align:center;transition:color .4s}
 .rev-steps li.on span{color:var(--ink)}
-@media(max-width:620px){.rev-steps span{display:none}}
+@media(max-width:979px){.device{margin-inline:auto}}
+@media(max-width:620px){
+  .rev-steps span{display:none}
+  .rev-stage{padding:20px 12px}
+  .device{width:min(340px,100%)}
+}
 .rev-stage{display:grid;gap:26px;padding:26px 22px;grid-template-columns:1fr}
 @media(min-width:920px){
   .rev-stage{grid-template-columns:auto 1fr;align-items:start}
@@ -991,7 +953,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
 #leadForm label.f-consent{display:flex;gap:10px;align-items:flex-start;margin:2px 0 16px;font:400 11.5px/1.65 var(--sans);color:var(--mut);letter-spacing:0;text-transform:none}
 .f-note{margin:2px 0 16px;font:400 11.5px/1.65 var(--sans);color:var(--mut)}
 .f-note a,.f-consent a{color:var(--pu2)}
+#leadForm input.warn{border-color:rgba(224,166,60,.75)}
+.f-warn{display:block;margin-top:6px;font:400 10.5px var(--mono);letter-spacing:.02em;text-transform:none;color:#e0a63c}
 .btn-wide{width:100%;justify-content:center;margin-top:8px}
+#leadForm [type="submit"]:disabled{opacity:.55;cursor:wait}
+#mChoice .btn-wide{margin-top:10px}
+#mChoice .btn:disabled{opacity:.45;cursor:not-allowed}
+.m-back{margin-top:16px;font:500 10px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--mut)}
+.m-back:hover{color:var(--ink)}
 .m-done{text-align:center;padding:16px 0 6px}
 .m-done svg{width:44px;height:44px;color:var(--pu);margin:0 auto 18px}
 .m-done h4{font:500 1.5rem var(--serif);color:var(--ink);margin-bottom:8px}
@@ -1190,17 +1159,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
         <p class="sr-only">Demonstration: seven disconnected tools — Google, the website, WhatsApp, the calendar, the POS, the review page and the referral link — each holding one piece of the same customer. PYRAXIS connects them into one customer record: where she came from, what she browsed, what she asked, what she booked, what she paid, how she rated it, and who she brought.</p>
 
         <div class="merge-stage">
-          <div class="msc-layer" aria-hidden="true">
-            <span class="msc msc1"><span class="msc-in"><svg class="ic"><use href="#i-search"/></svg><b>Google</b><span>knows: she found you</span></span></span>
-            <span class="msc msc2"><span class="msc-in"><svg class="ic"><use href="#i-window"/></svg><b>Website</b><span>knows: she looked</span></span></span>
-            <span class="msc msc3"><span class="msc-in"><svg class="ic"><use href="#i-chat"/></svg><b>WhatsApp</b><span>knows: she asked</span></span></span>
-            <span class="msc msc4"><span class="msc-in"><svg class="ic"><use href="#i-cal"/></svg><b>Calendar</b><span>knows: she booked</span></span></span>
-            <span class="msc msc5"><span class="msc-in"><svg class="ic"><use href="#i-receipt"/></svg><b>POS</b><span>knows: she paid</span></span></span>
-            <span class="msc msc6"><span class="msc-in"><svg class="ic"><use href="#i-star"/></svg><b>Reviews</b><span>knows: she rated</span></span></span>
-            <span class="msc msc7"><span class="msc-in"><svg class="ic"><use href="#i-share"/></svg><b>Referrals</b><span>knows: who she brought</span></span></span>
-            <span class="msc-core" aria-hidden="true"><i></i><span>ONE RECORD</span></span>
-          </div>
-
           <div class="mc" aria-hidden="true">
             <div class="mc-hd"><i></i><strong>PYRAXIS · CUSTOMER RECORD</strong><em>Sara K.</em></div>
             <ol class="mc-rows">
@@ -1216,10 +1174,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
           </div>
         </div>
 
-        <p class="merge-cap"><span class="a">TODAY — SEVEN TOOLS, SEVEN PIECES, NO CONNECTION</span><span class="b">WITH PYRAXIS — ONE RECORD, EVERYTHING IN ONE PLACE</span></p>
-        <button class="merge-re" id="mergeReplay" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 12a8 8 0 1 1-2.5-5.8M20 3.5V8h-4.5"/></svg>replay the merge
-        </button>
+        <p class="merge-cap">SEVEN TOOLS · ONE RECORD · ZERO GAPS</p>
       </div>
     </div>
   </section>
@@ -1945,18 +1900,28 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
               <option>Hotel</option><option>Car service</option><option>Home services</option><option>Consultant / coach</option><option>E-commerce</option><option>Other</option>
             </select>
           </label>
-          <label>How do customers find you today?<input type="text" name="src" placeholder="Google, Instagram, walk-ins, QR codes…" maxlength="140"></label>
-          <label>WhatsApp or email<input type="text" name="contact" autocomplete="email" placeholder="+91… or you@company.com" maxlength="120"></label>
+          <label>What should we fix first?<input type="text" name="need" placeholder="Missed messages, no-shows, no reviews…" maxlength="140"></label>
+          <label>Mobile (WhatsApp)<input type="tel" name="phone" autocomplete="tel" placeholder="+91…" maxlength="24"><span class="f-warn" id="phoneWarn" hidden></span></label>
+          <label>Email<input type="email" name="email" autocomplete="email" placeholder="you@company.com" maxlength="120"><span class="f-warn" id="emailWarn" hidden></span></label>
           <p class="f-err" id="fErr" hidden></p>
-          <p class="f-note">Opens WhatsApp with your message ready — you press send. See our <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</p>
+          <p class="f-note">We usually reply within a day. See our <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</p>
           <button class="btn btn-solid btn-wide" type="submit">Request my system</button>
         </form>
       </div>
+      <div id="mChoice" hidden>
+        <p class="kicker" data-n="✳">Pyraxis</p>
+        <h3>Send it your way.</h3>
+        <p class="m-lede">Pick where your request opens — review and press send there.</p>
+        <button class="btn btn-solid btn-wide" type="button" id="chWa">Continue on WhatsApp</button>
+        <button class="btn btn-ghost btn-wide" type="button" id="chMail">Continue by email</button>
+        <p class="f-note" id="mailNote" hidden>Email channel activates soon — WhatsApp works right now.</p>
+        <button class="m-back" type="button" id="chBack">← Edit details</button>
+      </div>
       <div id="mDone" class="m-done" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="10.5"/><path d="M7.5 12.5l3 3 6-7"/></svg>
-        <h4>Your message is ready.</h4>
-        <p>Review it in WhatsApp and press send to complete your enquiry — nothing reaches us until you do.</p>
-        <button class="btn btn-ghost btn-wide" type="button" data-close-modal>Close</button>
+        <h4>Almost sent.</h4>
+        <p>Your message is waiting in <b id="doneChannel">WhatsApp</b> — press send there and we will reach you quickly.</p>
+        <button class="btn btn-solid btn-wide" type="button" data-close-modal>Done</button>
       </div>
     </div>
   </div>
@@ -2775,26 +2740,6 @@ function startOnSeen(el, play){
   io.observe(chain);
 })();
 
-/* ---------- 03 · the merge ---------- */
-(function(){
-  var m=$('#merge'); if(!m) return;
-  var btn=$('#mergeReplay');
-  function merge(){ m.classList.add('merged'); }
-  if(REDUCED || !('IntersectionObserver' in window)){ merge(); }
-  else{
-    var io=new IntersectionObserver(function(es){
-      es.forEach(function(e){ if(e.isIntersecting){ io.disconnect(); setTimeout(merge,600); } });
-    },{threshold:.35});
-    io.observe(m);
-  }
-  if(btn) btn.addEventListener('click',function(){
-    m.classList.remove('merged');
-    if(REDUCED){ merge(); return; }
-    void m.offsetWidth;
-    setTimeout(merge,900);
-  });
-})();
-
 /* ---------- 05 · convergence map ---------- */
 (function(){
   var box=$('#flow'); if(!box) return;
@@ -3177,12 +3122,21 @@ function startOnSeen(el, play){
 /* ---------- modal + toast ---------- */
 (function(){
   var modal=$('#modal'); if(!modal) return;
-  var form=$('#leadForm'), err=$('#fErr'), mForm=$('#mForm'), mDone=$('#mDone');
+  var form=$('#leadForm'), err=$('#fErr'), mForm=$('#mForm'), mDone=$('#mDone'), mChoice=$('#mChoice');
+  var chWa=$('#chWa'), chMail=$('#chMail'), chBack=$('#chBack'), mailNote=$('#mailNote'), doneChannel=$('#doneChannel');
+  /* Receiving inbox for the Email channel — set this to switch email on.
+     Until then only WhatsApp is offered, so nothing ever dead-ends. */
+  var LEAD_TO_EMAIL="thepyaxis@gmail.com";
+  var pendingMsg="";
   var lastFocus=null;
   function open(){
     lastFocus=document.activeElement;
     if(mForm) mForm.hidden=false;
     if(mDone) mDone.hidden=true;
+    if(mChoice) mChoice.hidden=true;
+    var mailOn=LEAD_TO_EMAIL&&LEAD_TO_EMAIL.indexOf('@')>-1;
+    if(chMail) chMail.disabled=!mailOn;
+    if(mailNote) mailNote.hidden=!!mailOn;
     if(err) err.hidden=true;
     $$('.bad',form).forEach(function(i){ i.classList.remove('bad'); });
     modal.hidden=false;
@@ -3223,40 +3177,80 @@ function startOnSeen(el, play){
   });
   if(form) form.addEventListener('submit',function(e){
     e.preventDefault();
-    var name=form.elements.name, contact=form.elements.contact, bad=null;
-    if(!name.value.trim()) bad=name; else if(!contact.value.trim()) bad=contact;
-    name.classList.remove('bad'); contact.classList.remove('bad');
+    var name=form.elements.name, phone=form.elements.phone, email=form.elements.email, bad=null;
+    if(!name.value.trim()) bad=name;
+    name.classList.remove('bad');
+    [phone,email].forEach(function(i){ i.classList.remove('bad'); i.classList.remove('warn'); });
+    var phoneWarn=$('#phoneWarn'), emailWarn=$('#emailWarn');
+    if(phoneWarn) phoneWarn.hidden=true;
+    if(emailWarn) emailWarn.hidden=true;
     if(err) err.hidden=true;
     if(bad){
       bad.classList.add('bad');
-      if(err){ err.textContent='Please add your '+(bad===name?'name':'WhatsApp or email')+'.'; err.hidden=false; }
+      if(err){ err.textContent='Please add your name.'; err.hidden=false; }
       bad.focus(); return;
     }
-    /* The field accepts either an email or a phone number — validate by kind. */
-    var cval=contact.value.trim(), cErr="";
-    if(cval.indexOf('@')>-1){
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(cval)) cErr='Please enter a valid email address.';
-    }else if(cval.replace(/\D/g,'').length<7){
-      cErr='Please enter a valid phone number (at least 7 digits).';
+    /* Fill either, or both — but at least one has to be valid. */
+    function phoneOk(v){ var d=v.replace(/\D/g,''); return d.length>=7&&d.length<=15; }
+    function emailOk(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
+    var pval=phone.value.trim(), emval=email.value.trim();
+    var pBad=pval&&!phoneOk(pval), eBad=emval&&!emailOk(emval);
+    var contactStr=[pval&&!pBad?pval:null, emval&&!eBad?emval:null].filter(Boolean).join(" / ");
+    if(!contactStr){
+      if(!pval&&!emval){
+        if(err){ err.textContent='Add your mobile number or your email — either works.'; err.hidden=false; }
+        phone.classList.add('bad'); email.classList.add('bad');
+        phone.focus(); return;
+      }
+      /* something typed, nothing valid — hard block, red on the wrong field(s) */
+      if(pBad) phone.classList.add('bad');
+      if(eBad) email.classList.add('bad');
+      if(err){ err.textContent='That '+(pBad&&eBad?'number and email don’t':pBad?'number doesn’t':'email doesn’t')+' look right — check and try again.'; err.hidden=false; }
+      (pBad?phone:email).focus(); return;
     }
-    if(cErr){
-      contact.classList.add('bad');
-      if(err){ err.textContent=cErr; err.hidden=false; }
-      contact.focus(); return;
-    }
-    /* Delivered as a pre-filled WhatsApp message — the form never stores
-       data, so there is no backend to run. */
-    var msg=["Growth system request (from pyraxis site)",
-      "Name: "+name.value.trim(),
-      "Business: "+form.elements.type.value,
-      "Customers find us via: "+(form.elements.src.value.trim()||"—"),
-      "Contact: "+contact.value.trim()].join("\n");
-    window.open("https://wa.me/919837104413?text="+encodeURIComponent(msg),"_blank","noopener,noreferrer");
+    /* one side valid, the other wrong — amber warn on the wrong side, still sendable */
+    if(pBad){ phone.classList.add('warn'); if(phoneWarn){ phoneWarn.textContent='That number looks wrong — we’ll use your email.'; phoneWarn.hidden=false; } }
+    if(eBad){ email.classList.add('warn'); if(emailWarn){ emailWarn.textContent='That email looks wrong — we’ll use your number.'; emailWarn.hidden=false; } }
+    /* Validated — hand the visitor the choice instead of forcing a redirect.
+       Each channel opens on THEIR device; they press send there. */
+    var payload={
+      name:name.value.trim(),
+      Business:form.elements.type.value,
+      Need:(form.elements.need.value.trim()||"—"),
+      Contact:contactStr,
+      Page:location.href
+    };
+    pendingMsg=["Growth system request (from pyraxis site)",
+      "Name: "+payload.name,
+      "Business: "+payload.Business,
+      "Fix first: "+payload.Need,
+      "Contact: "+payload.Contact].join("\n");
     if(mForm) mForm.hidden=true;
-    if(mDone) mDone.hidden=false;
-    var doneBtn=mDone ? mDone.querySelector('button') : null;
-    if(doneBtn) doneBtn.focus();
-    toast('WhatsApp opened — review and send to complete your enquiry.');
+    if(mDone) mDone.hidden=true;
+    if(mChoice){ mChoice.hidden=false; var fb=mChoice.querySelector('button'); if(fb) fb.focus(); }
+  });
+  if(chBack) chBack.addEventListener('click',function(){
+    if(mChoice) mChoice.hidden=true;
+    if(mDone) mDone.hidden=true;
+    if(mForm) mForm.hidden=false;
+  });
+  function showDone(channel){
+    if(mChoice) mChoice.hidden=true;
+    if(mForm) mForm.hidden=true;
+    if(doneChannel) doneChannel.textContent=channel;
+    if(mDone){ mDone.hidden=false; var b=mDone.querySelector('button'); if(b) b.focus(); }
+  }
+  if(chWa) chWa.addEventListener('click',function(){
+    window.open("https://wa.me/919837104413?text="+encodeURIComponent(pendingMsg),"_blank","noopener,noreferrer");
+    showDone('WhatsApp');
+    toast('WhatsApp opened — press send there and we will reach you quickly.');
+  });
+  if(chMail) chMail.addEventListener('click',function(){
+    if(!(LEAD_TO_EMAIL&&LEAD_TO_EMAIL.indexOf('@')>-1)) return;
+    var sub="New PYRAXIS request — "+(form.elements.name.value.trim()||"website");
+    window.location.href="mailto:"+LEAD_TO_EMAIL+"?subject="+encodeURIComponent(sub)+"&body="+encodeURIComponent(pendingMsg);
+    showDone('your mail app');
+    toast('Your mail app opened — press send there and we will reach you quickly.');
   });
 })();
 
@@ -3758,7 +3752,7 @@ setTimeout(()=>{if(!PIXELS_OK)fieldLive=true;},2400);
    low-end mobile GPUs are fill-rate bound, and a fullscreen 20k-point
    field at DPR 2 is what turns scroll into slideshow. Desktop keeps all. */
 const COARSE=window.matchMedia&&matchMedia('(pointer: coarse)').matches;
-const N=COARSE?8000:(innerWidth<720?12000:20000);
+const N=COARSE?3000:(innerWidth<720?12000:20000);
 const isMobile=innerWidth<720;
 function gauss(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(TAU*v);}
 
@@ -4008,7 +4002,7 @@ addEventListener('pointercancel',endDrag,{passive:true});
 try{
   const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:false,powerPreference:'high-performance'});
   renderer.setClearColor(0x0a0a0d,0);  /* transparent: the topo field behind stays visible */
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1,COARSE?1.5:2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,COARSE?1:2));
   renderer.setSize(innerWidth,innerHeight);
 
   const scene=new THREE.Scene();
@@ -4386,7 +4380,7 @@ function tick(now){
   const tgt=window.scrollY||0;
   cur=coarse||reduced?tgt:cur+(tgt-cur)*Math.min(1,dt*3.2);
   if(Math.abs(tgt-cur)<.1)cur=tgt;
-  curP=clamp(cur/range,0,1)*5;
+  curP=clamp(cur/range,0,1)*(COARSE||innerWidth<640?1.5:5);
   const vel=(curP-lastFrameP)/dt;lastFrameP=curP;
   /* full rate always while visible: the 60→30fps step-down read as lag
      whenever the pointer rested — smoothness beats the battery saving */
@@ -4626,11 +4620,21 @@ requestAnimationFrame(tick);
       pio.observe(sec);
     }
   }
-  var imgs=new Array(COUNT), i, img;
-  for(i=1;i<=COUNT;i++){
-    img=new Image(); img.decoding='async';
-    img.src=BASE+String(i).padStart(3,'0')+'.webp';
-    imgs[i-1]=img;
+  /* frames stay unloaded until the section nears — 50 eager ~95KB requests
+     used to fight first paint on mobile, so they now load lazily. */
+  var imgs=new Array(COUNT), i, img, framesLoaded=false, first=false;
+  for(i=1;i<=COUNT;i++){ imgs[i-1]=new Image(); imgs[i-1].decoding='async'; }
+  function startFrames(){
+    if(framesLoaded) return; framesLoaded=true;
+    imgs.forEach(function(im,idx){
+      try{ im.fetchPriority='low'; }catch(_){}
+      im.src=BASE+String(idx+1).padStart(3,'0')+'.webp';
+      if(im.complete&&im.naturalWidth) return;
+      im.addEventListener('load',function(){
+        if(idx+1===cur||!first){ first=true; draw(); }
+      },{once:true});
+    });
+    draw();
   }
   function draw(){
     var im=imgs[cur-1];
@@ -4644,14 +4648,12 @@ requestAnimationFrame(tick);
     ctx.clearRect(0,0,cv.width,cv.height);
     ctx.drawImage(im,(cv.width-dw)/2,(cv.height-dh)/2,dw,dh);
   }
-  var first=false;
-  imgs.forEach(function(im,idx){
-    if(im.complete&&im.naturalWidth) return;
-    im.addEventListener('load',function(){
-      if(idx+1===cur||!first){ first=true; draw(); }
-    },{once:true});
-  });
-  draw();
+  if('IntersectionObserver' in window){
+    var fio=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ fio.disconnect(); startFrames(); } });
+    },{rootMargin:'1200px 0px'});
+    fio.observe(sec||box);
+  }else{ startFrames(); }
   addEventListener('resize',draw);
   var sx=0, sf=1; box.style.cursor='grab';
   box.addEventListener('pointerdown',function(e){
