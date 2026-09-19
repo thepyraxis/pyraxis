@@ -12,7 +12,7 @@ npx serve .
 
 ## Files
 
-- `index.html` — the entire site (markup, styles, scripts; three.js + fonts via CDN)
+- `index.html` — the entire site (markup, styles, scripts; Three.js + artwork self-hosted in `public/`, fonts via Google Fonts CDN)
 - `privacy.html`, `terms.html` — legal pages
 - `public/` — wordmark, favicon, icons, founder frames
 - `sitemap.xml`, `robots.txt` — SEO
