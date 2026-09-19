@@ -106,7 +106,7 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .pull{font:400 clamp(1.6rem,3vw,2.4rem)/1.25 var(--serif);letter-spacing:-.015em;color:var(--ink);max-width:24ch}
 .pull.center{text-align:left;max-width:24ch;margin-inline:0;border-left:1px solid var(--pu);padding-left:24px}
 .cap{font:500 10px var(--mono);letter-spacing:.18em;color:var(--mut2);text-transform:uppercase}
-.sec{position:relative;padding:clamp(96px,13vh,160px) 0;border-top:1px solid var(--line)}
+.sec{position:relative;padding:clamp(96px,13vh,160px) 0}
 .sec-head{max-width:860px;margin-bottom:clamp(48px,6vw,80px)}
 .js [data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,.61,.36,1)}
 .js [data-reveal].in{opacity:1;transform:none}
@@ -151,17 +151,7 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .mnav a{font:500 clamp(1.3rem,6.5vw,2rem)/1.3 var(--serif);color:var(--ink);padding:10px 0;border-bottom:1px solid var(--line)}
 .mnav .btn{margin-top:30px;align-self:flex-start}
 
-.journey{position:relative}
-.spine{position:absolute;left:44px;top:0;bottom:0;width:1px;display:none}
-.spine i{position:absolute;inset:0;background:var(--line)}
-.spine b{position:absolute;inset:0;background:var(--pu);transform:scaleY(0);transform-origin:top}
-.snode{position:absolute;left:39.5px;width:10px;height:10px;border-radius:50%;border:1px solid var(--mut2);background:var(--bg);display:none;transition:.4s;z-index:2}
-.snode.on{border-color:var(--pu);background:var(--pu)}
-@media(min-width:1000px){.journey{padding-left:var(--rail)}.spine,.snode{display:block}}
-.spine-m{position:fixed;left:0;top:0;bottom:0;width:2px;z-index:850}
-.spine-m i{position:absolute;inset:0;background:var(--line)}
-.spine-m b{position:absolute;inset:0;background:var(--pu);transform:scaleY(0);transform-origin:top}
-@media(min-width:1000px){.spine-m{display:none}}
+
 
 /* ============ THE DEVICE ============ */
 .device{width:min(340px,88vw);padding:11px;border-radius:54px;position:relative;
@@ -278,12 +268,6 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .mp .ic{width:13px;height:13px;color:var(--mut2)}
 .mp.key{border-color:var(--line);border-bottom:1px solid var(--pu);color:var(--ink)}.mp.key .ic{color:var(--pu)}
 .ma{color:var(--mut2);font:400 11px var(--mono);margin-right:18px;display:none}
-.cue{display:flex;align-items:center;gap:14px;margin-top:clamp(40px,7vh,72px)}
-.cue-line{width:1px;height:44px;background:var(--line2);position:relative;overflow:hidden}
-.cue-line i{position:absolute;left:0;width:1px;height:10px;background:var(--pu);animation:cued 2.3s infinite}
-.cue span{font:500 9.5px var(--mono);letter-spacing:.22em;color:var(--mut2)}
-@keyframes cued{0%{top:-12px}70%,100%{top:46px}}
-
 /* ============ marquee ticker — quiet editorial rule, not neon ============ */
 .mq{position:relative;z-index:2;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
   padding:16px 0;background:transparent}
@@ -324,9 +308,9 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .ch-close{margin-top:26px;padding-left:36px;opacity:0;transform:translateY(8px);transition:opacity .7s 1.6s,transform .7s 1.6s}
 .ch-close span{font:500 10px var(--mono);letter-spacing:.26em;color:var(--pu2);display:inline-flex;align-items:center;gap:10px;text-transform:uppercase}
 .chain.connected .ch-close{opacity:1;transform:none}
-.gap-grid{display:grid;gap:clamp(40px,6vw,80px)}
+.gap-grid{display:grid;gap:0}
+.gap-aside{display:flex;flex-direction:column;gap:26px;max-width:640px;background:rgba(255,255,255,.04);backdrop-filter:blur(12px);border-radius:12px;padding:24px}
 @media(min-width:960px){.gap-grid{grid-template-columns:minmax(0,480px) 1fr}}
-.gap-aside{display:flex;flex-direction:column;gap:26px}
 @media(min-width:960px){.gap-aside{position:sticky;top:104px;align-self:start}}
 
 /* ============ 03b growth system (ported from Next.js GrowthSystem) ============ */
@@ -664,13 +648,13 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 /* ============ 08 follow-up + retention ============ */
 .dtx{position:relative;margin-top:10px}
 .dtx-rail{position:absolute;top:8px;left:5px;bottom:8px;width:2px;background:rgba(255,255,255,.08)}
-.dtx-rail i{position:absolute;inset:0;background:var(--pu);transform:scaleY(0);transform-origin:top;transition:transform 2.2s cubic-bezier(.3,.6,.25,1)}
+.dtx-rail i{position:absolute;inset:0;background:var(--pu);transform:scaleY(0);transform-origin:top;transition:transform .9s cubic-bezier(.3,.6,.25,1)}
 .dtx.play .dtx-rail i{transform:scaleY(1)}
 .dtx-list{list-style:none;display:grid;gap:30px;position:relative}
 .dtx-day{display:grid;grid-template-columns:30px 1fr;gap:20px;align-items:start;
-  opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s;transition-delay:calc(.25s + var(--i)*.5s)}
+  opacity:0;transform:translateY(14px);transition:opacity .4s,transform .4s;transition-delay:calc(.05s + var(--i)*.12s)}
 .dtx.play .dtx-day{opacity:1;transform:none}
-.dtx-dot{width:11px;height:11px;border-radius:50%;border:1px solid var(--mut2);background:var(--bg);margin-top:6px;transition:border-color .4s .3s,background .4s .3s}
+.dtx-dot{width:11px;height:11px;border-radius:50%;border:1px solid var(--mut2);background:var(--bg);margin-top:6px;transition:border-color .3s .05s,background .3s .05s}
 .dtx.play .dtx-dot{border-color:var(--pu);background:rgba(124,92,255,.3)}
 .dtx-h{font:500 10px var(--mono);letter-spacing:.24em;color:var(--pu2);text-transform:uppercase}
 .dtx-h span{color:var(--mut2);margin-left:10px}
@@ -1068,8 +1052,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
 </div>
 
 <main id="main" class="journey">
-  <div class="spine" aria-hidden="true"><i></i><b id="spineFill"></b></div>
-  <div class="spine-m" aria-hidden="true"><i></i><b id="spineFillM"></b></div>
+
 
   <!-- ============ 01 HERO ============ -->
   <section class="sec" id="hero" aria-label="PYRAXIS — customers, kept">
@@ -1079,8 +1062,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
         <div>
           <p class="kicker" data-n="01">Pyraxis — for local business</p>
           <h1>Every customer,<br><em>remembered.</em></h1>
-          <p class="hero-promise">A website, booking, follow-up and review setup built around one customer record.</p>
-          <p class="lede">For restaurants, clinics and shops. Answered in minutes, booked without phone tag, followed up without spreadsheets.</p>
+          <p class="hero-promise">A unified system for local businesses. We replace scattered tools with one intelligent record that captures, books, and retains.</p>
+          <p class="lede">For restaurants, clinics, and shops. Enquiries answered in minutes, bookings without phone tag, follow-ups without spreadsheets.</p>
           <div class="hero-cta">
             <button class="btn btn-solid" data-open-modal type="button">Get your system
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
@@ -1101,11 +1084,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
         <span class="mp key"><svg class="ic"><use href="#i-chart"/></svg>Repeat</span>
       </div>
       <p class="cap" style="text-align:left;margin-top:14px" data-reveal>Eight steps, one record</p>
-
-      <div class="cue" aria-hidden="true">
-        <div class="cue-line"><i></i></div>
-        <span>SCROLL</span>
-      </div>
     </div>
   </section>
 
@@ -1121,31 +1099,33 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
   <section class="sec" id="leak" aria-labelledby="leak-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker" data-n="02">The problem</p>
-        <h2 class="h2" id="leak-h">The shop is fine. The gaps aren't.</h2>
+        <p class="kicker" data-n="02">The attrition gap</p>
+        <h2 class="h2" id="leak-h">Customer attrition rarely happens all at once.</h2>
       </header>
       <div class="gap-grid">
         <div data-reveal>
           <div class="chain" id="chain">
             <p class="ch-cap"><span class="a">The journey — today</span><span class="b">The journey — connected</span></p>
             <div class="ch-stage"><span class="ch-dot"></span><span class="ch-name">DISCOVERY</span></div>
-            <div class="ch-gap" style="--d:0ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">They find you — but never reach out.</p></div>
+            <div class="ch-gap" style="--d:0ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">Discovery without capture. High intent, no record.</p></div>
             <div class="ch-stage"><span class="ch-dot"></span><span class="ch-name">ENQUIRY</span></div>
-            <div class="ch-gap" style="--d:120ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">They message — and wait. And wait.</p></div>
+            <div class="ch-gap" style="--d:120ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">Enquiries arrive after hours and remain unanswered.</p></div>
             <div class="ch-stage"><span class="ch-dot"></span><span class="ch-name">RESPONSE</span></div>
-            <div class="ch-gap" style="--d:240ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">A slow reply — and they're already elsewhere.</p></div>
+            <div class="ch-gap" style="--d:240ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">Response latency. By then, the decision is made elsewhere.</p></div>
             <div class="ch-stage"><span class="ch-dot"></span><span class="ch-name">BOOKING</span></div>
-            <div class="ch-gap" style="--d:360ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">They book — then the follow-up falls through.</p></div>
+            <div class="ch-gap" style="--d:360ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">Booking without automated follow-through.</p></div>
             <div class="ch-stage"><span class="ch-dot"></span><span class="ch-name">RETURN</span></div>
-            <div class="ch-gap" style="--d:480ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">They buy once — and never come back.</p></div>
+            <div class="ch-gap" style="--d:480ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">One transaction, no reason to return.</p></div>
             <div class="ch-stage"><span class="ch-dot"></span><span class="ch-name">REVIEW / REFERRAL</span></div>
             <div class="ch-close" aria-hidden="true"><span>PYRAXIS CLOSES EVERY GAP →</span></div>
           </div>
         </div>
         <aside class="gap-aside" data-reveal>
-          <blockquote class="pull">Nobody leaves over one big thing. They drift over six small ones.</blockquote>
-          <p class="lede">A late reply, a missed follow-up, a regular quietly gone. We close those gaps.</p>
+          <blockquote class="pull">Customer attrition happens in the small gaps between interactions.</blockquote>
+          <p class="lede">A delayed reply, a missed follow-up, a quiet lapse in return visits. We close those gaps with a single, connected record.</p>
         </aside>
+      </div>
+        </div>
       </div>
     </div>
   </section>
@@ -1155,8 +1135,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
     <div class="wrap">
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="03">What it is</p>
-        <h2 class="h2" id="system-h">Seven scattered tools, <em>one page.</em></h2>
-        <p class="lede">Google knows one half, WhatsApp knows the other. We put it together.</p>
+        <h2 class="h2" id="system-h">Seven tools. <em>One record.</em></h2>
+        <p class="lede">Search, website, messaging, bookings, and payments — aggregated into a single customer profile. No duplication, no gaps.</p>
       </header>
 
       <div class="merge" id="merge" data-reveal>
@@ -1187,8 +1167,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
     <div class="wrap">
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="04">The work</p>
-        <h2 class="h2" id="growth-h">What happens after hello.</h2>
-        <p class="lede">First visit to fifth. No spreadsheet.</p>
+        <h2 class="h2" id="growth-h">From first visit to fifth.</h2>
+        <p class="lede">A clear progression from acquisition to retention — tracked automatically, without manual follow-up.</p>
       </header>
       <div data-reveal>
         <div class="gsys-row" id="gsysRow">
@@ -1214,23 +1194,23 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
     <div class="wrap">
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="05">What gets built</p>
-        <h2 class="h2" id="builds-h">What we actually install.</h2>
-        <p class="lede">Nine parts, wired to one record. Switched on together.</p>
+        <h2 class="h2" id="builds-h">Eight capabilities. One system.</h2>
+        <p class="lede">Each capability is installed as part of a single record — not as isolated software.</p>
       </header>
 
       <div class="bus" id="bus" data-reveal>
         <p class="sr-only">The nine components of the PYRAXIS system: website, AI receptionist, WhatsApp communication, smart booking, follow-up automation, retention and loyalty, feedback and reviews, customer intelligence, and referrals — all connected to one shared customer record.</p>
         <i class="bus-line" aria-hidden="true"></i><i id="busFill" aria-hidden="true"></i><i id="busPulse" aria-hidden="true"></i>
 
-        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-01</span><span class="mod-ic"><svg class="ic"><use href="#i-window"/></svg></span><span class="mod-t"><b>Website &amp; Pages</b><span>Doors built to capture — not just decorate.</span></span></div>
-        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-02</span><span class="mod-ic"><svg class="ic"><use href="#i-spark"/></svg></span><span class="mod-t"><b>AI Receptionist</b><span>Answers, qualifies and books — instantly, any hour.</span></span></div>
-        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-03</span><span class="mod-ic"><svg class="ic"><use href="#i-chat"/></svg></span><span class="mod-t"><b>WhatsApp / Communication</b><span>Meets customers where they already are.</span></span></div>
-        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-04</span><span class="mod-ic"><svg class="ic"><use href="#i-cal"/></svg></span><span class="mod-t"><b>Smart Booking</b><span>Interest becomes an appointment in one flow.</span></span></div>
-        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-05</span><span class="mod-ic"><svg class="ic"><use href="#i-bell"/></svg></span><span class="mod-t"><b>Follow-Up Automation</b><span>Nobody who showed interest gets forgotten.</span></span></div>
-        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-06</span><span class="mod-ic"><svg class="ic"><use href="#i-loop"/></svg></span><span class="mod-t"><b>Retention &amp; Loyalty</b><span>Reasons to return, sent at the right moment.</span></span></div>
-        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-07</span><span class="mod-ic"><svg class="ic"><use href="#i-star"/></svg></span><span class="mod-t"><b>Feedback + Reviews</b><span>Every experience becomes information — often proof.</span></span></div>
-        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-08</span><span class="mod-ic"><svg class="ic"><use href="#i-eye"/></svg></span><span class="mod-t"><b>Customer Intelligence</b><span>Visits, spend, preferences — one living record.</span></span></div>
-        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-09</span><span class="mod-ic"><svg class="ic"><use href="#i-share"/></svg></span><span class="mod-t"><b>Referrals</b><span>Happy customers bring the next ones.</span></span></div>
+        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-01</span><span class="mod-ic"><svg class="ic"><use href="#i-window"/></svg></span><span class="mod-t"><b>Conversion-Optimized Website</b><span>Built to capture intent, not just present information.</span></span></div>
+        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-02</span><span class="mod-ic"><svg class="ic"><use href="#i-spark"/></svg></span><span class="mod-t"><b>AI Reception &amp; Qualification</b><span>Qualifies and books enquiries instantly, at any hour.</span></span></div>
+        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-03</span><span class="mod-ic"><svg class="ic"><use href="#i-chat"/></svg></span><span class="mod-t"><b>Omnichannel Messaging</b><span>WhatsApp and SMS, where customers already respond.</span></span></div>
+        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-04</span><span class="mod-ic"><svg class="ic"><use href="#i-cal"/></svg></span><span class="mod-t"><b>Frictionless Booking</b><span>From expressed interest to confirmed appointment in one flow.</span></span></div>
+        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-05</span><span class="mod-ic"><svg class="ic"><use href="#i-bell"/></svg></span><span class="mod-t"><b>Automated Retention</b><span>Systematic follow-up so no interested customer is missed.</span></span></div>
+        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-06</span><span class="mod-ic"><svg class="ic"><use href="#i-loop"/></svg></span><span class="mod-t"><b>Referral Engine</b><span>Structured requests that turn satisfied customers into acquisition.</span></span></div>
+        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-07</span><span class="mod-ic"><svg class="ic"><use href="#i-star"/></svg></span><span class="mod-t"><b>Reputation Management</b><span>Collects feedback and routes it to the right destination.</span></span></div>
+        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-08</span><span class="mod-ic"><svg class="ic"><use href="#i-eye"/></svg></span><span class="mod-t"><b>Customer Intelligence</b><span>Visit history, spend, and preferences unified in one record.</span></span></div>
+        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-09</span><span class="mod-ic"><svg class="ic"><use href="#i-share"/></svg></span><span class="mod-t"><b>Referrals</b><span>Satisfied customers become a measured acquisition channel.</span></span></div>
 
         <button class="bus-re" id="busReplay" type="button">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 12a8 8 0 1 1-2.5-5.8M20 3.5V8h-4.5"/></svg>power on again
@@ -1245,7 +1225,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
           <span>→ <b>SMARTER</b> DECISIONS</span>
           <span>→ <b>MORE PROOF</b> WORKING FOR YOU</span>
         </div>
-        <p class="cap earn-cap">THE SAME SYSTEM. FIVE WAYS IT PAYS.</p>
+        <p class="cap earn-cap">One system. Measurable outcomes.</p>
       </div>
     </div>
   </section>
@@ -1270,7 +1250,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
         <span class="jf key"><svg class="ic"><use href="#i-share"/></svg>REVIEW / REFERRAL ↺</span>
       </div>
 
-      <p class="cap how-sub" data-reveal>A · WHERE THEY ENTER</p>
+      <p class="cap how-sub" data-reveal>A · Entry points</p>
       <div class="flow" id="flow" aria-hidden="true">
         <svg class="flow-svg" id="flowSvg"></svg>
         <div class="flow-cols">
@@ -1286,7 +1266,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
             <p class="fn-top"><i class="fn-dot" id="fnDot"></i>FLOW · DEMO</p>
             <h3 class="fn-t">YOUR CUSTOMER SYSTEM</h3>
             <div class="fn-sep"></div>
-            <ul class="fn-list"><li>Every touchpoint captured</li><li>One profile per customer</li><li>Attributed to its source</li></ul>
+            <ul class="fn-list"><li>Every touchpoint captured</li><li>Unified profile per customer</li><li>Source attribution retained</li></ul>
           </div>
           <div class="flow-col" id="fcR">
             <span class="src-chip"><svg class="ic"><use href="#i-window"/></svg>Website</span>
@@ -1296,14 +1276,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
             <span class="src-chip"><svg class="ic"><use href="#i-tag"/></svg>Offline</span>
           </div>
         </div>
-        <div class="flow-term-row"><span class="flow-term" id="flowTerm"><i aria-hidden="true"></i>Every customer — a known customer</span></div>
+        <div class="flow-term-row"><span class="flow-term" id="flowTerm"><i aria-hidden="true"></i>Every interaction attributed to a single record</span></div>
       </div>
-      <p class="cap flow-cap" data-reveal style="margin-top:26px">ALL ROADS LEAD INTO YOUR SYSTEM</p>
+      <p class="cap flow-cap" data-reveal style="margin-top:26px">All entry points converge into one system</p>
 
-      <p class="cap how-sub" data-reveal>B · THE CONVERSION STEP — LIVE, AT 11:31 PM</p>
+      <p class="cap how-sub" data-reveal>B · Response at 11:31 PM</p>
       <div class="duo">
         <div data-reveal>
-          <p class="duo-lab bad">Without PYRAXIS</p>
+          <p class="duo-lab bad">Without a system</p>
           <div class="device phone--dead">
             <div class="d-island" aria-hidden="true"></div>
             <div class="d-scr">
@@ -1329,7 +1309,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
             </div>
             <div class="d-home" aria-hidden="true"></div>
           </div>
-          <p class="duo-cap bad">She booked with whoever answered first.</p>
+          <p class="duo-cap bad">Delayed response. Booking lost to a faster reply.</p>
         </div>
 
         <div data-reveal>
@@ -1368,8 +1348,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
     <div class="wrap">
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="07">On the table</p>
-        <h2 class="h2" id="qr-h">Dinner, billed and remembered.</h2>
-        <p class="lede">A restaurant table, a QR code. Tap through it — it all runs.</p>
+        <h2 class="h2" id="qr-h">From table to repeat customer, automatically.</h2>
+        <p class="lede">A single QR scan that creates a profile, processes the transaction, and schedules the next interaction.</p>
       </header>
       <div class="qr-grid" id="qrGrid">
         <div data-reveal>
@@ -1379,7 +1359,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
             <h3>SCAN FOR A SPECIAL OFFER</h3>
             <p>DESSERT ON THE HOUSE</p>
           </div>
-          <p class="cap" style="margin-top:16px;text-align:center">THE CODE ISN'T THE PRODUCT — IT'S THE DOOR</p>
+          <p class="cap" style="margin-top:16px;text-align:center">The QR is the entry point, not the product</p>
         </div>
         <div data-reveal>
           <div class="device">
@@ -1403,7 +1383,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
       </div>
 
       <div class="qr-loop" data-reveal>
-        <p class="rw-lab good">THE WHOLE LOOP, ON ONE TABLE</p>
+        <p class="rw-lab good">Complete loop, one table</p>
         <div class="rw-row">
           <span class="fl-chip"><svg class="ic"><use href="#i-qr"/></svg>SCAN QR</span><span class="fl-arr">→</span>
           <span class="fl-chip"><svg class="ic"><use href="#i-window"/></svg>WEBSITE / WHATSAPP</span><span class="fl-arr">→</span>
@@ -1418,7 +1398,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
       </div>
 
       <div class="qr-after" data-reveal>
-        <p class="qa-h">After seven visits, the restaurant knows</p>
+        <p class="qa-h">After seven visits, retained context</p>
         <div class="qa-rows">
           <div><b>Visited</b><span>7 times</span></div>
           <div><b>Lifetime spend</b><span>₹18,500</span></div>
@@ -1427,7 +1407,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
           <div><b>Last visit</b><span>25 days ago</span></div>
         </div>
       </div>
-      <blockquote class="pull center" style="margin-top:clamp(40px,6vw,60px)" data-reveal>A paper menu sits still. Ours keeps the table.</blockquote>
+      <blockquote class="pull center" style="margin-top:clamp(40px,6vw,60px)" data-reveal>A static menu serves once. The system retains.</blockquote>
     </div>
   </section>
 
@@ -1436,8 +1416,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
     <div class="wrap">
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="08">Reviews</p>
-        <h2 class="h2" id="reviews-h">Ask everyone. Fix fast.</h2>
-        <p class="lede">Watch both endings. The unhappy customer gets a call, not silence.</p>
+        <h2 class="h2" id="reviews-h">Every review has a destination.</h2>
+        <p class="lede">Positive feedback is shared. Critical feedback is routed for resolution. Both are handled systematically.</p>
       </header>
 
       <div class="rev" id="rev" data-reveal>
@@ -1500,7 +1480,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
         <p class="route"><b>ANY RATING</b> <span class="r-arr">→</span> honest feedback captured <span class="r-arr">→</span> the owner listens</p>
         <p class="route"><b>HAPPY CUSTOMER</b> <span class="r-arr">→</span> easy public sharing <span class="r-arr">→</span> new customers</p>
         <p class="route"><b>A PROBLEM</b> <span class="r-arr">→</span> private alert <span class="r-arr">→</span> fixed fast <span class="r-arr">→</span> won back</p>
-        <p class="ethics">Every customer is asked — and every customer gets the same easy path to share publicly, good or bad. Problems also travel privately to the owner so they get fixed. PYRAXIS never writes, filters or suppresses reviews: every experience becomes useful information.</p>
+        <p class="ethics">Every customer receives the same opportunity to share feedback publicly. Critical feedback is also routed privately to management for immediate action. We never write, filter, or suppress genuine reviews.</p>
       </div>
     </div>
   </section>
@@ -1509,8 +1489,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
     <div class="wrap">
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="09">Follow-up</p>
-        <h2 class="h2" id="retain-h">Day 10 still matters.</h2>
-        <p class="lede">Most sales close on the third nudge. We send it for you.</p>
+        <h2 class="h2" id="retain-h">Retention, automated.</h2>
+        <p class="lede">Decision cycles extend beyond the first interaction. The system maintains contact until a decision is made.</p>
       </header>
 
       <div class="dtx" id="dtx" data-reveal>
@@ -1546,17 +1526,17 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
 
       <div class="rows">
         <div data-reveal>
-          <p class="rw-lab bad">Without a system</p>
+          <p class="rw-lab bad">Single transaction</p>
           <div class="rw-row">
             <span class="fl-chip"><svg class="ic"><use href="#i-card"/></svg>VISIT — ₹1,500</span><span class="fl-arr">→</span>
             <span class="fl-chip"><svg class="ic"><use href="#i-user"/></svg>PAYS AT THE COUNTER</span><span class="fl-arr">→</span>
             <span class="fl-chip"><svg class="ic"><use href="#i-moon"/></svg>LEAVES</span><span class="fl-arr">→</span>
             <span class="fl-chip gone">NEVER HEARD FROM AGAIN</span>
           </div>
-          <p class="rw-cap bad">One transaction. No memory.</p>
+          <p class="rw-cap bad">One transaction. No retained context.</p>
         </div>
         <div data-reveal>
-          <p class="rw-lab good">With PYRAXIS</p>
+          <p class="rw-lab good">With the system</p>
           <div class="rw-row">
             <span class="fl-chip"><svg class="ic"><use href="#i-card"/></svg>VISIT — ₹1,500</span><span class="fl-arr">→</span>
             <span class="fl-chip"><svg class="ic"><use href="#i-heart"/></svg>THANK YOU</span><span class="fl-arr">→</span>
@@ -1568,7 +1548,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
           <p class="rw-cap">One relationship. Compounding.</p>
         </div>
       </div>
-      <blockquote class="pull center" style="margin-top:clamp(40px,6vw,60px)" data-reveal>One visit pays once. A regular pays for years.</blockquote>
+      <blockquote class="pull center" style="margin-top:clamp(40px,6vw,60px)" data-reveal>A single visit is revenue. A retained customer is compounding return.</blockquote>
     </div>
   </section>
 
@@ -1659,10 +1639,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
             <p class="kicker" data-n="11">Purpose</p>
             <h2 class="h2" id="purpose-h">Why this exists.</h2>
           </header>
-          <p class="purpose-statement" data-purpose style="--d:.1s">Every disconnected tool is a customer waiting to leave.</p>
+          <p class="purpose-statement" data-purpose style="--d:.1s">Fragmented tools create gaps. Customers leave through them.</p>
           <div class="purpose-support" data-purpose style="--d:.2s">
-            <p>PYRAXIS exists to close that gap.</p>
-            <p>We build one connected system, not another tool to manage.</p>
+            <p>We build connected systems, not additional tools to manage.</p>
+            <p>One record, from discovery to retention.</p>
           </div>
           <div class="purpose-founder" data-purpose style="--d:.3s">
             <b>Aman Deep Sharma</b>
@@ -1698,8 +1678,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
       <p class="cap stats-cap" data-reveal>DEMO VIEW · DEMONSTRATION DATA</p>
       <div class="intel-grid">
         <div data-reveal>
-          <p class="own-before"><b>WHAT MOST OWNERS KNOW</b>"Rahul? Comes sometimes. Nice guy, I think."</p>
-          <p class="own-after"><b>WHAT PYRAXIS KNOWS</b></p>
+          <p class="own-before"><b>WITHOUT CONTEXT</b>"Rahul? He visits occasionally."</p>
+          <p class="own-after"><b>WITH INTELLIGENCE</b></p>
           <div class="rahul">
             <div class="rh-top">
               <span class="rh-av">RV</span>
@@ -1752,19 +1732,19 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
       <div class="why" data-reveal>
         <div class="why-item">
           <span class="why-num" aria-hidden="true">01</span>
-          <div><h3>Understand first</h3><p>We map where your customers are actually lost — before deciding what gets built.</p></div>
+          <div><h3>Diagnose before building</h3><p>We identify where customers are lost before recommending what to build.</p></div>
         </div>
         <div class="why-item">
           <span class="why-num" aria-hidden="true">02</span>
-          <div><h3>Systems, not projects</h3><p>Connected pieces that compound — not another isolated tool for you to maintain.</p></div>
+          <div><h3>Systems, not isolated tools</h3><p>Connected capabilities that compound over time, not additional software to maintain.</p></div>
         </div>
         <div class="why-item">
           <span class="why-num" aria-hidden="true">03</span>
-          <div><h3>Automate what should be automated</h3><p>The answering, booking, reminding and following up — handled without you.</p></div>
+          <div><h3>Automate the repetitive</h3><p>Enquiry handling, booking, reminders, and follow-up handled systematically.</p></div>
         </div>
         <div class="why-item">
           <span class="why-num" aria-hidden="true">04</span>
-          <div><h3>Humans where they matter</h3><p>AI handles the repeatable. People handle judgment, exceptions and the relationships that matter.</p></div>
+          <div><h3>Human judgment where it counts</h3><p>Automation handles the repeatable. People handle exceptions and relationships.</p></div>
         </div>
       </div>
     </div>
@@ -1796,7 +1776,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="16">Proof</p>
         <h2 class="h2" id="proof-h">Judge the running page.</h2>
-        <p class="lede">This page is the portfolio. No borrowed logos, no made-up lifts.</p>
+        <p class="lede">Evaluate the system running on this page.</p>
       </header>
       <div class="pf" data-reveal>
         <span class="pf-tag">CASE STUDY Nº 01 — RESERVED</span>
@@ -1804,10 +1784,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
           <div><b>Project</b><span>Your business — the first one goes here.</span></div>
           <div><b>Problem</b><span>Where your customers are being lost today.</span></div>
           <div><b>Built</b><span>Your growth system, connected end to end.</span></div>
-          <div><b>Result</b><span>Live, measurable — and yours to verify, not ours to claim.</span></div>
+          <div><b>Result</b><span>Live, measurable, and verifiable.</span></div>
         </div>
         <div class="pf-cta">
-          <p>Until then, judge us by what runs above.</p>
+          <p>Until then, evaluate the system demonstrated above.</p>
           <button class="btn btn-ghost btn-sm" data-open-modal type="button">Claim the first one
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
           </button>
@@ -1859,11 +1839,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
     <div class="wrap">
       <p class="kicker center" data-n="18">Begin</p>
       <h2 class="cta-h" id="cta-h">Bring one regular<br>back next week.</h2>
-      <p class="cta-mach">Website, booking, follow-up, reviews — installed as <em>one record,</em> not four tools.</p>
+      <p class="cta-mach">Website, booking, follow-up and reviews — unified in <em>one record.</em></p>
       <button class="btn btn-solid btn-lg" data-open-modal type="button">Get your system
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
       </button>
-      <p class="cta-sub">Tell us how customers find you today. We map it and show it running.</p>
+      <p class="cta-sub">Tell us how customers find you today. We will map it, build it, and show it running.</p>
       <a class="cta-loop" href="#hero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 12a8 8 0 1 1-2.5-5.8M20 3.5V8h-4.5"/></svg>BACK TO TOP</a>
     </div>
   </section>
@@ -1875,7 +1855,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
       <div class="foot-brand">
         <img src="public/pyraxis-wordmark.svg" alt="PYRAXIS" width="140" height="20">
       </div>
-      <p class="foot-tag">The system behind your next customer.</p>
+        <p class="foot-tag">A unified system for local businesses.</p>
     </div>
     <nav class="foot-links" aria-label="Sections">
       <a href="#leak">The Problem</a><a href="#builds">What It Builds</a><a href="#how">How It Works</a>
@@ -1895,7 +1875,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
       <div id="mForm">
         <p class="kicker" data-n="✳">Pyraxis</p>
         <h3 id="mTitle">Get your system.</h3>
-        <p class="m-lede">Tell us how customers find you today — we map it and show it running.</p>
+        <p class="m-lede">Tell us how customers find you today. We will map the flow and demonstrate the system.</p>
         <form id="leadForm" novalidate>
           <label>Your name<input type="text" name="name" autocomplete="name" maxlength="80" spellcheck="false" autocorrect="off" autocapitalize="words"></label>
           <label>Business type
@@ -2028,43 +2008,7 @@ function frame(){
   }
 })();
 
-/* ---------- spine: the page IS the journey ---------- */
-(function(){
-  var journey=$('.journey'); if(!journey) return;
-  var fill=$('#spineFill'), fillM=$('#spineFillM');
-  var sections=$$('.journey > .sec');
-  var nodes=sections.map(function(s){
-    var n=document.createElement('span'); n.className='snode';
-    journey.appendChild(n); return n;
-  });
-  var tops=[], jTop=0, jH=1, dirty=true;
-  function measure(){
-    var jr=journey.getBoundingClientRect();
-    jTop=jr.top+scrollY; jH=journey.offsetHeight;
-    tops=sections.map(function(s){
-      var h=s.querySelector('.sec-head')||s.querySelector('.wrap');
-      var r=h.getBoundingClientRect();
-      return (r.top-jr.top)+14;
-    });
-    dirty=true;
-  }
-  function update(){
-    var edge=scrollY+innerHeight*0.45;
-    var p=Math.max(0,Math.min(jH, edge-jTop));
-    if(fill) fill.style.transform='scaleY('+(jH?p/jH:0)+')';
-    nodes.forEach(function(n,i){ n.classList.toggle('on', tops[i]<=p); });
-    if(fillM){
-      var dh=document.documentElement.scrollHeight-innerHeight;
-      fillM.style.transform='scaleY('+(dh>0?Math.min(1,scrollY/dh):1)+')';
-    }
-  }
-  addEventListener('scroll',function(){ dirty=true; },{passive:true});
-  addTicker(journey,function(){ if(dirty){ dirty=false; update(); } });
-  addEventListener('load',measure);
-  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(measure);
-  var rz; addEventListener('resize',function(){ clearTimeout(rz); rz=setTimeout(measure,180); });
-  measure(); update();
-})();
+
 
 /* ============================================================
    WHATSAPP ENGINE
@@ -2729,8 +2673,8 @@ function startOnSeen(el, play){
   var d=$('#dtx'); if(!d) return;
   if(REDUCED || !('IntersectionObserver' in window)){ d.classList.add('play'); return; }
   var io=new IntersectionObserver(function(es){
-    es.forEach(function(e){ if(e.isIntersecting){ setTimeout(function(){ d.classList.add('play'); },350); io.disconnect(); } });
-  },{threshold:.25});
+    es.forEach(function(e){ if(e.isIntersecting){ d.classList.add('play'); io.disconnect(); } });
+  },{threshold:.05,rootMargin:'0px 0px -5% 0px'});
   io.observe(d);
 })();
 
@@ -2738,8 +2682,10 @@ function startOnSeen(el, play){
 (function(){
   var chain=$('#chain'); if(!chain) return;
   if(REDUCED || !('IntersectionObserver' in window)){ chain.classList.add('connected'); return; }
+  var fired=false;
   var io=new IntersectionObserver(function(es){
-    es.forEach(function(e){ if(e.isIntersecting){ setTimeout(function(){ chain.classList.add('connected'); },500); io.disconnect(); } });
+    if(fired){ io.disconnect(); return; }
+    es.forEach(function(e){ if(e.isIntersecting){ fired=true; setTimeout(function(){ chain.classList.add('connected'); },500); io.disconnect(); } });
   },{threshold:.35});
   io.observe(chain);
 })();
@@ -3598,17 +3544,38 @@ function showToast(msg){
   clearTimeout(toastTO);toastTO=setTimeout(()=>toastEl.classList.remove('show'),3400);
 }
 
-/* the field follows the WHOLE document's scroll */
+/* the field follows the journey hero → genesis (anchored, not the full
+   document): Recent Work (#deployments) + Purpose (#purpose) were added
+   later and stretched every phase when mapped to scrollHeight; small text
+   trims must compress local chunks, never re-stretch the hero. So range
+   ends at the compounding section's centre — tail CTA/footer can grow or
+   shrink freely without touching hero pacing. */
 let vh=innerHeight,range=1;
+var END_ANCHOR_SEL='#compounding';
+function anchorScroll(){
+  var a=document.querySelector(END_ANCHOR_SEL);
+  if(!a) return document.documentElement.scrollHeight-vh;
+  var r=a.getBoundingClientRect();
+  var top=r.top+(window.scrollY||0);
+  var mid=top+r.height/2;
+  return mid-vh/2;
+}
 function layout(){
   vh=innerHeight;
-  range=Math.max(1,document.documentElement.scrollHeight-vh);
+  var fallback=Math.max(1,document.documentElement.scrollHeight-vh);
+  var anchored=anchorScroll();
+  /* guard: if anchor is above the fold or unmeasurable, fall back */
+  range=Math.max(vh*2,Math.min(fallback,Math.max(1,anchored)));
 }
 layout();
 function relayout(){
-  /* range changes remap every scroll-driven scene: hold curP steady so
-     late fonts/images/resize never read as a jump or reload */
-  const keep=curP;layout();cur=keep*range;
+  /* range-only update: NEVER touch `cur` here. `cur` is the smoothed
+     scroll follower (tick lerps it toward scrollY every frame) — the old
+     `cur=keep*range` teleported it away from the real scroll position
+     whenever fonts/images/syslog lines landed in the first seconds, and
+     the lerp back read as a sudden reload/refresh of the whole field.
+     Keeping `cur` steady lets curP shift by the (correct, tiny) amount. */
+  layout();
 }
 addEventListener('load',relayout);
 
@@ -3716,10 +3683,18 @@ function buildMarkShape(sm){
   const bw=Math.max(1,sm.bx1-sm.bx),bh=Math.max(1,sm.by1-sm.by);
   const target=Math.min(visH*.58,visW*.7*bh/bw);
   const s=target/bh,cx=(sm.bx+sm.bx1)/2,cy=(sm.by+sm.by1)/2;
+  /* hero layout: copy sits left, free space sits right — park ONLY the mark
+     in that free space. Bottom edge anchored (shiftY compensates half the
+     growth), so size increases extend upward; plus a small right nudge.
+     Other shapes (dispersal/knot/disc/collapse/globe) stay centered; the
+     scroll flight re-animates from the offset mark naturally. Wide only. */
+  const wide=innerWidth>=900&&aspect>1.1;
+  const shiftX=wide?visW*0.16:0;
+  const shiftY=wide?-visH*0.03:0;
   for(let i=0;i<N;i++){
     const k=(Math.random()*m)|0;
-    pos[i*3]  =(sm.pts[k*2]-cx)*s+(Math.random()-.5)*.34;
-    pos[i*3+1]=-(sm.pts[k*2+1]-cy)*s+(Math.random()-.5)*.34;
+    pos[i*3]  =(sm.pts[k*2]-cx)*s+(Math.random()-.5)*.34+shiftX;
+    pos[i*3+1]=-(sm.pts[k*2+1]-cy)*s+(Math.random()-.5)*.34+shiftY;
     pos[i*3+2]=(Math.random()-.5)*.9;
     acc[i]=sm.acc[k];
   }
@@ -3880,7 +3855,7 @@ for(let i=0;i<N;i++){
   const v=new THREE.Vector3(gauss(),gauss(),gauss()).normalize().multiplyScalar(.5+Math.random());
   DIRS[i*3]=v.x;DIRS[i*3+1]=v.y;DIRS[i*3+2]=v.z;
 }
-const ARCS=[2.6,2.8,2.0,2.6,2.1];
+const ARCS=[2.6,2.8,2.0,2.6,1.4];
 const LAND=new Float32Array(N).fill(.7);  /* fallback ember-world glow */
 
 /* ================= shaders ================= */
@@ -3988,7 +3963,7 @@ const CAM=[
 ];
 const WOB=[.02,.5,.1,1.5,.28,.14];
 const SIZ=[1.12,.8,.92,.7,.85,1];
-const ROT=[0,.015,.16,.03,.42,.05];
+const ROT=[0,.015,.16,.03,.08,.05];
 const CA=['#f8f6ff','#dcd8ee','#efecff','#d4cdf4','#e9e4ff','#f4f2fa'].map(c=>new THREE.Color(c));
 const CB=['#8a5cff','#322c48','#4b3f82','#39306e','#5a3ad0','#403c52'].map(c=>new THREE.Color(c));
 
@@ -4271,8 +4246,8 @@ try{
        the disc onto the world — zero at BOTH segment ends, peak mid-flight,
        so the boundary with the previous segment stays perfectly continuous. */
     const slow=(i===4);
-    const rate=slow?1.5:1.9;
-    const st=(slow?.3:.35)*(i===0?.5:1);
+    const rate=slow?1.15:1.9;
+    const st=(slow?.42:.35)*(i===0?.5:1);
     for(let j=0;j<N;j++){
       const d=SEEDS[j]*st;
       let l=(t-d)*rate;
@@ -4284,7 +4259,7 @@ try{
       const y=A[j3+1]+(B[j3+1]-A[j3+1])*e+DIRS[j3+1]*s;
       const z=A[j3+2]+(B[j3+2]-A[j3+2])*e+DIRS[j3+2]*s;
       if(slow){
-        const sw=2.4*e*(1-e),cw=Math.cos(sw),sn=Math.sin(sw);
+        const sw=1.2*e*(1-e),cw=Math.cos(sw),sn=Math.sin(sw);
         baseArr[j3]=x*cw-z*sn;
         baseArr[j3+1]=y;
         baseArr[j3+2]=x*sn+z*cw;
@@ -4425,6 +4400,13 @@ addEventListener('resize',()=>{
   setTimeout(relayout,300);
 });
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(relayout);
+/* NOTE: no continuous ResizeObserver on #main here on purpose. The review
+   engine appends ~10 syslog lines + chat messages over ~18s after first
+   seen, and every height growth recomputed `range` → stepped curP down a
+   notch → the morph target teleported → the field visibly snapped/blinked
+   "a few times, a few seconds in". Range now updates only on load / resize
+   / fonts (static, unnoticed); demo-driven growth causes zero re-anchoring.
+   When text/labels are trimmed later, re-tune range manually instead. */
 
 /* ================= main loop ================= */
 let cur=window.scrollY||0,lastFrameP=0,lastNow=performance.now();
@@ -4541,8 +4523,8 @@ function tick(now){
           staggered so the story reads as: swarm condenses (uGlobe) →
           glass fades in beneath the arriving embers (bodyFade) →
           atmosphere ring breathes on last (atmFade). —— */
-    globeMix=sstep(clamp((curP-4.3)/.55,0,1));
-    globeMixS+=(globeMix-globeMixS)*Math.min(1,dt*2.6);
+    globeMix=sstep(clamp((curP-4.05)/.8,0,1));
+    globeMixS+=(globeMix-globeMixS)*Math.min(1,dt*1.8);
     const gmE=globeMixS*globeMixS*(3-2*globeMixS);
     u.uGlobe.value=globeMixS;
     /* HERO TOPO FIELD — presence follows scroll, not a binary gate: full
@@ -4555,10 +4537,12 @@ function tick(now){
         window.__topoNoTrans=true;topoCv.style.transition='none';
       }
       if(window.__topoNoTrans){
-        /* full through the hero, melting away across the Problem section */
+        /* full through the hero, melting away across the Problem section.
+           Multiplier matches #topo.live (0.28) so the JS takeover at 1.5s
+           is seamless — the old 0.55 doubled brightness in one frame. */
         const tf=1-sstep(clamp((curP-0.25)/0.45,0,1));
         window.__topoVis=tf;
-        topoCv.style.opacity=(0.55*tf).toFixed(3);
+        topoCv.style.opacity=(0.28*tf).toFixed(3);
       }else{ window.__topoVis=1; }
     }
     if(texReady)texFade=Math.min(1,texFade+dt/0.9);   /* map melts onto the glass */
@@ -4600,7 +4584,7 @@ function tick(now){
     }
     engine.group.rotation.y=rot;
     if(globeMixS>0){
-      if(!globeDragging&&!reduced)globeSpin+=dt*.1;   /* baseRotY += 0.0015/frame ≈ 0.1 rad/s */
+      if(!globeDragging&&!reduced)globeSpin+=dt*.035;   /* slow world turn — matches field drift, no extra spin */
       const tiltT=(globeDragging||reduced)?0:clamp(-ndc.y*.35,-1.1,1.1);
       globeTilt+=(tiltT-globeTilt)*Math.min(1,dt*3);
       /* spin and tilt EASE IN through gmE — the world winds itself up */
