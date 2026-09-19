@@ -309,7 +309,7 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .ch-close span{font:500 10px var(--mono);letter-spacing:.26em;color:var(--pu2);display:inline-flex;align-items:center;gap:10px;text-transform:uppercase}
 .chain.connected .ch-close{opacity:1;transform:none}
 .gap-grid{display:grid;gap:0}
-.gap-aside{display:flex;flex-direction:column;gap:26px;max-width:640px;background:rgba(255,255,255,.04);backdrop-filter:blur(12px);border-radius:12px;padding:24px}
+.gap-aside{display:flex;flex-direction:column;gap:26px;max-width:640px}
 @media(min-width:960px){.gap-grid{grid-template-columns:minmax(0,480px) 1fr}}
 @media(min-width:960px){.gap-aside{position:sticky;top:104px;align-self:start}}
 
@@ -3321,6 +3321,26 @@ try{ gl=cv.getContext('webgl',{alpha:false,antialias:false,depth:false}); }
 catch(e){ gl=null; }
 if(!gl) return;
 
+/* CONTEXT LOSS — this is a raw WebGL context (not wrapped by three.js, which
+   already handles this internally for #gl below). Without a listener here,
+   a GPU/driver-level context loss leaves this canvas permanently blank:
+   per spec the browser only attempts to restore the context if the
+   'webglcontextlost' handler calls preventDefault(). We do that, stop the
+   render loop while lost so we don't spend a frame's worth of no-op GL
+   calls, and rebuild the program/buffer exactly once on restore. */
+var glLost=false;
+cv.addEventListener('webglcontextlost',function(e){
+  e.preventDefault();
+  glLost=true;
+  if(window.PYRAXIS_DEBUG)window.PYRAXIS_DEBUG.log('topo: context lost');
+},false);
+cv.addEventListener('webglcontextrestored',function(){
+  glLost=false;
+  try{ initTopoProgram(); resize(); if(started)render((performance.now()-t0)*0.001,mouse.x,mouse.y); }
+  catch(e){}
+  if(window.PYRAXIS_DEBUG)window.PYRAXIS_DEBUG.log('topo: context restored');
+},false);
+
 var RIPS=5;
 var VS='attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0.,1.);}';
 var FS=[
@@ -3394,31 +3414,40 @@ function sh(type,src){
   }
   return s;
 }
-var v=sh(gl.VERTEX_SHADER,VS), f=sh(gl.FRAGMENT_SHADER,FS);
-if(!v||!f) return;
-var pr=gl.createProgram();
-gl.attachShader(pr,v);gl.attachShader(pr,f);gl.linkProgram(pr);
-if(!gl.getProgramParameter(pr,gl.LINK_STATUS)){
-  if(window.console)console.warn('[topo link]',gl.getProgramInfoLog(pr));
-  return;
-}
-gl.useProgram(pr);
-
-var buf=gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER,buf);
-gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
-var loc=gl.getAttribLocation(pr,'a_position');
-gl.enableVertexAttribArray(loc);
-gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
-
+/* All GL objects (program, buffer, uniform locations) live on a context
+   that can be lost and later restored by the browser. Everything that
+   creates or looks up a GL resource is grouped here so restoration can
+   rebuild it exactly once instead of duplicating this setup inline. */
+var pr=null,buf=null,loc=null,uRes=null,uT=null,uMou=null,uRip=null,uRipT=null;
 function locA(name){
   return gl.getUniformLocation(pr,name+'[0]')||gl.getUniformLocation(pr,name);
 }
-var uRes=gl.getUniformLocation(pr,'u_resolution'),
-    uT=gl.getUniformLocation(pr,'u_time'),
-    uMou=gl.getUniformLocation(pr,'u_mouse'),
-    uRip=locA('u_rip'),
-    uRipT=locA('u_ripT');
+function initTopoProgram(){
+  var v=sh(gl.VERTEX_SHADER,VS), f=sh(gl.FRAGMENT_SHADER,FS);
+  if(!v||!f) return false;
+  pr=gl.createProgram();
+  gl.attachShader(pr,v);gl.attachShader(pr,f);gl.linkProgram(pr);
+  if(!gl.getProgramParameter(pr,gl.LINK_STATUS)){
+    if(window.console)console.warn('[topo link]',gl.getProgramInfoLog(pr));
+    return false;
+  }
+  gl.useProgram(pr);
+
+  buf=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+  loc=gl.getAttribLocation(pr,'a_position');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+
+  uRes=gl.getUniformLocation(pr,'u_resolution');
+  uT=gl.getUniformLocation(pr,'u_time');
+  uMou=gl.getUniformLocation(pr,'u_mouse');
+  uRip=locA('u_rip');
+  uRipT=locA('u_ripT');
+  return true;
+}
+if(!initTopoProgram()) return;
 
 var HOME={x:0.5,y:0.45};
 var mouse={x:HOME.x,y:HOME.y}, target={x:HOME.x,y:HOME.y};
@@ -3491,6 +3520,7 @@ var last=0;
 function frame(t){
   raf=requestAnimationFrame(frame);
   if(!heroOn) return;
+  if(glLost) return;  /* GPU context lost: wait for 'webglcontextrestored' */
   /* fully faded out by scroll: hold the last frame, skip GL work */
   if(started&&(window.__topoVis||0)<=0.005) return;
   var now=performance.now();
@@ -3964,6 +3994,13 @@ const CAM=[
 const WOB=[.02,.5,.1,1.5,.28,.14];
 const SIZ=[1.12,.8,.92,.7,.85,1];
 const ROT=[0,.015,.16,.03,.08,.05];
+/* GLOBE_HOME_Y — local Y rotation (radians) that faces India toward the
+   camera once the globe has formed. Derived from the earth texture's
+   equirectangular mapping (buildGenesisFromEarth: ph=(x+.5)/W*TAU) for
+   India's centre (~79°E, the commonly-cited geographic centre near
+   Nagpur): rot = PI/2 - ph. Single knob — nudge by a small amount (radians)
+   and re-check if India isn't quite centred; a full turn is TAU (~6.283). */
+const GLOBE_HOME_Y=-2.95;
 const CA=['#f8f6ff','#dcd8ee','#efecff','#d4cdf4','#e9e4ff','#f4f2fa'].map(c=>new THREE.Color(c));
 const CB=['#8a5cff','#322c48','#4b3f82','#39306e','#5a3ad0','#403c52'].map(c=>new THREE.Color(c));
 
@@ -4421,7 +4458,7 @@ function tick(now){
      slow-fast-slow (hang) inside a single wheel tick. */
   cur=coarse||reduced?tgt:cur+(tgt-cur)*Math.min(1,dt*8);
   if(Math.abs(tgt-cur)<.5)cur=tgt;
-  curP=clamp(cur/range,0,1)*(COARSE||innerWidth<640?1.5:5);
+  curP=clamp(cur/range,0,1)*5;
   const vel=(curP-lastFrameP)/dt;lastFrameP=curP;
   /* full rate always while visible: the 60→30fps step-down read as lag
      whenever the pointer rested — smoothness beats the battery saving */
@@ -4584,7 +4621,18 @@ function tick(now){
     }
     engine.group.rotation.y=rot;
     if(globeMixS>0){
-      if(!globeDragging&&!reduced)globeSpin+=dt*.035;   /* slow world turn — matches field drift, no extra spin */
+      /* SPIN-INTO-PLACE — as the globe condenses (gmE 0→1), the baseline
+         heading eases from wherever free rotation left off toward the
+         India-centered home angle (nearest congruent turn, so it always
+         turns the short way, never whips around). Combined with the
+         spin-up below this reads as the world turning to face you as it
+         forms, then settling into its slow idle drift from there. */
+      const homeTarget=GLOBE_HOME_Y+Math.round((rot-GLOBE_HOME_Y)/TAU)*TAU;
+      rot+=(homeTarget-rot)*gmE;
+      /* gentle spin-up DURING the transition: faster while assembling
+         (1-gmE weights it), settles to the slow steady turn once formed —
+         so the globe visibly starts turning as it condenses, not only after */
+      if(!globeDragging&&!reduced)globeSpin+=dt*(.035+.05*(1-gmE));
       const tiltT=(globeDragging||reduced)?0:clamp(-ndc.y*.35,-1.1,1.1);
       globeTilt+=(tiltT-globeTilt)*Math.min(1,dt*3);
       /* spin and tilt EASE IN through gmE — the world winds itself up */
@@ -4864,6 +4912,98 @@ function frame(now){
   rEl.style.transform='scaleX('+(1+stretch).toFixed(3)+') scaleY('+(1-stretch*0.6).toFixed(3)+')';
 }
 requestAnimationFrame(function(now){last=now;requestAnimationFrame(frame);});
+})();
+</script>
+<script>
+/* ============================================================
+   TEMPORARY DEV DIAGNOSTICS — animation-restart / reload audit
+   ------------------------------------------------------------
+   Off by default: zero listeners, zero overhead, zero visible
+   change to the page. Enable with ?debug=1 in the URL, or by
+   running  localStorage.pyraxisDebug='1'  in the console and
+   reloading. Disable the same way ('0' / remove the key) or
+   simply delete this <script> block — nothing else references it
+   except the two optional window.PYRAXIS_DEBUG.log(...) calls in
+   the #topo context-loss handlers above, which are themselves
+   no-ops when this block is absent (the `if(window.PYRAXIS_DEBUG)`
+   guard). Safe to strip entirely for production.
+
+   Captures exactly the signals in section 3/9/10/12 of the audit:
+   real vs. perceived reload, resize/relayout timing, WebGL context
+   loss on both canvases, and uncaught errors — so a future
+   occurrence of "the animation restarted" can be pinned to one of
+   these instead of guessed at.
+============================================================ */
+(function(){
+'use strict';
+var on = /(?:^|[?&])debug=1(?:&|$)/.test(location.search) ||
+         (function(){ try{ return localStorage.getItem('pyraxisDebug')==='1'; }catch(e){ return false; } })();
+if(!on) return;
+
+var log=[];
+function push(msg){
+  var line='['+(performance.now()/1000).toFixed(2)+'s] '+msg;
+  log.push(line);
+  if(log.length>40) log.shift();
+  render();
+}
+window.PYRAXIS_DEBUG={log:push};
+
+/* 1. Real page reload vs. perceived restart — a true reload always
+      resets performance.timeOrigin; a JS-only glitch never does. */
+push('boot · timeOrigin='+performance.timeOrigin.toFixed(0)+' · readyState='+document.readyState);
+addEventListener('pageshow',function(e){ push('pageshow · persisted='+e.persisted); });
+addEventListener('pagehide',function(){ push('pagehide'); });
+addEventListener('beforeunload',function(){ push('beforeunload (real navigation/reload)'); });
+document.addEventListener('visibilitychange',function(){ push('visibilitychange · hidden='+document.hidden); });
+addEventListener('focus',function(){ push('window focus'); });
+addEventListener('blur',function(){ push('window blur'); });
+addEventListener('orientationchange',function(){ push('orientationchange'); });
+
+/* 2. Resize / relayout timing — to correlate a visual snap with a
+      specific resize event rather than assuming one. */
+var rzN=0;
+addEventListener('resize',function(){ rzN++; push('resize #'+rzN+' · '+innerWidth+'x'+innerHeight); },{passive:true});
+
+/* 3. WebGL context loss on BOTH canvases. #gl is a three.js
+      WebGLRenderer, which already guards itself against context
+      loss internally (verified in vendor/three-r159.min.js: the
+      lost handler calls preventDefault() and render() no-ops while
+      lost) — logged here for visibility only. #topo is a raw WebGL
+      context and owns its own recovery (see the handlers above). */
+['gl','topo'].forEach(function(id){
+  var cv=document.getElementById(id); if(!cv) return;
+  cv.addEventListener('webglcontextlost',function(){ push('#'+id+' webglcontextlost'); });
+  cv.addEventListener('webglcontextrestored',function(){ push('#'+id+' webglcontextrestored'); });
+});
+
+/* 4. Uncaught errors / rejections — a single thrown error inside a
+      rAF callback can silently stop that loop while others keep
+      running, which reads as one system "restarting" on its own. */
+addEventListener('error',function(e){ push('ERROR · '+(e.message||'?')+' @ '+(e.filename||'?')+':'+(e.lineno||'?')); });
+addEventListener('unhandledrejection',function(e){ push('UNHANDLED REJECTION · '+(e.reason&&e.reason.message||e.reason)); });
+
+/* 5. Small overlay panel — current scroll/animation state, sampled
+      a few times a second rather than every frame. */
+var panel=document.createElement('div');
+panel.style.cssText='position:fixed;left:8px;bottom:8px;z-index:99999;max-width:46vw;'+
+  'max-height:40vh;overflow:auto;background:rgba(10,10,13,.92);color:#9ee;font:10px/1.4 monospace;'+
+  'padding:8px;border:1px solid rgba(255,255,255,.15);border-radius:6px;pointer-events:none;white-space:pre-wrap';
+document.body.appendChild(panel);
+function render(){
+  var gl1=document.getElementById('gl'), gl2=document.getElementById('topo');
+  var stat=[
+    'PYRAXIS DEBUG (?debug=1) · scrollY='+Math.round(scrollY)+
+    ' · dpr='+(devicePixelRatio||1).toFixed(2)+
+    ' · #gl='+(gl1?gl1.width+'x'+gl1.height:'—')+
+    ' · #topo='+(gl2?gl2.width+'x'+gl2.height:'—'),
+    '——'
+  ].concat(log.slice().reverse()).join('\n');
+  panel.textContent=stat;
+}
+render();
+setInterval(render,500);
+push('debug overlay active');
 })();
 </script>
 </body>
