@@ -726,9 +726,9 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .deploy-body{position:relative;z-index:2;padding:60px 26px 0}
 .deploy-body h3{font:500 1.25rem var(--serif);color:var(--ink)}
 .deploy-body>p{font-size:.95rem;color:var(--mut);margin-top:6px}
-.deploy-prev{position:relative;z-index:0;margin-top:20px;height:210px;overflow:hidden;
+.deploy-prev{position:relative;z-index:0;margin:28px 0 0;aspect-ratio:2.4;height:auto;overflow:hidden;
   background:radial-gradient(120% 100% at 50% 100%,rgba(242,240,235,.18),transparent 60%),linear-gradient(180deg,#0a0a12,#050508)}
-.deploy-prev img{width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block}
+.deploy-prev img{width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block}
 .deploy-prev a{position:absolute;inset:0;z-index:3;display:block}
 .deploy-ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:8px;padding:0 24px;text-align:center}
@@ -742,11 +742,13 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .deploy-req:hover{text-decoration:underline;text-underline-offset:4px}
 .deploy-before{font:600 9px var(--mono);letter-spacing:.18em;color:var(--mut2);text-transform:uppercase}
 .deploy-bl{font-size:.82rem;color:var(--mut);line-height:1.5}
-.deploy-stat{position:relative;z-index:2;margin-top:auto;border-top:1px solid var(--line);
+.deploy-stat{position:relative;z-index:2;margin-top:auto;
   padding:22px 26px 26px}
 .deploy-stat b{display:block;font:500 1.9rem var(--serif);color:#F2F0EB}
-.deploy-stat a{display:inline-block;font:500 1.9rem var(--serif);color:#F2F0EB;text-underline-offset:4px}
-.deploy-stat a:hover{text-decoration:underline}
+.deploy-stat a{display:inline-flex;align-items:center;gap:8px;font:500 1.9rem var(--serif);color:#F2F0EB;text-underline-offset:4px;cursor:pointer}
+.deploy-stat a .arr{font-size:1.15rem;transition:transform .3s cubic-bezier(0.16,1,0.3,1);display:inline-block}
+.deploy-card:hover .deploy-stat a .arr,.deploy-stat a:hover .arr{transform:translateX(6px)}
+.deploy-stat a:hover{opacity:.8}
 .deploy-stat span{display:block;font-size:.92rem;color:var(--mut);margin-top:4px}
 .deploy-cta{margin-top:26px}
 
@@ -1687,11 +1689,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
             <p>Restaurant Website &amp; Digital Ordering</p>
           </div>
           <div class="deploy-prev">
-            <img src="public/projects/eateria.webp" alt="Eateria preview" loading="lazy">
+            <img src="public/projects/eateria.webp" alt="Eateria preview" loading="lazy" width="1200" height="500">
             <a href="https://thepyraxis.github.io/eateria" target="_blank" rel="noopener noreferrer" aria-label="View live website: Eateria"></a>
           </div>
           <div class="deploy-stat">
-            <a href="https://thepyraxis.github.io/eateria" target="_blank" rel="noopener noreferrer" aria-label="View live website: Eateria">Live Website</a>
+            <a href="https://thepyraxis.github.io/eateria" target="_blank" rel="noopener noreferrer" aria-label="View live website: Eateria">Live Website <span class="arr" aria-hidden="true">→</span></a>
             <span>Premium restaurant experience with online ordering, reservations, responsive design, and cinematic animations.</span>
           </div>
         </article>
@@ -1705,15 +1707,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
             <p>AI Automation &amp; Lead Engagement</p>
           </div>
           <div class="deploy-prev">
-            <div class="deploy-ph">
-              <span class="em" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 8c-4 0-6 3-6 6-3 1-4 4-3 7-2 2-2 5 0 7-1 3 1 6 4 6h1v4h16v-4h1c3 0 5-3 4-6 2-2 2-5 0-7 1-3 0-6-3-7 0-3-2-6-6-6h-8z"/><path d="M24 8v26M17 16c2 1 3 3 3 5M31 16c-2 1-3 3-3 5M15 27c2 0 4-1 5-3M33 27c-2 0-4-1-5-3"/></svg></span>
-              <span class="st">Available on Request</span>
-              <a class="deploy-req" href="https://wa.me/919837104413?text=Hi!%20I%27d%20like%20to%20see%20the%20case%20study%20for%20ServicePro%20AI%20Agent." target="_blank" rel="noopener noreferrer">Request full case study</a>
-            </div>
+            <img src="public/projects/servicepro.webp" alt="ServicePro AI Agent preview" loading="lazy" width="1200" height="500">
           </div>
           <div class="deploy-stat">
-            <b>On request</b>
-            <span>Full case study</span>
+            <a href="https://wa.me/919837104413?text=Hi!%20I%27d%20like%20to%20see%20the%20case%20study%20for%20ServicePro%20AI%20Agent." target="_blank" rel="noopener noreferrer">Request full case study <span class="arr" aria-hidden="true">→</span></a>
+            <span>24/7 AI receptionist that answers enquiries, shares the menu, checks table availability, and books guests in automatically.</span>
           </div>
         </article>
         </div>
@@ -1726,15 +1724,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
             <p>Booking System &amp; Automation</p>
           </div>
           <div class="deploy-prev">
-            <div class="deploy-ph">
-              <span class="em" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 24 10 10M24 24 38 10M24 24 10 38M24 24 38 38"/><circle cx="24" cy="24" r="4"/></svg></span>
-              <span class="st">Available on Request</span>
-              <a class="deploy-req" href="https://wa.me/919837104413?text=Hi!%20I%27d%20like%20to%20see%20the%20case%20study%20for%20StayVista%20Retreats." target="_blank" rel="noopener noreferrer">Request full case study</a>
-            </div>
+            <img src="public/projects/stayvista.webp" alt="StayVista Retreats preview" loading="lazy" width="1200" height="500">
           </div>
           <div class="deploy-stat">
-            <b>On request</b>
-            <span>Full case study</span>
+            <a href="https://wa.me/919837104413?text=Hi!%20I%27d%20like%20to%20see%20the%20case%20study%20for%20StayVista%20Retreats." target="_blank" rel="noopener noreferrer">Request full case study <span class="arr" aria-hidden="true">→</span></a>
+            <span>Automated villa booking system with instant enquiry replies, real-time availability sync, and guest messaging from first hello to check-out.</span>
           </div>
         </article>
         </div>
@@ -4985,6 +4979,19 @@ requestAnimationFrame(tick);
     });
     card.addEventListener('pointerleave',function(){
       if(raf!==null){ cancelAnimationFrame(raf); raf=null; }
+    });
+    card.style.cursor='pointer';
+    card.addEventListener('click',function(e){
+      if(e.target.closest('a')) return; // real link already handles it
+      var link=card.querySelector('.deploy-stat a');
+      if(link) window.open(link.href,'_blank','noopener,noreferrer');
+    });
+    card.addEventListener('keydown',function(e){
+      if(e.target!==card) return;
+      if(e.key==='Enter'||e.key===' '){
+        var link=card.querySelector('.deploy-stat a');
+        if(link){ e.preventDefault(); window.open(link.href,'_blank','noopener,noreferrer'); }
+      }
     });
   });
 })();
