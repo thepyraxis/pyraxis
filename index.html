@@ -799,42 +799,83 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .pf-cta{margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
 .pf-cta p{font:italic 400 .95rem var(--serif);color:var(--mut)}
 
-/* ============ 14 compounding ============ */
+/* ============ 14 compounding — the orbit ============
+   One record at the centre; six stations on a slow orbit. A comet of light
+   runs the loop, each arrival fires a beacon + feeds the core, and every
+   completed lap compounds (echo wave, brighter core, bigger comet). */
 #compounding{background:transparent}
 #compounding>.wrap{position:relative;z-index:1}
-.wheel{position:relative;max-width:860px;margin:0 auto}
-.wheel-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:0}
-.wheel-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:110px 22px;padding:8px 0;pointer-events:none}
-/* gaps fall through to the hub beneath (View cursor); cards stay live */
-.wheel-grid .wh{pointer-events:auto}
-.wh{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;
-  border:1px solid var(--line);border-radius:10px;padding:18px 10px 16px;
-  background:linear-gradient(180deg,rgba(22,22,30,.94),rgba(12,12,16,.92));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
-  transition:border-color .35s,box-shadow .35s,transform .35s,opacity .4s}
-.wh .ic{width:17px;height:17px;color:var(--mut);transition:color .35s}
-.wh span{font:500 9.5px var(--mono);letter-spacing:.16em;color:var(--mut);text-transform:uppercase;transition:color .35s}
-.wn{position:absolute;top:7px;left:10px;font:500 8px var(--mono);letter-spacing:.18em;color:var(--mut2)}
-.wh.hot{border-color:var(--pu2);transform:translateY(-3px);
-  box-shadow:0 0 0 3px rgba(124,92,255,.16),0 14px 38px rgba(124,92,255,.28),inset 0 1px 0 rgba(255,255,255,.1)}
-.wh.hot .ic{color:#d8b4fe;filter:drop-shadow(0 0 7px rgba(167,139,255,.95))}
-.wh.hot span{color:#fff}
-.wh.hot .wn{color:var(--pu2)}
-/* cinematic focus — while energy sits in one card, the rest recede */
-.wheel.has-hot .wh{opacity:.45}
-.wheel.has-hot .wh.hot{opacity:1}
-.wheel-mid{position:absolute;inset:0;display:grid;place-items:center;z-index:0;pointer-events:none}
-/* flywheel hub — the loop's meaningful center: live cycle count plus the
-   compounding multiplier, ringed by a slow satellite orbit */
-.hub{position:relative;width:148px;height:148px;display:flex;align-items:center;justify-content:center;background:none;border:0;box-shadow:none;pointer-events:auto}
-/* the endless cycle — a bold loop arrow in slow rotation */
-.hub-loop{width:60px;height:60px;overflow:visible;filter:drop-shadow(0 0 12px rgba(124,92,255,.55))}
-.hub-spin{transform-box:view-box;transform-origin:60px 60px;animation:loopspin 14s linear infinite}
-@keyframes loopspin{to{transform:rotate(360deg)}}
-.wh.hit{animation:hitpop .8s cubic-bezier(.2,.7,.3,1)}
-@keyframes hitpop{0%{box-shadow:0 0 0 0 rgba(124,92,255,.55)}100%{box-shadow:0 0 0 16px rgba(124,92,255,0)}}
-@media(max-width:700px){.wheel-grid{grid-template-columns:repeat(2,1fr);gap:70px 14px}.hub{width:112px;height:112px}.hub-loop{width:52px;height:52px}}
-@media (prefers-reduced-motion:reduce){.hub-spin{animation:none}}
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+.orbit{position:relative;max-width:1060px;margin:0 auto;--cw:clamp(178px,21.5vw,234px)}
+.orb-cv{display:none}
+/* readout — what the orbit is saying right now */
+.orb-core{position:relative;max-width:340px;margin:0 auto 34px;text-align:center;pointer-events:none}
+/* scrim — keeps the readout legible over the globe behind it */
+.orb-core{isolation:isolate}
+.orb-core::before{content:"";position:absolute;inset:-74px -84px;z-index:-1;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(9,9,13,.92) 0%,rgba(9,9,13,.8) 58%,rgba(9,9,13,0) 100%)}
+.orb-read,.orb-eyebrow,.orb-meta{text-shadow:0 1px 14px rgba(0,0,0,.85)}
+.orb-eyebrow{display:inline-flex;align-items:center;gap:10px;font:500 8.5px var(--mono);letter-spacing:.3em;color:var(--mut);text-transform:uppercase}
+.orb-eyebrow::before,.orb-eyebrow::after{content:"";width:24px;height:1px;background:linear-gradient(90deg,transparent,var(--pud))}
+.orb-eyebrow::after{transform:scaleX(-1)}
+.orb-read{margin:18px 0 20px;min-height:148px;transition:opacity .19s ease,transform .19s ease,filter .19s ease}
+.orb-read.sw{opacity:0;transform:translateY(7px);filter:blur(3px)}
+.orb-rn{display:block;font:500 10px var(--mono);letter-spacing:.26em;color:var(--pu2)}
+.orb-rt{font:400 clamp(1.6rem,2.7vw,2.2rem)/1.08 var(--serif);letter-spacing:-.015em;color:var(--ink);margin:9px 0 11px;text-wrap:balance}
+.orb-rd{font:400 .93rem/1.55 var(--sans);color:var(--mut);max-width:30ch;margin:0 auto;text-wrap:balance}
+.orb-meta{display:inline-flex;align-items:center;gap:16px;font:500 8.5px var(--mono);letter-spacing:.26em;color:var(--mut)}
+.orb-dots{display:inline-flex;gap:7px}
+.orb-dots i{width:5px;height:5px;border-radius:50%;background:var(--mut2);opacity:.55;transition:background .4s,opacity .4s,box-shadow .4s}
+.orb-dots i.on{background:var(--pu2);opacity:1;box-shadow:0 0 9px rgba(167,139,255,.95)}
+/* stations */
+.orb-list{list-style:none;display:grid;gap:11px;position:relative;padding-left:32px}
+.orb-list::before{content:"";position:absolute;left:11px;top:18px;bottom:18px;width:1px;background:linear-gradient(rgba(124,92,255,.5),rgba(124,92,255,.08))}
+.orb-list::after{content:"";position:absolute;left:11px;top:18px;width:1px;height:calc((100% - 36px)*var(--prog,0)/100);background:linear-gradient(#e9d5ff,#7c5cff);box-shadow:0 0 12px rgba(167,139,255,.9)}
+.ob{position:relative}
+.ob::before{content:"";position:absolute;left:-25px;top:50%;width:7px;height:7px;border-radius:50%;background:#15141c;border:1px solid var(--pud);transform:translateY(-50%);transition:.4s;z-index:1}
+.ob.hot::before{background:var(--pu2);border-color:var(--pu2);box-shadow:0 0 14px var(--pu2)}
+.ob-b{position:relative;width:100%;display:flex;align-items:center;gap:13px;text-align:left;padding:13px 16px 13px 13px;border-radius:15px;isolation:isolate;overflow:hidden;
+  background:linear-gradient(155deg,rgba(30,26,50,.74),rgba(13,12,21,.84));
+  border:1px solid rgba(255,255,255,.085);
+  -webkit-backdrop-filter:blur(14px) saturate(150%);backdrop-filter:blur(14px) saturate(150%);
+  box-shadow:0 16px 38px -14px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.08);
+  transition:transform .55s cubic-bezier(.2,.7,.2,1),border-color .4s,box-shadow .55s}
+/* cursor spotlight */
+.ob-b::before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .4s;
+  background:radial-gradient(160px circle at var(--mx,50%) var(--my,0%),rgba(167,139,255,.24),transparent 65%)}
+.ob-b:hover::before{opacity:1}
+/* travelling light on the active card's edge */
+.ob-b::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;opacity:0;transition:opacity .5s;
+  background:conic-gradient(from var(--ang,0deg),rgba(124,92,255,0) 0%,rgba(167,139,255,.95) 16%,rgba(255,255,255,.95) 24%,rgba(167,139,255,.95) 32%,rgba(124,92,255,0) 52%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.ob.hot .ob-b::after{opacity:1;animation:obSpin 3.4s linear infinite}
+@keyframes obSpin{to{--ang:360deg}}
+.ob-chip{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:var(--mut);
+  background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.11),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.1);
+  transition:color .4s,border-color .4s,background .4s,box-shadow .5s}
+.ob-chip .ic{width:17px;height:17px;transition:filter .4s}
+.ob-tx{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ob-n{font:500 8.5px var(--mono);letter-spacing:.22em;color:var(--mut2);transition:color .4s}
+.ob-t{font:500 10px/1.4 var(--mono);letter-spacing:.13em;color:var(--mut);text-transform:uppercase;transition:color .4s}
+.ob.hot .ob-b{transform:translateY(-4px);border-color:transparent;
+  box-shadow:0 0 0 1px rgba(167,139,255,.22),0 26px 60px -16px rgba(124,92,255,.6),inset 0 1px 0 rgba(255,255,255,.13)}
+.ob.hot .ob-chip{color:#fff;border-color:rgba(167,139,255,.75);
+  background:radial-gradient(circle at 30% 25%,rgba(190,170,255,.6),rgba(124,92,255,.2));
+  box-shadow:0 0 0 4px rgba(124,92,255,.15),0 0 26px rgba(124,92,255,.65)}
+.ob.hot .ob-chip .ic{filter:drop-shadow(0 0 6px rgba(221,200,255,.95))}
+.ob.hot .ob-n{color:var(--pu2)}.ob.hot .ob-t{color:#fff}
+/* desktop: stations sit on the orbit, canvas draws the light */
+.orbit.is-desk{height:clamp(500px,52vw,610px)}
+.orbit.is-desk .orb-cv{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.orbit.is-desk .orb-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(330px,38%);margin:0}
+.orbit.is-desk .orb-list{position:absolute;inset:0;padding:0;display:block}
+.orbit.is-desk .orb-list::before,.orbit.is-desk .orb-list::after,.orbit.is-desk .ob::before{display:none}
+.orbit.is-desk .ob{position:absolute;width:var(--cw);transform:translate(-50%,-50%);z-index:2}
+.orbit.is-desk:not(.ready) .ob{visibility:hidden}
+.orbit.is-desk.in .ob-b{animation:obIn .95s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:calc(var(--k)*85ms + 250ms)}
+@keyframes obIn{from{opacity:0;scale:.9}}
+@media (prefers-reduced-motion:reduce){.ob.hot .ob-b::after{animation:none}.orbit.is-desk.in .ob-b{animation:none}}
 
 /* ============ 09 intelligence ============ */
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:9px;overflow:hidden}
@@ -1911,30 +1952,26 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
         <p class="lede">Each visit makes the next one easier to earn.</p>
       </header>
 
-      <div class="wheel" id="wheel" data-reveal>
+      <div class="orbit" id="orbit" data-reveal>
         <p class="sr-only">The compounding growth loop: customer data leads to smarter decisions, which create a better experience, which brings more returning customers, which generates more reviews and referrals, which produces more growth — which feeds back into customer data.</p>
-        <svg class="wheel-svg" id="wheelSvg" aria-hidden="true"></svg>
-        <div class="wheel-mid" aria-hidden="true">
-          <div class="hub">
-            <svg class="hub-loop" viewBox="0 0 120 120" aria-hidden="true">
-              <defs><linearGradient id="loopGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#7c5cff"/><stop offset=".5" stop-color="#f5f3ff"/><stop offset="1" stop-color="#7c5cff"/>
-              </linearGradient></defs>
-              <g class="hub-spin">
-                <circle cx="60" cy="60" r="44" fill="none" stroke="url(#loopGrad)" stroke-width="5" stroke-linecap="round" stroke-dasharray="240 36.5"/>
-                <path d="M-7,-9 L9,0 L-7,9 Z" fill="#ede9fe" transform="translate(89.7,27.6) rotate(42.5)"/>
-              </g>
-            </svg>
+        <canvas class="orb-cv" id="orbCv" aria-hidden="true"></canvas>
+        <div class="orb-core" aria-hidden="true">
+          <span class="orb-eyebrow">One record · compounding</span>
+          <div class="orb-read" id="orbRead">
+            <span class="orb-rn" id="orbRn">01</span>
+            <p class="orb-rt" id="orbRt">Customer data</p>
+            <p class="orb-rd" id="orbRd">Every visit, booking and message lands in one record.</p>
           </div>
+          <div class="orb-meta"><span id="orbCycle">CYCLE 01</span><span class="orb-dots" id="orbDots"></span></div>
         </div>
-        <div class="wheel-grid">
-          <div class="wh"><b class="wn">01</b><svg class="ic"><use href="#i-receipt"/></svg><span>CUSTOMER DATA</span></div>
-          <div class="wh"><b class="wn">02</b><svg class="ic"><use href="#i-eye"/></svg><span>SMARTER DECISIONS</span></div>
-          <div class="wh"><b class="wn">03</b><svg class="ic"><use href="#i-heart"/></svg><span>BETTER EXPERIENCE</span></div>
-          <div class="wh"><b class="wn">04</b><svg class="ic"><use href="#i-loop"/></svg><span>MORE RETURNING</span></div>
-          <div class="wh"><b class="wn">05</b><svg class="ic"><use href="#i-share"/></svg><span>MORE REVIEWS / REFERRALS</span></div>
-          <div class="wh"><b class="wn">06</b><svg class="ic"><use href="#i-chart"/></svg><span>MORE GROWTH</span></div>
-        </div>
+        <ol class="orb-list">
+          <li class="ob" style="--k:0"><button type="button" class="ob-b" aria-label="Step 1: Customer Data — Every visit, booking and message lands in one record."><span class="ob-chip"><svg class="ic" aria-hidden="true"><use href="#i-receipt"/></svg></span><span class="ob-tx"><span class="ob-n">01</span><span class="ob-t">CUSTOMER DATA</span></span></button></li>
+          <li class="ob" style="--k:1"><button type="button" class="ob-b" aria-label="Step 2: Smarter Decisions — You see who returns, who drifts and what actually works."><span class="ob-chip"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></span><span class="ob-tx"><span class="ob-n">02</span><span class="ob-t">SMARTER DECISIONS</span></span></button></li>
+          <li class="ob" style="--k:2"><button type="button" class="ob-b" aria-label="Step 3: Better Experience — Each customer is remembered, so service feels personal."><span class="ob-chip"><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg></span><span class="ob-tx"><span class="ob-n">03</span><span class="ob-t">BETTER EXPERIENCE</span></span></button></li>
+          <li class="ob" style="--k:3"><button type="button" class="ob-b" aria-label="Step 4: More Returning — Timely follow-ups bring regulars back before they drift."><span class="ob-chip"><svg class="ic" aria-hidden="true"><use href="#i-loop"/></svg></span><span class="ob-tx"><span class="ob-n">04</span><span class="ob-t">MORE RETURNING</span></span></button></li>
+          <li class="ob" style="--k:4"><button type="button" class="ob-b" aria-label="Step 5: More Reviews / Referrals — Happy customers are asked at the right moment."><span class="ob-chip"><svg class="ic" aria-hidden="true"><use href="#i-share"/></svg></span><span class="ob-tx"><span class="ob-n">05</span><span class="ob-t">MORE REVIEWS / REFERRALS</span></span></button></li>
+          <li class="ob" style="--k:5"><button type="button" class="ob-b" aria-label="Step 6: More Growth — Retention compounds — and feeds the record again."><span class="ob-chip"><svg class="ic" aria-hidden="true"><use href="#i-chart"/></svg></span><span class="ob-tx"><span class="ob-n">06</span><span class="ob-t">MORE GROWTH</span></span></button></li>
+        </ol>
       </div>
     </div>
   </section>
@@ -3078,126 +3115,251 @@ function startOnSeen(el, play){
   update();
 })();
 
-/* ---------- 14 · compounding wheel ---------- */
+/* ---------- 14 · compounding orbit ---------- */
 (function(){
-  var w=$('#wheel'); if(!w) return;
-  var svg=$('#wheelSvg'), sts=$$('.wh',w);
-  if(!svg||!sts.length) return;
-  var NS='http://www.w3.org/2000/svg';
-  function nNS(t,a){ var n=document.createElementNS(NS,t); for(var k in a) n.setAttribute(k,a[k]); return n; }
-  var path=null, prog=null, flow=null, pkt=null, ghosts=[], chevs=[], centers=[], LAP=12000, L=1, lap=0, prevU=0;
-  function smoothClosed(pts){
-    var d='M'+pts[0].x.toFixed(1)+' '+pts[0].y.toFixed(1);
-    for(var i=0;i<pts.length;i++){
-      var p0=pts[(i-1+pts.length)%pts.length], p1=pts[i],
-          p2=pts[(i+1)%pts.length], p3=pts[(i+2)%pts.length];
-      d+='C'+(p1.x+(p2.x-p0.x)/6).toFixed(1)+' '+(p1.y+(p2.y-p0.y)/6).toFixed(1)+' '+
-           (p2.x-(p3.x-p1.x)/6).toFixed(1)+' '+(p2.y-(p3.y-p1.y)/6).toFixed(1)+' '+
-           p2.x.toFixed(1)+' '+p2.y.toFixed(1);
-    }
-    return d+'Z';
+  var root=$('#orbit'); if(!root) return;
+  var cv=$('#orbCv'), ctx=cv&&cv.getContext&&cv.getContext('2d'); if(!ctx) return;
+  var cards=$$('.ob',root), N=cards.length; if(!N) return;
+  var rn=$('#orbRn'), rt=$('#orbRt'), rd=$('#orbRd'), read=$('#orbRead'), cyc=$('#orbCycle'), dotsEl=$('#orbDots');
+  var STEPS=[
+    {t:'Customer data',        d:'Every visit, booking and message lands in one record.'},
+    {t:'Smarter decisions',    d:'You see who returns, who drifts and what actually works.'},
+    {t:'Better experience',    d:'Each customer is remembered, so service feels personal.'},
+    {t:'More returning',       d:'Timely follow-ups bring regulars back before they drift.'},
+    {t:'Reviews & referrals',  d:'Happy customers are asked at the right moment.'},
+    {t:'More growth',          d:'Retention compounds — and feeds the record again.'}
+  ];
+  var TAU=Math.PI*2, LAP=15;                 /* seconds per full lap */
+  var desk=false, W=0, H=0, DPR=1, cx=0, cy=0, rx=1, ry=1;
+  var pts=[], parts=[], energy=[], rings=[], sparks=[], echoes=[], dots=[];
+  var pm=0, lap=0, pvPrev=0, lock=-1, shown=-1, hotIdx=-2, coreFlash=0, tNow=0, last=0, swT=0;
+  var i;
+  for(i=0;i<N;i++){ energy.push(0); pts.push({x:0,y:0}); dots.push(document.createElement('i')); dotsEl.appendChild(dots[i]); }
+  for(i=0;i<170;i++) parts.push({a:Math.random()*TAU,v:.16+Math.random()*.26,o:(Math.random()-.5)*11,s:.6+Math.random()*1.3,k:Math.random()});
+
+  function pad(n){ return (n<10?'0':'')+n; }
+  function wrap(d){ return ((d+N/2)%N+N)%N-N/2; }
+  function wrapA(a){ a=(a+Math.PI)%TAU; if(a<0) a+=TAU; return a-Math.PI; }
+  function ease(f){ return f-.8*Math.sin(TAU*f)/TAU; }          /* dwell at every station */
+  function visP(){ var s=Math.floor(pm); return s+ease(pm-s); }
+
+  function setReadout(k,instant){
+    if(k===shown) return; shown=k;
+    var apply=function(){
+      rn.textContent=pad(k+1); rt.textContent=STEPS[k].t; rd.textContent=STEPS[k].d;
+      read.classList.remove('sw');
+      for(var d=0;d<N;d++) dots[d].classList.toggle('on',d<=k);
+    };
+    clearTimeout(swT);
+    if(instant||REDUCED){ apply(); return; }
+    read.classList.add('sw'); swT=setTimeout(apply,190);
   }
-  function build(){
-    svg.innerHTML=''; path=null; prog=null; flow=null; pkt=null; ghosts=[]; chevs=[]; centers=[];
-    var wr=w.getBoundingClientRect();
-    if(!wr.width) return;
-    var pts=sts.map(function(s){
-      var r=s.getBoundingClientRect();
-      return {x:r.left-wr.left+r.width/2, y:r.top-wr.top+r.height/2, el:s};
-    });
-    /* loop order = visual order around the centroid, not DOM order */
-    var cx=0, cy=0, k;
-    for(k=0;k<pts.length;k++){ cx+=pts[k].x; cy+=pts[k].y; }
-    cx/=pts.length; cy/=pts.length;
-    pts.sort(function(a,b){ return Math.atan2(a.y-cy,a.x-cx)-Math.atan2(b.y-cy,b.x-cx); });
-    centers=pts;
-    path=nNS('path',{d:smoothClosed(pts),fill:'none',stroke:'rgba(124,92,255,.22)','stroke-width':1.2});
-    svg.appendChild(path);
-    L=path.getTotalLength();
-    /* progress rail — the same loop redrawn as a gradient stroke that fills
-       as the lap runs, so each cycle reads as progress, not just motion */
-    var defs=nNS('defs',{});
-    var lg=nNS('linearGradient',{id:'wheelGrad',x1:'0',y1:'0',x2:'1',y2:'1'});
-    lg.appendChild(nNS('stop',{offset:'0','stop-color':'#7c5cff'}));
-    lg.appendChild(nNS('stop',{offset:'.55','stop-color':'#a78bff'}));
-    lg.appendChild(nNS('stop',{offset:'1','stop-color':'#e9d5ff'}));
-    defs.appendChild(lg); svg.appendChild(defs);
-    prog=nNS('path',{d:smoothClosed(pts),fill:'none',stroke:'url(#wheelGrad)','stroke-width':1.8,'stroke-linecap':'round'});
-    svg.appendChild(prog);
-    prog.style.strokeDasharray=L; prog.style.strokeDashoffset=L;
-    /* flow layer — endlessly marching dashes so circulation never reads static */
-    flow=nNS('path',{d:smoothClosed(pts),fill:'none',stroke:'rgba(196,181,253,.55)','stroke-width':1.2,'stroke-dasharray':'2 10'});
-    svg.appendChild(flow);
-    /* traveling direction chevrons — three arrowheads riding the loop */
-    for(k=0;k<3;k++){
-      var cv=nNS('g',{});
-      cv.appendChild(nNS('path',{d:'M-4.5,-6 L4.5,0 L-4.5,6',fill:'none',stroke:'#e9d5ff','stroke-width':1.6,'stroke-linecap':'round','stroke-linejoin':'round',opacity:'0.9'}));
-      svg.appendChild(cv); chevs.push(cv);
-    }
-    /* comet: bright core + halo + fading trail */
-    for(k=0;k<4;k++){
-      var g=nNS('g',{});
-      g.appendChild(nNS('circle',{r:7-k*1.2,fill:'rgba(124,92,255,'+(0.20-k*0.045)+')'}));
-      svg.appendChild(g); ghosts.push(g);
-    }
-    pkt=nNS('g',{});
-    pkt.appendChild(nNS('circle',{r:9,fill:'rgba(124,92,255,.25)'}));
-    pkt.appendChild(nNS('circle',{r:5.2,fill:'#a78bff',opacity:'0.9'}));
-    pkt.appendChild(nNS('circle',{r:3.2,fill:'#f5f3ff'}));
-    svg.appendChild(pkt);
+  function setHot(k){
+    if(k===hotIdx) return; hotIdx=k;
+    for(var c=0;c<N;c++) cards[c].classList.toggle('hot',c===k);
   }
-  function placeChev(g,v){
-    if(!path) return;
-    var d1=(((v%1)+1)%1)*L, p1=path.getPointAtLength(d1), p2=path.getPointAtLength((d1+3)%L);
-    var a=Math.atan2(p2.y-p1.y,p2.x-p1.x)*180/Math.PI;
-    g.setAttribute('transform','translate('+p1.x.toFixed(1)+' '+p1.y.toFixed(1)+') rotate('+a.toFixed(1)+')');
-  }
-  build();
-  var rz; addEventListener('resize',function(){ clearTimeout(rz); rz=setTimeout(build,200); });
-  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(build);
-  if(REDUCED){
-    if(prog){ prog.style.strokeDasharray=L; prog.style.strokeDashoffset=0; }
-    if(flow) flow.style.display='none';
-    for(var sc=0;sc<chevs.length;sc++) placeChev(chevs[sc],sc/3);
-    return;
-  }
-  var t0=null, inside=[];
-  for(var q=0;q<sts.length;q++) inside.push(false);
-  addTicker(w,function(now){
-    if(!path) return;
-    if(t0==null) t0=now;
-    var u=((now-t0)/LAP)%1;
-    /* each completed lap quietly compounds the comet ribboning round it */
-    if(u<prevU-0.5) lap++;
-    prevU=u;
-    if(prog) prog.style.strokeDashoffset=L*(1-u);
-    if(flow) flow.style.strokeDashoffset=-(now*0.012%12);
-    for(var ci=0;ci<chevs.length;ci++) placeChev(chevs[ci],u+ci/3);
-    function dotAt(v){
-      var pt=path.getPointAtLength((((v%1)+1)%1)*L);
-      return pt;
+
+  function layout(){
+    var r=root.getBoundingClientRect(); W=r.width;
+    desk = W>=720;
+    root.classList.toggle('is-desk',desk);
+    if(!desk){ for(var m=0;m<N;m++){ cards[m].style.left=''; cards[m].style.top=''; } root.classList.add('ready'); return; }
+    H=r.height; DPR=Math.min(window.devicePixelRatio||1,2);
+    cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR);
+    var cw=cards[0].offsetWidth, ch=cards[0].offsetHeight;
+    cx=W/2; cy=H/2;
+    ry=H/2-ch/2-12;
+    rx=(W/2-cw/2-6)/Math.cos(Math.PI/6);
+    for(var k=0;k<N;k++){
+      var a=(-90+k*60)*Math.PI/180;
+      pts[k].x=cx+rx*Math.cos(a); pts[k].y=cy+ry*Math.sin(a);
+      cards[k].style.left=pts[k].x.toFixed(1)+'px'; cards[k].style.top=pts[k].y.toFixed(1)+'px';
     }
-    var head=dotAt(u);
-    var cs=Math.min(1+lap*0.06,1.5);
-    pkt.setAttribute('transform','translate('+head.x+' '+head.y+') scale('+cs.toFixed(3)+')');
-    for(var g=0;g<ghosts.length;g++){
-      var gp=dotAt(u-(g+1)*0.008);
-      ghosts[g].setAttribute('transform','translate('+gp.x+' '+gp.y+')');
+    root.classList.add('ready');
+  }
+
+  function arrive(k){
+    energy[k]=1;
+    if(!desk) return;
+    rings.push({x:pts[k].x,y:pts[k].y,t:tNow});
+    for(var n=0;n<16;n++){
+      var an=Math.random()*TAU, sp=50+Math.random()*130;
+      sparks.push({x:pts[k].x,y:pts[k].y,vx:Math.cos(an)*sp,vy:Math.sin(an)*sp,age:0,life:.9+Math.random()*.9,s:.8+Math.random()*1.5});
     }
-    var anyHit=false;
-    for(var i=0;i<centers.length;i++){
-      var dx=head.x-centers[i].x, dy=head.y-centers[i].y;
-      var hit=(dx*dx+dy*dy)<3600;
-      centers[i].el.classList.toggle('hot',hit);
-      if(hit) anyHit=true;
-      if(hit&&!inside[i]){
-        var el=centers[i].el;
-        el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit');
+  }
+  function jump(k){
+    pm=k; pvPrev=visP(); arrive(k);
+  }
+
+  /* ---------- drawing (desktop) ---------- */
+  function draw(pv,dt){
+    var t=tNow, ca=(-90+pv*60)*Math.PI/180, lv=Math.min(lap,6), j, k, g;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    ctx.clearRect(0,0,W,H);
+    ctx.globalCompositeOperation='lighter';
+
+    /* core aurora — the record; brighter with every lap */
+    var ga=.10+.022*lv+.18*coreFlash;
+    ctx.save(); ctx.translate(cx,cy); ctx.scale(1,ry/rx*1.05);
+    g=ctx.createRadialGradient(0,0,0,0,0,rx*.62);
+    g.addColorStop(0,'rgba(124,92,255,'+ga.toFixed(3)+')');
+    g.addColorStop(.55,'rgba(88,64,220,'+(ga*.33).toFixed(3)+')');
+    g.addColorStop(1,'rgba(88,64,220,0)');
+    ctx.fillStyle=g; ctx.fillRect(-rx,-rx,rx*2,rx*2); ctx.restore();
+
+    /* slow instrument rings inside the orbit */
+    var R=[[.44,[2,9],9,1],[.63,[34,12],-6,.75],[.82,[1,5],4,.55]];
+    ctx.lineWidth=1;
+    for(j=0;j<R.length;j++){
+      ctx.setLineDash(R[j][1]); ctx.lineDashOffset=-t*R[j][2];
+      ctx.strokeStyle='rgba(167,139,255,'+(.11*R[j][3])+')';
+      ctx.beginPath(); ctx.ellipse(cx,cy,rx*R[j][0],ry*R[j][0],0,0,TAU); ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    /* echo waves — each completed lap radiates outward and compounds */
+    for(j=echoes.length-1;j>=0;j--){
+      var ea=(t-echoes[j])/2.8;
+      if(ea>=1){ echoes.splice(j,1); continue; }
+      var es=.12+.98*(1-Math.pow(1-ea,3));
+      ctx.strokeStyle='rgba(196,181,253,'+((1-ea)*.42).toFixed(3)+')'; ctx.lineWidth=1.4;
+      ctx.beginPath(); ctx.ellipse(cx,cy,rx*es,ry*es,0,0,TAU); ctx.stroke();
+    }
+
+    /* bezel ticks — flare as the comet passes */
+    var K=90;
+    for(j=0;j<K;j++){
+      var ta=j/K*TAU-Math.PI/2, df=wrapA(ta-ca), pr=Math.exp(-(df*df)/(2*.16*.16)), maj=(j%15===0);
+      var px=cx+(rx-30)*Math.cos(ta), py=cy+(ry-30)*Math.sin(ta);
+      var nx=Math.cos(ta)/rx, ny=Math.sin(ta)/ry, nl=Math.sqrt(nx*nx+ny*ny); nx/=nl; ny/=nl;
+      var ln=(maj?11:4)+pr*10, al=(maj?.45:.2)+pr*.7;
+      ctx.strokeStyle='rgba(196,181,253,'+al.toFixed(3)+')'; ctx.lineWidth=maj?1.4:1;
+      ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px+nx*ln,py+ny*ln); ctx.stroke();
+    }
+
+    /* the orbit itself + a faint dashed outer echo */
+    ctx.lineWidth=1.3; ctx.strokeStyle='rgba(167,139,255,.34)';
+    ctx.beginPath(); ctx.ellipse(cx,cy,rx,ry,0,0,TAU); ctx.stroke();
+    ctx.setLineDash([1,7]); ctx.lineDashOffset=t*5; ctx.lineWidth=1; ctx.strokeStyle='rgba(167,139,255,.10)';
+    ctx.beginPath(); ctx.ellipse(cx,cy,rx+10,ry+10,0,0,TAU); ctx.stroke(); ctx.setLineDash([]);
+
+    /* threads — a station that just fired feeds the record at the centre */
+    for(k=0;k<N;k++){
+      var e=energy[k]; if(e<.03) continue;
+      var sx=pts[k].x, sy=pts[k].y, dx=cx-sx, dy=cy-sy, dl=Math.sqrt(dx*dx+dy*dy);
+      var x0=sx+dx/dl*78, y0=sy+dy/dl*46, x1=sx+dx*.62, y1=sy+dy*.62;
+      g=ctx.createLinearGradient(x0,y0,x1,y1);
+      g.addColorStop(0,'rgba(196,181,253,'+(e*.5).toFixed(3)+')'); g.addColorStop(1,'rgba(196,181,253,0)');
+      ctx.strokeStyle=g; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+    }
+
+    /* comet tail — tapered, fading */
+    var SEG=42, TL=1.25;
+    ctx.lineCap='round';
+    for(j=0;j<SEG;j++){
+      var a0=ca-TL*(j/SEG), a1=ca-TL*((j+1)/SEG), f=1-j/SEG;
+      ctx.strokeStyle='rgba('+(150+Math.round(90*f))+','+(120+Math.round(100*f))+',255,'+(f*f*.8).toFixed(3)+')';
+      ctx.lineWidth=.8+3.4*f;
+      ctx.beginPath(); ctx.moveTo(cx+rx*Math.cos(a0),cy+ry*Math.sin(a0)); ctx.lineTo(cx+rx*Math.cos(a1),cy+ry*Math.sin(a1)); ctx.stroke();
+    }
+    ctx.lineCap='butt';
+
+    /* particle stream — the orbit is alive */
+    for(j=0;j<parts.length;j++){
+      var p=parts[j]; p.a+=p.v*dt*.62;
+      var dd=wrapA(p.a-ca), bo=Math.exp(-(dd*dd)/(2*.3*.3));
+      var qx=cx+(rx+p.o)*Math.cos(p.a), qy=cy+(ry+p.o*.6)*Math.sin(p.a);
+      var qa=Math.min(1,.16+.34*p.k+.6*bo), qs=p.s*(1+bo*.9);
+      ctx.fillStyle='rgba('+(190+Math.round(50*bo))+','+(170+Math.round(70*bo))+',255,'+qa.toFixed(3)+')';
+      ctx.beginPath(); ctx.arc(qx,qy,qs,0,TAU); ctx.fill();
+    }
+
+    /* station beacons + arrival rings */
+    for(k=0;k<N;k++){
+      var be=energy[k];
+      g=ctx.createRadialGradient(pts[k].x,pts[k].y,0,pts[k].x,pts[k].y,78);
+      g.addColorStop(0,'rgba(124,92,255,'+(.05+.32*be).toFixed(3)+')'); g.addColorStop(1,'rgba(124,92,255,0)');
+      ctx.fillStyle=g; ctx.fillRect(pts[k].x-78,pts[k].y-78,156,156);
+    }
+    for(j=rings.length-1;j>=0;j--){
+      var ra=(t-rings[j].t)/1.5;
+      if(ra>=1){ rings.splice(j,1); continue; }
+      var re=1-Math.pow(1-ra,3);
+      ctx.strokeStyle='rgba(216,200,255,'+((1-ra)*.6).toFixed(3)+')'; ctx.lineWidth=1.3;
+      ctx.beginPath(); ctx.arc(rings[j].x,rings[j].y,34+120*re,0,TAU); ctx.stroke();
+      if(ra>.12){
+        var rb=(ra-.12)/.88;
+        ctx.strokeStyle='rgba(167,139,255,'+((1-rb)*.35).toFixed(3)+')';
+        ctx.beginPath(); ctx.arc(rings[j].x,rings[j].y,30+90*(1-Math.pow(1-rb,3)),0,TAU); ctx.stroke();
       }
-      inside[i]=hit;
     }
-    w.classList.toggle('has-hot',anyHit);
+
+    /* comet head — grows a little with each lap */
+    var hx=cx+rx*Math.cos(ca), hy=cy+ry*Math.sin(ca), cs=1+Math.min(lap,5)*.06;
+    g=ctx.createRadialGradient(hx,hy,0,hx,hy,58*cs);
+    g.addColorStop(0,'rgba(150,120,255,.62)'); g.addColorStop(.35,'rgba(124,92,255,.24)'); g.addColorStop(1,'rgba(124,92,255,0)');
+    ctx.fillStyle=g; ctx.fillRect(hx-60*cs,hy-60*cs,120*cs,120*cs);
+    ctx.fillStyle='rgba(216,200,255,.55)'; ctx.beginPath(); ctx.arc(hx,hy,8.5*cs,0,TAU); ctx.fill();
+    ctx.fillStyle='#f5f3ff'; ctx.beginPath(); ctx.arc(hx,hy,3.6*cs,0,TAU); ctx.fill();
+
+    /* sparks */
+    for(j=sparks.length-1;j>=0;j--){
+      var sp=sparks[j]; sp.age+=dt;
+      if(sp.age>=sp.life){ sparks.splice(j,1); continue; }
+      sp.x+=sp.vx*dt; sp.y+=sp.vy*dt; sp.vx*=1-1.4*dt; sp.vy*=1-1.4*dt;
+      var sa=1-sp.age/sp.life;
+      ctx.fillStyle='rgba(225,212,255,'+(sa*.85).toFixed(3)+')';
+      ctx.beginPath(); ctx.arc(sp.x,sp.y,sp.s*(.5+sa*.6),0,TAU); ctx.fill();
+    }
+    ctx.globalCompositeOperation='source-over';
+  }
+
+  /* ---------- state step (runs desktop + mobile) ---------- */
+  function step(now){
+    var dt=last?Math.min((now-last)/1000,.05):.016; last=now; tNow=now/1000;
+    pm+=dt*N/LAP;
+    if(pm>=N){ pm-=N; lap++; coreFlash=1; echoes.push(tNow); cyc.textContent='CYCLE '+pad(lap+1); }
+    var pv=visP(), k;
+    for(k=0;k<N;k++){
+      var pd=wrap(pvPrev-k), cd=wrap(pv-k);
+      if(pd<0&&cd>=0) arrive(k);
+      var bump=Math.exp(-Math.pow(cd/.28,2));
+      energy[k]=Math.max(energy[k]*Math.exp(-dt*1.2),bump);
+    }
+    pvPrev=pv; coreFlash*=Math.exp(-dt*1.6);
+    var idx=Math.floor(pv+.15)%N, hot=-1;
+    for(k=0;k<N;k++) if(Math.abs(wrap(pv-k))<.32){ hot=k; break; }
+    if(lock>=0){ idx=lock; hot=lock; }
+    setReadout(idx); setHot(hot);
+    if(desk) draw(pv,dt);
+    else root.style.setProperty('--prog',(pv/N*100).toFixed(1));
+  }
+
+  /* ---------- interaction ---------- */
+  cards.forEach(function(li,k){
+    var b=$('.ob-b',li);
+    li.addEventListener('pointerenter',function(){ lock=k; if(REDUCED){ setReadout(k,true); setHot(k); } });
+    li.addEventListener('pointerleave',function(){ if(lock===k){ lock=-1; if(REDUCED) staticFrame(); } });
+    li.addEventListener('pointermove',function(e){
+      var r=b.getBoundingClientRect();
+      b.style.setProperty('--mx',(e.clientX-r.left)+'px'); b.style.setProperty('--my',(e.clientY-r.top)+'px');
+    });
+    b.addEventListener('focus',function(){ lock=k; if(REDUCED){ setReadout(k,true); setHot(k); } });
+    b.addEventListener('blur',function(){ if(lock===k){ lock=-1; if(REDUCED) staticFrame(); } });
+    b.addEventListener('click',function(){ if(!REDUCED) jump(k); });
   });
+
+  function staticFrame(){
+    setReadout(0,true); setHot(0); pm=0; pvPrev=0; energy[0]=.6;
+    if(desk) draw(0,0); else root.style.setProperty('--prog','0');
+  }
+
+  layout();
+  var rz; addEventListener('resize',function(){ clearTimeout(rz); rz=setTimeout(function(){ layout(); if(REDUCED) staticFrame(); },160); });
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ layout(); if(REDUCED) staticFrame(); });
+  if(REDUCED){ staticFrame(); return; }
+  setReadout(0,true);
+  addTicker(root,step);
 })();
 
 /* ---------- modal + toast ---------- */
@@ -3689,7 +3851,7 @@ document.addEventListener('visibilitychange',function(){
 /* ============================================================
    THE EMBER FIELD — the PYRAXIS mark, built from its own pixels,
    riding the whole page's scroll: mark → dispersal → coherence →
-   field → collapse → genesis world.
+   field → galaxy → genesis world.
 ============================================================ */
 (function(){
 "use strict";
@@ -3855,7 +4017,7 @@ function buildMarkShape(sm){
   /* hero layout: copy sits left, free space sits right — park ONLY the mark
      in that free space. Bottom edge anchored (shiftY compensates half the
      growth), so size increases extend upward; plus a small right nudge.
-     Other shapes (dispersal/knot/disc/collapse/globe) stay centered; the
+     Other shapes (dispersal/knot/disc/galaxy/globe) stay centered; the
      scroll flight re-animates from the offset mark naturally. Wide only. */
   const wide=innerWidth>=900&&aspect>1.1;
   const shiftX=wide?visW*0.16:0;
@@ -4001,19 +4163,145 @@ shapes.push(CORE.pos);
   }
   shapes.push(a);
 }
-/* 4 — collapse: three-armed accretion disc */
+/* 4 — the galaxy: barred spiral (nucleus · bar · bulge · 4 arms + spur ·
+       disk · bokeh · halo + globulars · nebulae). Ported from the standalone
+       "First light, then everything." scene. Every ember gets a fixed role:
+       its polar coords + orbital rate live in GAL (so the disc can turn
+       differentially, CPU-side, into shapes[4]) and its look (colour / size /
+       alpha / softness) rides two static attributes the shader reads while
+       uGal > 0. x and omega are both mirrored so the arms trail the spin. */
+const G_PITCH=.23,G_R0=3.0,G_BAR_ANG=.12,G_OM_BAR=.047,G_SC=.8;
+const GAL={R:new Float32Array(N),TH:new Float32Array(N),Y:new Float32Array(N),OM:new Float32Array(N),
+  GSZ:new Float32Array(N),GA:new Float32Array(N*4),GC:new Float32Array(N*3),T0:100,T:100};
 {
-  const a=new Float32Array(N*3);
-  for(let i=0;i<N;i++){
-    const arm=i%3,r=Math.pow(Math.random(),1.8)*13.5+.4;
-    let ang=r*.42+arm*2.0944+gauss()*.16;
-    if(Math.random()<.12)ang=Math.random()*TAU;
-    a[i*3]=Math.cos(ang)*r;
-    a[i*3+1]=gauss()*(.3+1.7*Math.exp(-r*.22));
-    a[i*3+2]=Math.sin(ang)*r;
+  const omDisk=r=>.224*Math.tanh(r/2.5)/Math.max(r,.05);
+  const omArm=r=>omDisk(r)*.55+.016;
+  const armTh=(t0,r,p)=>t0-Math.log(r/G_R0)/(p||G_PITCH);
+  const ARMS=[
+    {t0:G_BAR_ANG,             p:G_PITCH,      r0:G_R0,r1:15.2,n:1.0, w:.42},
+    {t0:G_BAR_ANG+Math.PI,     p:G_PITCH,      r0:G_R0,r1:14.6,n:1.0, w:.44},
+    {t0:G_BAR_ANG+Math.PI-.5,  p:G_PITCH*1.06, r0:G_R0,r1:12.4,n:.72, w:.56},
+    {t0:G_BAR_ANG+.5,          p:G_PITCH*.97,  r0:G_R0,r1:15.4,n:.72, w:.56},
+    {t0:armTh(G_BAR_ANG+Math.PI,7.4,G_PITCH)-.27,p:G_PITCH*1.15,r0:7.4,r1:10.8,n:.30,w:.32}
+  ];
+  let totW=0;for(const a of ARMS)totW+=a.n*(a.r1-a.r0);
+  const C_W=[1,1,1],C_LW=[.93,.90,1],C_LV=[.80,.74,1],C_V=[.62,.53,1],
+        C_DV=[.46,.38,.92],C_PINK=[.96,.70,.95],C_BLUE=[.60,.66,1];
+  const pk=a=>a[(Math.random()*a.length)|0];
+  /* px-size → aSize units (the sprite formula is ~3.7px per unit on desktop);
+     thinner swarms on phones get slightly fatter embers so the disc still reads */
+  const SZK=8.0*(N>=20000?1:N>=12000?1.15:1.6);
+  let gi=0;
+  function gp(x,y,z,c,b,sz,om,al,soft){
+    if(gi>=N)return;
+    x=-x*G_SC;y*=G_SC;z*=G_SC;om=-om;
+    GAL.R[gi]=Math.hypot(x,z);GAL.TH[gi]=Math.atan2(z,x);GAL.Y[gi]=y;GAL.OM[gi]=om;
+    GAL.GC[gi*3]=c[0]*b;GAL.GC[gi*3+1]=c[1]*b;GAL.GC[gi*3+2]=c[2]*b;
+    GAL.GSZ[gi]=sz*SZK;GAL.GA[gi*4+1]=al;GAL.GA[gi*4+2]=soft?1:0;
+    gi++;
   }
-  shapes.push(a);
+  let cum=0;
+  function layer(frac,fn){cum+=frac;const tgt=Math.min(N,Math.round(N*cum));while(gi<tgt)fn();}
+
+  /* nucleus */
+  layer(.03,()=>{
+    const c=pk([C_W,C_W,C_LW,C_LV]),b=1+.5*Math.random();
+    gp(gauss()*.22,gauss()*.14,gauss()*.22,c,b,.05+Math.pow(Math.random(),2)*.08,G_OM_BAR,1);
+  });
+  /* bar */
+  const ca=Math.cos(G_BAR_ANG),sa=Math.sin(G_BAR_ANG);
+  layer(.08,()=>{
+    const lx=gauss()*2.7,ly=gauss()*.38,lz=gauss()*.75;
+    const c=pk([C_LW,C_LV,C_V,C_W]),b=.55+.6*Math.pow(Math.random(),1.3);
+    gp(lx*ca-lz*sa,ly,lx*sa+lz*ca,c,b,.05+Math.pow(Math.random(),2)*.08,G_OM_BAR,.8+.2*Math.random());
+  });
+  /* bulge */
+  layer(.10,()=>{
+    const k=Math.random()<.3?.45:1;
+    const c=pk([C_V,C_LV,C_DV,C_LW]),b=.4+.55*Math.pow(Math.random(),1.6);
+    gp(gauss()*1.35*k,gauss()*.85*k,gauss()*1.35*k,c,b,.04+Math.pow(Math.random(),2)*.07,G_OM_BAR,.4+.5*Math.random());
+  });
+  /* arms (weighted across the four arms + the spur) */
+  layer(.56,()=>{
+    let u=Math.random()*totW,a=ARMS[0];
+    for(const A of ARMS){u-=A.n*(A.r1-A.r0);if(u<=0){a=A;break;}}
+    let r,sig;
+    do{
+      const rb=a.r0+(a.r1-a.r0)*Math.pow(Math.random(),.85);
+      sig=a.w*(.65+.05*rb)*1.3;r=rb+gauss()*sig;
+    }while(r<1.2);
+    const th=armTh(a.t0,r,a.p)+gauss()*sig*.8/r;
+    const y=gauss()*(.09+.011*r);
+    let c,b,sz,al;
+    if(Math.random()<.05){c=pk([C_W,C_BLUE,C_LW]);b=1+.3*Math.random();sz=.13+.09*Math.random();al=1;}
+    else{c=pk([C_LV,C_V,C_V,C_V,C_DV,C_PINK,C_BLUE]);b=.75+.6*Math.pow(Math.random(),1.4);
+         sz=.045+Math.pow(Math.random(),2)*.075;al=.6+.4*Math.random();}
+    gp(Math.cos(th)*r,y,Math.sin(th)*r,c,b,sz,omArm(r),al);
+  });
+  /* arm bokeh — big soft out-of-focus dots riding the arms */
+  layer(.02,()=>{
+    const a=ARMS[(Math.random()*ARMS.length)|0];
+    const rb=a.r0+(a.r1-a.r0)*Math.pow(Math.random(),.85);
+    const r=Math.max(1.2,rb+gauss()*a.w*1.6);
+    const th=armTh(a.t0,r,a.p)+gauss()*a.w/r;
+    const c=pk([C_V,C_PINK,C_LV,C_DV]),b=.7+.5*Math.random();
+    gp(Math.cos(th)*r,gauss()*.12,Math.sin(th)*r,c,b*.8,.05+.05*Math.random(),omArm(r),.5+.4*Math.random(),0);
+  });
+  /* nebulae — star-forming knots */
+  layer(.04,()=>{
+    const a=ARMS[(Math.random()*ARMS.length)|0];
+    const r=a.r0+(a.r1-a.r0)*(.15+.7*Math.random());
+    const th=armTh(a.t0,r,a.p)+gauss()*a.w*.4/r;
+    const rd=Math.random();
+    const c=rd<.55?C_V:(rd<.85?C_PINK:[.55,.5,1]),b=.6+.5*Math.random();
+    gp(Math.cos(th)*r,gauss()*.05,Math.sin(th)*r,c,b*.9,.8+.7*Math.random(),omArm(r),.04+.05*Math.random(),1);
+  });
+  /* halo scatter + globular clusters */
+  const GLOB=[];
+  for(let k=0;k<11;k++)GLOB.push(new THREE.Vector3(gauss(),gauss(),gauss()).normalize().multiplyScalar(6+16*Math.random()));
+  layer(.02,()=>{
+    const d=new THREE.Vector3(gauss(),gauss(),gauss()).normalize().multiplyScalar(4+26*Math.pow(Math.random(),2.4));
+    const c=pk([C_LV,C_LW]),b=.3+.25*Math.random();
+    gp(d.x,d.y,d.z,c,b,.04+.03*Math.random(),(Math.random()-.5)*.004,.25+.3*Math.random());
+  });
+  layer(.01,()=>{
+    const d=GLOB[(Math.random()*GLOB.length)|0];
+    const c=pk([C_LV,C_LW]),b=.5+.3*Math.random();
+    gp(d.x+gauss()*.24,d.y+gauss()*.24,d.z+gauss()*.24,c,b,.05+.04*Math.random(),(Math.random()-.5)*.006,.5);
+  });
+  /* disk bokeh */
+  layer(.01,()=>{
+    let r;do{r=-3.5*Math.log(1-Math.random());}while(r>15);
+    const th=Math.random()*TAU,c=pk([C_V,C_PINK,C_DV]),b=.7+.5*Math.random();
+    gp(Math.cos(th)*r,gauss()*.2,Math.sin(th)*r,c,b*.7,.045+.04*Math.random(),omDisk(r),.4+.4*Math.random(),0);
+  });
+  /* smooth disk — takes every remaining ember */
+  layer(1,()=>{
+    let r;do{r=-3.3*Math.log(1-Math.random());}while(r>15.5);
+    const th=Math.random()*TAU,y=gauss()*(.10+.012*r);
+    let c,b,sz,al;
+    if(Math.random()<.05){c=pk([C_LW,C_BLUE]);b=.8+.4*Math.random();sz=.09+.06*Math.random();al=.9;}
+    else{c=pk([C_V,C_DV,C_LV]);b=.35+.5*Math.pow(Math.random(),1.7);
+         sz=.04+.055*Math.pow(Math.random(),2);al=.3+.55*Math.random();}
+    gp(Math.cos(th)*r,y,Math.sin(th)*r,c,b,sz,omDisk(r),al);
+  });
 }
+/* shapes[4] is a live buffer: galaxyStep() re-projects it from polar coords
+   as the disc turns differentially (inner disk faster than the rim). */
+function galaxyStep(dt){
+  if(dt>0){
+    /* ease to a near-stop after ~120 Myr of viewing so the arms never wind up */
+    GAL.T+=dt*1.3*Math.max(0,1-(GAL.T-GAL.T0)/120);
+  }
+  const P=shapes[4],R=GAL.R,TH=GAL.TH,Y=GAL.Y,OM=GAL.OM,T=GAL.T;
+  for(let j=0;j<N;j++){
+    const th=TH[j]+T*OM[j],r=R[j],j3=j*3;
+    P[j3]=Math.cos(th)*r;P[j3+1]=Y[j];P[j3+2]=Math.sin(th)*r;
+  }
+}
+shapes.push(new Float32Array(N*3));
+galaxyStep(0);
+
 /* 5 — genesis: the world (fibonacci placeholder; rebuilt from earth pixels
        the moment the texture arrives) */
 {
@@ -4032,6 +4320,7 @@ for(let i=0;i<N;i++){
   const v=new THREE.Vector3(gauss(),gauss(),gauss()).normalize().multiplyScalar(.5+Math.random());
   DIRS[i*3]=v.x;DIRS[i*3+1]=v.y;DIRS[i*3+2]=v.z;
 }
+for(let j=0;j<N;j++)GAL.GA[j*4]=GAL.GSZ[j]/SIZES[j];   /* px-size → multiplier on aSize */
 const ARCS=[2.6,2.8,2.0,2.6,1.4];
 const LAND=new Float32Array(N).fill(.7);  /* fallback ember-world glow */
 
@@ -4041,10 +4330,15 @@ attribute float aSeed;
 attribute float aSize;
 attribute float aAcc;
 attribute float aLand;
-uniform float uTime,uWobble,uSize,uScaleH,uEnergy,uPtrStr,uGlobe;
+attribute vec4 aGA;   /* galaxy: size mult, alpha, soft, - */
+attribute vec3 aGC;   /* galaxy: colour */
+uniform float uTime,uWobble,uSize,uScaleH,uEnergy,uPtrStr,uGlobe,uGal,uWind;
+uniform float uRepel,uAspect;   /* scroll-field repel: strength (0 in hero), viewport aspect */
+uniform vec2 uRepelPos;         /* cursor in NDC */
 uniform vec3 uPointer;
 uniform vec3 uRip[5];uniform float uRipT[5];
 varying float vMix,vGlow,vDepth,vSeed,vAcc,vLand,vFres,vBack,vShell;
+varying vec3 vGC;varying vec2 vGS;varying float vHit;
 void main(){
   vec3 p=position;
   float t=uTime;
@@ -4055,9 +4349,13 @@ void main(){
   p.x+=n3*uWobble*.4;
   p.z+=n1*uWobble*.4;
   vec3 dv=p-uPointer;
-  float f=exp(-dot(dv,dv)*.035)*uPtrStr;   /* wide, soft field — a breath, not a blast */
-  p+=normalize(dv+vec3(1e-4))*f*.8;        /* gentle parting */
-  vGlow=min(f*.45+uEnergy,1.2);
+  float f=exp(-dot(dv,dv)*.05)*uPtrStr;
+  /* The mark stays INTACT under the cursor (only shines / twinkles — see vHit).
+     Dust that blows away is a separate emitter (flyPts), like the old erosion
+     effect. uWind = "mark stage" weight: no parting on the mark, gentle later. */
+  p+=normalize(dv+vec3(1e-4))*f*.8*(1.-uWind);
+  vHit=clamp(f*.9,0.,1.);
+  vGlow=min(f*.9+uEnergy,1.4);
   /* CLICK RIPPLES — pooled (origin,birth) slots (NexusNode pattern): the
      shader derives each wave's age from uTime, so concurrent waves
      superpose and a new click never restarts a live one. Dead slots carry
@@ -4075,8 +4373,8 @@ void main(){
   }
   ring=min(ring,1.5);
   p+=push*.5;
-  vGlow=min(vGlow+ring*.45,1.4);
-  vMix=aSeed;vSeed=aSeed;vAcc=aAcc;vLand=aLand;
+  vGlow=min(vGlow+ring*.45,1.4);vHit=min(vHit+ring*.5,1.);
+  vMix=aSeed;vSeed=aSeed;vAcc=aAcc;vLand=aLand;vGC=aGC;vGS=aGA.yz;
   vec3 nW=normalize(mat3(modelMatrix)*normalize(position));
   vec4 wp=modelMatrix*vec4(p,1.);
   vec3 vDir=normalize(cameraPosition-wp.xyz);
@@ -4092,14 +4390,32 @@ void main(){
   vBack=smoothstep(-.2,.08,facing);
   vShell=1.-smoothstep(0.,1.2,length(position)-7.9);
   vec4 mv=modelViewMatrix*vec4(p,1.);
+  /* SCROLL-FIELD REPEL — after the hero, embers ease away from the cursor.
+     Screen-space (so it feels the same at any depth / camera stage): each
+     ember is pushed along the cursor→ember direction by a gaussian-weighted
+     amount. Displacement ~ r*exp(-r²/R²): zero right under the cursor, peaks
+     at ~R/1.4, fades to nothing beyond ~2R — a soft parting, never a blast.
+     uRepel is 0 through the whole hero (the mark has its own pointer play). */
+  if(uRepel>.001){
+    vec4 cl=projectionMatrix*mv;
+    if(cl.w>.1){
+      vec2 da=cl.xy/cl.w-uRepelPos;
+      da.x*=uAspect;
+      float w=exp(-dot(da,da)/(.24*.24))*uRepel*.35;
+      vec2 sh=da*w;
+      sh.x/=uAspect;
+      mv.xy+=sh*cl.w/vec2(projectionMatrix[0][0],projectionMatrix[1][1]);
+    }
+  }
   vDepth=-mv.z;
-  gl_PointSize=min(uSize*aSize*(1.+uEnergy*.4+vAcc*.4)*(1.-uGlobe*.3)*.09*uScaleH/max(vDepth,.1),72.);
+  gl_PointSize=min(uSize*aSize*(1.+vHit*.55)*mix(1.,aGA.x,uGal)*(1.+uEnergy*.4+vAcc*.4)*(1.-uGlobe*.3)*.09*uScaleH/max(vDepth,.1),72.);
   gl_Position=projectionMatrix*mv;
 }`;
 const FRAG=`
 uniform vec3 uColA,uColB,uAcc,uGViolet;
-uniform float uTime,uGlobe;
+uniform float uTime,uGlobe,uGal;
 varying float vMix,vGlow,vDepth,vSeed,vAcc,vLand,vFres,vBack,vShell;
+varying vec3 vGC;varying vec2 vGS;varying float vHit;
 void main(){
   vec2 c=gl_PointCoord-.5;
   float d=length(c);
@@ -4109,14 +4425,24 @@ void main(){
   float core=1.-smoothstep(.15,.33,d);
   float halo=1.-smoothstep(0.,.5,d);
   halo*=halo;
-  float a=min(core*.95+halo*.4,1.);
+  float a=min(core*.95+halo*mix(.4,.06,uGal),1.);
+  /* GALAXY — bokeh / nebula embers swap the sharp spark for a soft disc, and
+     every ember takes its own alpha; all gated by uGal so no other stage changes */
+  float dd=d*2.;
+  float sa=exp(-dd*dd*3.)*(1.-smoothstep(.8,1.,dd));
+  a=mix(a,sa,vGS.y*uGal);
+  a*=mix(1.,vGS.x,uGal);
   a*=.68+.32*sin(uTime*(1.8+vSeed*2.6)+vSeed*37.);
+  /* TOUCH — embers under the cursor flash and twinkle fast */
+  float tw=.5+.5*sin(uTime*(16.+vSeed*22.)+vSeed*61.);
+  a=min(a*(1.+vHit*(.6+1.6*tw)),1.);
   a*=1.-smoothstep(40.,88.,vDepth);
   a*=smoothstep(.4,3.5,vDepth);
   vec3 col=mix(uColB,uColA,clamp(vMix*.72+vGlow,0.,1.));
   col+=uColA*vGlow*.9;
   col=mix(col,uAcc*(.75+vGlow*.5),vAcc*.85);
-  col=mix(col,vec3(1.),core*.28);          /* hot white centre — spark */
+  col=mix(col,vGC*1.0*(1.+vGlow*.4),uGal);       /* galaxy palette */
+  col=mix(col,vec3(1.),core*.28*(1.-vGS.y*uGal));          /* hot white centre — spark */
   /* GENESIS — the world IS its particles. Landed embers become the skin:
      a dim violet interior floor (texture, not glow — city-light sparkle)
      and a bright limb. The gate is radius-based (vShell), so the flying
@@ -4144,7 +4470,7 @@ const CAM=[
   [[0,12.5,16.5],[0,.5,0]],
   [[0,1.2,26.5],[0,-1,0]],
 ];
-const WOB=[.02,.5,.1,1.5,.28,.14];
+const WOB=[.02,.5,.1,1.5,.12,.14];
 const SIZ=[1.25,1.07,1.14,.96,1.09,1.14];
 const ROT=[0,.015,.16,.03,.08,.05];
 /* GLOBE_HOME_Y — local Y rotation (radians) that faces India toward the
@@ -4160,6 +4486,9 @@ const CB=['#9d74ff','#7a68c8','#8a72ec','#7c66dc','#9468ff','#8a82b4'].map(c=>ne
 /* ================= interaction state ================= */
 const ndc=new THREE.Vector2(0,0),ndcT=new THREE.Vector2(0,0);
 let ptrBoost=0,rotFree=0,curP=0;
+/* scroll-field repel state: cursor (smoothed, NDC), eased strength, cursor-in-window flag */
+const rNdc=new THREE.Vector2(0,0);
+let repelAmt=0,ptrIn=false;
 let lastActive=performance.now(),rippleEnd=0;
 const ripT=[-1000,-1000,-1000,-1000,-1000];  /* ripple pool birth times, shader clock */
 let lastGlO='';
@@ -4171,6 +4500,14 @@ let texReady=false,texFade=0;
 let dragPX=0,dragPY=0;
 const ray=new THREE.Raycaster();
 const ORIGIN=new THREE.Vector3(),ptrW=new THREE.Vector3(),ptrL=new THREE.Vector3(),lookV=new THREE.Vector3();
+/* PTR_PLANE — the flat z=0 surface the embers live on. The hero mark is
+   parked off-centre (shiftX/shiftY in buildMarkShape) so the pointer's
+   world position has to come from where the ray actually crosses that
+   surface, not from the point on the ray nearest the world origin: that
+   origin-relative shortcut is fine for shapes centred on (0,0,0), but for
+   the off-centre mark it warps unevenly left-to-right, which read as the
+   glow/shine only responding on one side. */
+const PTR_PLANE=new THREE.Plane(new THREE.Vector3(0,0,1),0);
 
 function endDrag(){
   if(globeDragging){
@@ -4180,6 +4517,7 @@ function endDrag(){
 }
 addEventListener('pointermove',e=>{
   lastActive=performance.now();
+  if(e.pointerType!=='touch')ptrIn=true;
   const nx=(e.clientX/innerWidth)*2-1,ny=-(e.clientY/innerHeight)*2+1;
   /* a fast flick swells the field gently (cap .8), never detonates it */
   ptrBoost=Math.min(ptrBoost+Math.hypot(nx-ndcT.x,ny-ndcT.y)*.9,.8);
@@ -4217,6 +4555,8 @@ addEventListener('pointerdown',e=>{
     document.body.classList.add('dragging');
   }
 },{passive:true});
+document.documentElement.addEventListener('pointerleave',()=>{ptrIn=false;},{passive:true});
+addEventListener('blur',()=>{ptrIn=false;});
 addEventListener('pointerup',endDrag,{passive:true});
 addEventListener('pointercancel',endDrag,{passive:true});
 
@@ -4297,8 +4637,9 @@ try{
 
   const uniforms={
     uTime:{value:0},uWobble:{value:.02},uSize:{value:1.12},uScaleH:{value:1},
-    uEnergy:{value:0},uPtrStr:{value:1},uGlobe:{value:0},
+    uEnergy:{value:0},uPtrStr:{value:1},uGlobe:{value:0},uGal:{value:0},uWind:{value:1},
     uPointer:{value:new THREE.Vector3(999,999,999)},
+    uRepel:{value:0},uRepelPos:{value:new THREE.Vector2(9,9)},uAspect:{value:innerWidth/innerHeight},
     uRip:{value:[new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3()]},
     uRipT:{value:[-1000,-1000,-1000,-1000,-1000]},
     uColA:{value:new THREE.Color()},uColB:{value:new THREE.Color()},
@@ -4315,6 +4656,8 @@ try{
   geo.setAttribute('aAcc',accAttr);
   landAttr=new THREE.BufferAttribute(LAND,1);
   geo.setAttribute('aLand',landAttr);
+  geo.setAttribute('aGA',new THREE.BufferAttribute(GAL.GA,4));
+  geo.setAttribute('aGC',new THREE.BufferAttribute(GAL.GC,3));
   /* NO DEPTH TEST — occlusion is the shader's job (vBack/vShell/limb
      gates, atmosphere rim gate), so no invisible depth wall can ever
      cull the swarm mid-flight. Nothing anywhere writes depth. */
@@ -4432,10 +4775,126 @@ try{
   globeAtm.frustumCulled=false;
   group.add(globeAtm);
 
+  /* —— FLY-AWAY DUST — hover the mark and tiny copies of its own embers
+        (same colour) break off and blow away up-left on the wind, fading as
+        they go. The mark itself is never deformed. Pooled, CPU-stepped. —— */
+  const FLY_N=COARSE?0:(isMobile?240:800);
+  let fly=null;
+  if(FLY_N){
+    const fPos=new Float32Array(FLY_N*3),fVel=new Float32Array(FLY_N*3),
+          fLife=new Float32Array(FLY_N),fDec=new Float32Array(FLY_N),
+          fSize=new Float32Array(FLY_N),fCol=new Float32Array(FLY_N*3),fSd=new Float32Array(FLY_N);
+    const fg=new THREE.BufferGeometry();
+    const aPos=new THREE.BufferAttribute(fPos,3).setUsage(THREE.DynamicDrawUsage);
+    const aLife=new THREE.BufferAttribute(fLife,1).setUsage(THREE.DynamicDrawUsage);
+    fg.setAttribute('position',aPos);
+    fg.setAttribute('aLife',aLife);
+    fg.setAttribute('aSize',new THREE.BufferAttribute(fSize,1));
+    fg.setAttribute('aCol',new THREE.BufferAttribute(fCol,3));
+    const fu={uScaleH:{value:1},uTime:{value:0}};
+    const fm=new THREE.ShaderMaterial({uniforms:fu,transparent:true,depthWrite:false,depthTest:false,
+      blending:THREE.AdditiveBlending,
+      vertexShader:`
+        attribute float aLife;attribute float aSize;attribute vec3 aCol;
+        uniform float uScaleH;varying float vL;varying vec3 vC;
+        void main(){
+          vec4 mv=modelViewMatrix*vec4(position,1.);
+          vL=aLife;vC=aCol;
+          gl_Position=projectionMatrix*mv;
+          gl_PointSize=min(aSize*(.55+.45*aLife)*1.25*.09*uScaleH/max(-mv.z,.1),40.);
+        }`,
+      fragmentShader:`
+        varying float vL;varying vec3 vC;
+        void main(){
+          if(vL<=0.)discard;
+          vec2 c=gl_PointCoord-.5;float d=length(c);
+          if(d>.5)discard;
+          float core=1.-smoothstep(.12,.34,d);
+          float halo=1.-smoothstep(0.,.5,d);halo*=halo;
+          float a=min(core+halo*.35,1.)*pow(vL,.8);
+          gl_FragColor=vec4(mix(vC,vec3(1.),core*.35),a);
+        }`});
+    const fp=new THREE.Points(fg,fm);
+    fp.frustumCulled=false;fp.renderOrder=3;
+    group.add(fp);
+    let head=0;
+    fly={
+      u:fu,
+      emit(j){
+        const i=head;head=(head+1)%FLY_N;
+        const b=engine.baseArr,i3=i*3,j3=j*3;
+        fPos[i3]=b[j3];fPos[i3+1]=b[j3+1];fPos[i3+2]=b[j3+2];
+        /* wind: up and to the left, each mote its own speed */
+        const sp=1.8+Math.random()*3.2;
+        fVel[i3]=-sp*(.55+Math.random()*.6);
+        fVel[i3+1]=sp*(.6+Math.random()*.7);
+        fVel[i3+2]=(Math.random()-.5)*.9;
+        fLife[i]=1;
+        fDec[i]=.22+Math.random()*.5;          /* 2–4.5 s of flight */
+        fSize[i]=.9+Math.random()*1.8;
+        fSd[i]=Math.random()*6.28;
+        const violet=accAttr&&accAttr.array[j]>.5;
+        if(violet){fCol[i3]=.62;fCol[i3+1]=.36;fCol[i3+2]=1;}
+        else{const w=.85+Math.random()*.15;fCol[i3]=w;fCol[i3+1]=w*.96;fCol[i3+2]=1;}
+        fg.attributes.aCol.needsUpdate=true;fg.attributes.aSize.needsUpdate=true;
+      },
+      step(dt,t){
+        let any=false;
+        for(let i=0;i<FLY_N;i++){
+          if(fLife[i]<=0)continue;
+          any=true;
+          const i3=i*3,k=1-.3*dt;               /* light drag */
+          fVel[i3]*=k;fVel[i3+1]*=k;fVel[i3+2]*=k;
+          /* gusty flutter — dust, not bullets */
+          fVel[i3]+=Math.sin(t*2.3+fSd[i])*.9*dt;
+          fVel[i3+1]+=Math.cos(t*1.9+fSd[i]*1.7)*.9*dt;
+          fPos[i3]+=fVel[i3]*dt;fPos[i3+1]+=fVel[i3+1]*dt;fPos[i3+2]+=fVel[i3+2]*dt;
+          fLife[i]-=fDec[i]*dt;
+          if(fLife[i]<0)fLife[i]=0;
+        }
+        if(any){aPos.needsUpdate=true;aLife.needsUpdate=true;}
+      }
+    };
+  }
+
+  /* —— GALAXY GLOW — soft core light + a bar-aligned smear, additive, faded in
+        with uGal. The bar group turns with the bar embers (mirrored: +rot). —— */
+  const galFx=[],galGroup=new THREE.Group(),barGroup=new THREE.Group();
+  galGroup.add(barGroup);group.add(galGroup);
+  function glowTex(size,stops,sy){
+    const cv=document.createElement('canvas');cv.width=cv.height=size;
+    const x=cv.getContext('2d');x.translate(size/2,size/2);x.scale(1,sy||1);
+    const g=x.createRadialGradient(0,0,0,0,0,size/2);
+    stops.forEach(t=>g.addColorStop(t[0],t[1]));
+    x.fillStyle=g;x.fillRect(-size,-size,2*size,2*size);
+    return new THREE.CanvasTexture(cv);
+  }
+  function fxMat(tex,op){
+    return new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false});
+  }
+  function fxPlane(parent,tex,size,base){
+    const m=new THREE.Mesh(new THREE.PlaneGeometry(size*G_SC,size*G_SC),fxMat(tex));
+    m.rotation.x=-Math.PI/2;m.renderOrder=-1;m.frustumCulled=false;parent.add(m);
+    galFx.push({mat:m.material,base,obj:m});
+  }
+  function fxSprite(tex,size,base){
+    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false}));
+    sp.scale.set(size*G_SC,size*G_SC,1);sp.renderOrder=-1;galGroup.add(sp);
+    galFx.push({mat:sp.material,base,obj:sp});
+  }
+  fxPlane(galGroup,glowTex(256,[[0,'rgba(125,108,255,.5)'],[.4,'rgba(110,95,240,.15)'],[1,'rgba(100,85,230,0)']]),55,.16);
+  fxPlane(galGroup,glowTex(256,[[0,'rgba(255,244,235,.85)'],[.35,'rgba(225,205,255,.25)'],[1,'rgba(200,180,255,0)']]),24,.18);
+  const barStops=[[0,'rgba(250,244,255,.95)'],[.18,'rgba(220,205,255,.7)'],[.45,'rgba(170,150,255,.22)'],[1,'rgba(150,130,255,0)']];
+  fxPlane(barGroup,glowTex(512,barStops,.5),15,.38);
+  fxSprite(glowTex(256,barStops),4.2,.6);
+  fxSprite(glowTex(128,[[0,'rgba(255,252,250,1)'],[.3,'rgba(240,228,255,.7)'],[1,'rgba(210,190,255,0)']]),1.3,.3);
+  galGroup.visible=false;
+
   function updateScale(){
     const sh=renderer.domElement.height*.5/Math.tan(Math.PI/6);
     uniforms.uScaleH.value=sh;
     if(dust)dust.uniforms.uScaleH.value=sh;
+    if(fly)fly.u.uScaleH.value=sh;
   }
   updateScale();
 
@@ -4481,7 +4940,7 @@ try{
   posAttr.array.set(baseArr);
   posAttr.needsUpdate=true;
 
-  engine={renderer,scene,camera,uniforms,group,morph,updateScale,posAttr,baseArr,globeBody,globeAtm};
+  engine={renderer,scene,camera,uniforms,group,morph,updateScale,posAttr,baseArr,globeBody,globeAtm,galFx,galGroup,barGroup,fly};
 }catch(err){
   canvas.remove();
 }
@@ -4617,7 +5076,7 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(relayout);
    When text/labels are trimmed later, re-tune range manually instead. */
 
 /* ================= main loop ================= */
-let cur=window.scrollY||0,lastFrameP=0,lastNow=performance.now();
+let cur=window.scrollY||0,lastFrameP=0,lastNow=performance.now(),flyAcc=0;
 function tick(now){
   requestAnimationFrame(tick);
   if(document.hidden)return;  /* background tab: skip work, rAF re-arms on return */
@@ -4637,7 +5096,11 @@ function tick(now){
   if(engine){
     const u=engine.uniforms;
 
-    const dirty=engine.morph(curP);
+    /* GALAXY — while it is (or is about to be) on screen the disc turns
+       differentially: re-project shapes[4] and force a morph each frame */
+    const galOn=!reduced&&curP>3&&curP<4.85;
+    if(galOn)galaxyStep(dt);
+    const dirty=engine.morph(curP,galOn);
 
     /* CINEMATIC INTRO: embers → the PYRAXIS mark */
     if(introFrom&&introT<1){
@@ -4718,6 +5181,14 @@ function tick(now){
     let wob=lerp(WOB[i],WOB[i+1],e),siz=lerp(SIZ[i],SIZ[i+1],e),rs=lerp(ROT[i],ROT[i+1],e);
     if(reduced){wob*=.35;rs*=.4;}
 
+    /* galaxy look gate: 0 outside, 1 exactly at the galaxy keyframe (curP 4) */
+    const galGate=sstep(clamp((curP-3.25)/.75,0,1))*(1-sstep(clamp((curP-4)/.7,0,1)));
+    u.uGal.value=galGate;
+    engine.galGroup.visible=galGate>.01;
+    if(engine.galGroup.visible){
+      for(const f of engine.galFx)f.mat.opacity=f.base*galGate;
+      engine.barGroup.rotation.y=G_BAR_ANG+GAL.T*G_OM_BAR;
+    }
     u.uTime.value=now/1000;
     u.uWobble.value=wob;
     u.uSize.value=siz*(1+introGlow*.3)*SZ_MUL;
@@ -4781,8 +5252,27 @@ function tick(now){
        still name barely stirs, and the formed world only breathes at
        half strength so its skin holds its shape. */
     ptrBoost*=Math.exp(-dt*1.6);
-    const pdamp=.3+.7*sstep(clamp(curP/0.6,0,1));
-    u.uPtrStr.value=(1+ptrBoost)*pdamp*(1.-globeMixS*.55);
+    const pdamp=1;
+    /* HERO-ONLY SHINE — the mouse glow/shimmer (and the ripple push it
+       drives in the vertex shader) belongs to the pyraxis symbol only.
+       heroGate rides the same pacing as the topo field's own fade (full
+       through the mark, melting out by curP~0.7) so it never re-appears
+       once the field has moved into dispersal/coherence/galaxy/globe. */
+    const heroGate=1-sstep(clamp((curP-0.25)/0.45,0,1));
+    u.uPtrStr.value=(1+ptrBoost)*pdamp*(1.-globeMixS*.55)*heroGate;
+    u.uWind.value=1-.6*sstep(clamp((curP-.8)/1.2,0,1));   /* full gust on the mark, lighter later */
+    /* SCROLL-FIELD REPEL — the counterpart to heroGate: 0 while the mark is
+       up (it already has shine + fly-away dust, more would be too much),
+       fades in as the hero melts into dispersal (curP .45→.85), softer on
+       the formed world so its skin keeps its shape. Mouse only; off for
+       touch, reduced motion, and when the cursor has left the window. */
+    const repelWant=(reduced||coarse||!ptrIn)?0:sstep(clamp((curP-0.45)/0.4,0,1))*(1-globeMixS*.5);
+    repelAmt+=(repelWant-repelAmt)*Math.min(1,dt*2);
+    if(repelAmt<.002)repelAmt=0;
+    rNdc.lerp(ndcT,Math.min(1,dt*8));   /* light lag — the parting trails the cursor */
+    u.uRepel.value=repelAmt;
+    u.uRepelPos.value.copy(rNdc);
+    u.uAspect.value=engine.camera.aspect;
     ndc.lerp(ndcT,Math.min(1,dt*4.5));        /* slow camera drift — floats, doesn't swing */
 
     rotFree+=rs*dt;
@@ -4853,10 +5343,28 @@ function tick(now){
     engine.group.updateMatrixWorld();
 
     ray.setFromCamera(ndc,engine.camera);
-    ray.ray.closestPointToPoint(ORIGIN,ptrW);
+    if(!ray.ray.intersectPlane(PTR_PLANE,ptrW))ray.ray.closestPointToPoint(ORIGIN,ptrW);
     ptrL.copy(ptrW);
     engine.group.worldToLocal(ptrL);
     u.uPointer.value.lerp(ptrL,Math.min(1,dt*4.5));  /* the dent trails the cursor gracefully */
+
+    /* FLY-AWAY DUST — while the cursor is over the mark, break embers off it */
+    if(engine.fly){
+      engine.fly.step(dt,now/1000);
+      const hovering=!reduced&&!introFrom&&curP<.45&&(performance.now()-lastActive)<2500;
+      if(hovering){
+        flyAcc+=dt*170;
+        const pv=u.uPointer.value,R2=3.2*3.2,B=engine.baseArr;
+        while(flyAcc>=1){
+          flyAcc-=1;
+          for(let tries=0;tries<50;tries++){
+            const j=(Math.random()*N)|0,j3=j*3;
+            const dx=B[j3]-pv.x,dy=B[j3+1]-pv.y,dz=B[j3+2]-pv.z;
+            if(dx*dx+dy*dy+dz*dz<R2){engine.fly.emit(j);break;}
+          }
+        }
+      }else flyAcc=0;
+    }
 
     engine.renderer.render(engine.scene,engine.camera);
 
@@ -5077,7 +5585,7 @@ document.addEventListener('mouseover',function(e){
   if(!tg||!tg.closest){elState=null;return;}
   var t=tg.closest('[data-cursor]');
   if(t){elState=t.dataset.cursor;setState(elState);return;}
-  if(tg.closest('#wheel .hub, .deploy-prev a')){elState='view';setState('view');return;}
+  if(tg.closest('.deploy-prev a')){elState='view';setState('view');return;}
   if(tg.closest('a,button,select,[role="button"]')){elState='link';setState('link');return;}
   elState=null;
 });
