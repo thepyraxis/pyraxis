@@ -6,7 +6,7 @@
   }
   var io=new IntersectionObserver(function(es){
     es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
-  },{threshold:.12});
+  },{threshold:.01,rootMargin:'0px 0px 180px 0px'});
   items.forEach(function(i){ io.observe(i); });
 })();
 
