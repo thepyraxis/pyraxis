@@ -18,7 +18,7 @@
   var pm=0, lap=0, pvPrev=0, lock=-1, shown=-1, hotIdx=-2, coreFlash=0, tNow=0, last=0, swT=0;
   var i;
   for(i=0;i<N;i++){ energy.push(0); pts.push({x:0,y:0}); dots.push(document.createElement('i')); dotsEl.appendChild(dots[i]); }
-  for(i=0;i<170;i++) parts.push({a:Math.random()*TAU,v:.16+Math.random()*.26,o:(Math.random()-.5)*11,s:.6+Math.random()*1.3,k:Math.random()});
+  for(i=0;i<100;i++) parts.push({a:Math.random()*TAU,v:.16+Math.random()*.26,o:(Math.random()-.5)*11,s:.6+Math.random()*1.3,k:Math.random()});
 
   function pad(n){ return (n<10?'0':'')+n; }
   function wrap(d){ return ((d+N/2)%N+N)%N-N/2; }
@@ -47,6 +47,17 @@
     ctx.lineTo(x1,y1-r); ctx.arcTo(x1,y1,x1-r,y1,r);
     ctx.lineTo(x0+r,y1); ctx.arcTo(x0,y1,x0,y1-r,r);
     ctx.lineTo(x0,y0+r); ctx.arcTo(x0,y0,x0+r,y0,r);
+    ctx.closePath();
+  }
+  /* arrival-pulse ring, drawn as a rounded square (not a circle) so it
+     reads as part of the same rectangular system as the track. */
+  function pulseRect(px,py,r){
+    var rad=Math.min(r*.35,18), x0=px-r,y0=py-r,x1=px+r,y1=py+r;
+    ctx.moveTo(x0+rad,y0);
+    ctx.lineTo(x1-rad,y0); ctx.arcTo(x1,y0,x1,y0+rad,rad);
+    ctx.lineTo(x1,y1-rad); ctx.arcTo(x1,y1,x1-rad,y1,rad);
+    ctx.lineTo(x0+rad,y1); ctx.arcTo(x0,y1,x0,y1-rad,rad);
+    ctx.lineTo(x0,y0+rad); ctx.arcTo(x0,y0,x0+rad,y0,rad);
     ctx.closePath();
   }
 
@@ -161,7 +172,7 @@
     }
 
     /* comet tail — tapered, fading */
-    var SEG=42, TL=1.25;
+    var SEG=26, TL=1.25;
     ctx.lineCap='round';
     for(j=0;j<SEG;j++){
       var a0=ca-TL*(j/SEG), a1=ca-TL*((j+1)/SEG), f=1-j/SEG;
@@ -194,11 +205,11 @@
       if(ra>=1){ rings.splice(j,1); continue; }
       var re=1-Math.pow(1-ra,3);
       ctx.strokeStyle='rgba(216,200,255,'+((1-ra)*.6).toFixed(3)+')'; ctx.lineWidth=1.3;
-      ctx.beginPath(); ctx.arc(rings[j].x,rings[j].y,34+120*re,0,TAU); ctx.stroke();
+      ctx.beginPath(); pulseRect(rings[j].x,rings[j].y,34+120*re); ctx.stroke();
       if(ra>.12){
         var rb=(ra-.12)/.88;
         ctx.strokeStyle='rgba(167,139,255,'+((1-rb)*.35).toFixed(3)+')';
-        ctx.beginPath(); ctx.arc(rings[j].x,rings[j].y,30+90*(1-Math.pow(1-rb,3)),0,TAU); ctx.stroke();
+        ctx.beginPath(); pulseRect(rings[j].x,rings[j].y,30+90*(1-Math.pow(1-rb,3))); ctx.stroke();
       }
     }
 
