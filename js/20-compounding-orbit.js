@@ -14,7 +14,7 @@
   ];
   var TAU=Math.PI*2, LAP=15;                 /* seconds per full lap */
   var desk=false, W=0, H=0, DPR=1, cx=0, cy=0, rx=1, ry=1;
-  var pts=[], parts=[], energy=[], rings=[], sparks=[], echoes=[], dots=[];
+  var pts=[], parts=[], energy=[], sparks=[], echoes=[], dots=[];
   var pm=0, lap=0, pvPrev=0, lock=-1, shown=-1, hotIdx=-2, coreFlash=0, tNow=0, last=0, swT=0;
   var i;
   for(i=0;i<N;i++){ energy.push(0); pts.push({x:0,y:0}); dots.push(document.createElement('i')); dotsEl.appendChild(dots[i]); }
@@ -49,17 +49,6 @@
     ctx.lineTo(x0,y0+r); ctx.arcTo(x0,y0,x0+r,y0,r);
     ctx.closePath();
   }
-  /* arrival-pulse ring, drawn as a rounded square (not a circle) so it
-     reads as part of the same rectangular system as the track. */
-  function pulseRect(px,py,r){
-    var rad=Math.min(r*.35,18), x0=px-r,y0=py-r,x1=px+r,y1=py+r;
-    ctx.moveTo(x0+rad,y0);
-    ctx.lineTo(x1-rad,y0); ctx.arcTo(x1,y0,x1,y0+rad,rad);
-    ctx.lineTo(x1,y1-rad); ctx.arcTo(x1,y1,x1-rad,y1,rad);
-    ctx.lineTo(x0+rad,y1); ctx.arcTo(x0,y1,x0,y1-rad,rad);
-    ctx.lineTo(x0,y0+rad); ctx.arcTo(x0,y0,x0+rad,y0,rad);
-    ctx.closePath();
-  }
 
   function setReadout(k,instant){
     if(k===shown) return; shown=k;
@@ -82,6 +71,12 @@
     desk = W>=720;
     root.classList.toggle('is-desk',desk);
     if(!desk){ for(var m=0;m<N;m++){ cards[m].style.left=''; cards[m].style.top=''; } root.classList.add('ready'); return; }
+    /* re-measure: .is-desk is what applies the CSS height clamp, and it was
+       only just toggled on above — the rect from before that still carries
+       the old (natural, pre-toggle) box height, so ry ends up computed
+       against a taller phantom box than what's actually on screen, and
+       the top/bottom cards land outside the visible track. */
+    r=root.getBoundingClientRect();
     H=r.height; DPR=Math.min(window.devicePixelRatio||1,2);
     cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR);
     var cw=cards[0].offsetWidth, ch=cards[0].offsetHeight;
@@ -99,7 +94,6 @@
   function arrive(k){
     energy[k]=1;
     if(!desk) return;
-    rings.push({x:pts[k].x,y:pts[k].y,t:tNow});
     for(var n=0;n<16;n++){
       var an=Math.random()*TAU, sp=50+Math.random()*130;
       sparks.push({x:pts[k].x,y:pts[k].y,vx:Math.cos(an)*sp,vy:Math.sin(an)*sp,age:0,life:.9+Math.random()*.9,s:.8+Math.random()*1.5});
@@ -193,24 +187,14 @@
       ctx.beginPath(); ctx.arc(qx,qy,qs,0,TAU); ctx.fill();
     }
 
-    /* station beacons + arrival rings */
+    /* station beacons — a station glows softly at rest, brighter when active.
+       (the old expanding arrival-ring pulse was removed entirely — it kept
+       reading as a box drawn around the card, not a system effect.) */
     for(k=0;k<N;k++){
       var be=energy[k];
       g=ctx.createRadialGradient(pts[k].x,pts[k].y,0,pts[k].x,pts[k].y,78);
       g.addColorStop(0,'rgba(124,92,255,'+(.05+.32*be).toFixed(3)+')'); g.addColorStop(1,'rgba(124,92,255,0)');
       ctx.fillStyle=g; ctx.fillRect(pts[k].x-78,pts[k].y-78,156,156);
-    }
-    for(j=rings.length-1;j>=0;j--){
-      var ra=(t-rings[j].t)/1.5;
-      if(ra>=1){ rings.splice(j,1); continue; }
-      var re=1-Math.pow(1-ra,3);
-      ctx.strokeStyle='rgba(216,200,255,'+((1-ra)*.6).toFixed(3)+')'; ctx.lineWidth=1.3;
-      ctx.beginPath(); pulseRect(rings[j].x,rings[j].y,34+120*re); ctx.stroke();
-      if(ra>.12){
-        var rb=(ra-.12)/.88;
-        ctx.strokeStyle='rgba(167,139,255,'+((1-rb)*.35).toFixed(3)+')';
-        ctx.beginPath(); pulseRect(rings[j].x,rings[j].y,30+90*(1-Math.pow(1-rb,3))); ctx.stroke();
-      }
     }
 
     /* comet head — grows a little with each lap */

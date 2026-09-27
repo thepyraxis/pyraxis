@@ -80,6 +80,7 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .cap{font:500 10px var(--mono);letter-spacing:.18em;color:var(--mut2);text-transform:uppercase}
 .sec{position:relative;padding:clamp(96px,13vh,160px) 0}
 .sec-head{max-width:860px;margin-bottom:clamp(48px,6vw,80px)}
+[data-reveal]{min-width:0}
 .js [data-reveal]{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s cubic-bezier(.22,.61,.36,1)}
 .js [data-reveal].in{opacity:1;transform:none}
 .btn{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;display:inline-flex;align-items:center;gap:10px;
@@ -126,7 +127,7 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 
 
 /* ============ THE DEVICE ============ */
-.device{width:min(340px,88vw);padding:11px;border-radius:54px;position:relative;
+.device{width:min(280px,100%);min-width:0;padding:11px;border-radius:54px;position:relative;
   background:linear-gradient(150deg,#55555e 0%,#191920 20%,#0c0c10 50%,#191920 80%,#4a4a53 100%);
   box-shadow:0 0 0 1px rgba(255,255,255,.09),0 0 0 2.5px rgba(0,0,0,.6),
     inset 0 0 0 1px rgba(255,255,255,.05),
@@ -421,7 +422,7 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 /* ============ 06 QR ============ */
 .qr-grid{display:grid;gap:clamp(36px,5vw,70px)}
 @media(min-width:980px){.qr-grid{grid-template-columns:minmax(240px,300px) minmax(300px,1fr);align-items:start}}
-.qr-tent{max-width:340px;width:100%;margin-inline:auto;padding:30px 26px 26px;border:1px solid var(--line2);border-radius:10px;background:rgba(13,13,18,.92);text-align:center}
+.qr-tent{max-width:340px;width:100%;min-width:0;margin-inline:auto;padding:30px 26px 26px;border:1px solid var(--line2);border-radius:10px;background:rgba(13,13,18,.92);text-align:center}
 .tent-cap{font:500 8.5px var(--mono);letter-spacing:.3em;color:var(--mut2);margin-bottom:20px;text-transform:uppercase}
 .qrcode{width:min(180px,62%);margin:0 auto 18px;position:relative;color:#b9b7c2}
 .qrcode svg{width:100%;height:auto}
@@ -494,12 +495,12 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .rev-steps span{font:500 8px var(--mono);letter-spacing:.18em;color:var(--mut2);text-transform:uppercase;text-align:center;transition:color .4s}
 .rev-steps li.on span{color:var(--ink)}
 .device{margin-inline:auto}
+.rev-stage{display:grid;gap:26px;padding:26px 22px;grid-template-columns:1fr}
 @media(max-width:620px){
   .rev-steps span{display:none}
   .rev-stage{padding:20px 12px}
-  .device{width:min(340px,100%)}
+  .device{width:min(280px,100%)}
 }
-.rev-stage{display:grid;gap:26px;padding:26px 22px;grid-template-columns:1fr}
 @media(min-width:920px){
   .rev-stage{grid-template-columns:auto 1fr;align-items:start}
   .rev-sys{border-left:1px solid var(--line);padding-left:28px}
@@ -841,7 +842,7 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .ob.hot .ob-chip .ic{filter:drop-shadow(0 0 6px rgba(221,200,255,.95))}
 .ob.hot .ob-n{color:var(--pu2)}.ob.hot .ob-t{color:#fff}
 /* desktop: stations sit on the orbit, canvas draws the light */
-.orbit.is-desk{height:clamp(500px,52vw,610px)}
+.orbit.is-desk{height:clamp(440px,42vw,540px)}
 .orbit.is-desk .orb-cv{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .orbit.is-desk .orb-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(330px,38%);margin:0}
 .orbit.is-desk .orb-list{position:absolute;inset:0;padding:0;display:block}
