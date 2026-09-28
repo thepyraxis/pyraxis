@@ -6,7 +6,14 @@
   var consent=$('#leadConsent');
   /* Receiving inbox for the Email channel — set this to switch email on.
      Until then only WhatsApp is offered, so nothing ever dead-ends. */
-  var LEAD_TO_EMAIL="thepyaxis@gmail.com";
+  var LEAD_TO_EMAIL="thepyraxis@gmail.com";
+  /* Direct delivery: leads are POSTed to Web3Forms, which emails them to
+     LEAD_TO_EMAIL with no visitor action. Get a free access key at
+     https://web3forms.com (enter thepyraxis@gmail.com) and paste it here.
+     Until set, the form falls back to the WhatsApp / mail-app choice. */
+  var WEB3FORMS_KEY="YOUR_ACCESS_KEY_HERE";
+  var doneTitle=$('#doneTitle'), doneText=$('#doneText');
+  var DONE_TITLE=doneTitle?doneTitle.textContent:'', DONE_TEXT=doneText?doneText.innerHTML:'';
   var pendingMsg="";
   var lastFocus=null;
   var DRAFT_KEY='pyraxis-lead-draft';
@@ -159,17 +166,58 @@
       "Business: "+payload.Business,
       "Fix first: "+payload.Need,
       "Contact: "+payload.Contact].join("\n");
-    if(mForm) mForm.hidden=true;
-    if(mDone) mDone.hidden=true;
-    if(mChoice){ mChoice.hidden=false; var fb=mChoice.querySelector('button'); if(fb) fb.focus(); }
+    function showChoice(){
+      if(mForm) mForm.hidden=true;
+      if(mDone) mDone.hidden=true;
+      if(mChoice){ mChoice.hidden=false; var fb=mChoice.querySelector('button'); if(fb) fb.focus(); }
+    }
+    if(WEB3FORMS_KEY && WEB3FORMS_KEY.indexOf('YOUR_')!==0){
+      var btn=form.querySelector('button[type=submit]'), lbl=btn?btn.textContent:'';
+      if(btn){ btn.disabled=true; btn.textContent='Sending…'; }
+      var body={
+        access_key:WEB3FORMS_KEY,
+        subject:'New PYRAXIS request — '+payload.name,
+        from_name:'PYRAXIS website',
+        name:payload.name,
+        message:pendingMsg,
+        botcheck:false
+      };
+      if(emval&&!eBad) body.email=emval;
+      fetch('https://api.web3forms.com/submit',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify(body)
+      }).then(function(r){ return r.json(); }).then(function(j){
+        if(!j||!j.success) throw new Error('send failed');
+        showSent();
+      }).catch(function(){
+        toast('Could not send automatically — pick WhatsApp or email instead.');
+        showChoice();
+      }).then(function(){
+        if(btn){ btn.disabled=false; btn.textContent=lbl; }
+      });
+      return;
+    }
+    showChoice();
   });
   if(chBack) chBack.addEventListener('click',function(){
     if(mChoice) mChoice.hidden=true;
     if(mDone) mDone.hidden=true;
     if(mForm) mForm.hidden=false;
   });
+  function showSent(){
+    clearDraft();
+    if(mChoice) mChoice.hidden=true;
+    if(mForm) mForm.hidden=true;
+    if(doneTitle) doneTitle.textContent='Request sent.';
+    if(doneText) doneText.textContent='We received your details and will get back to you soon.';
+    if(mDone){ mDone.hidden=false; var b=mDone.querySelector('button'); if(b) b.focus(); }
+  }
   function showDone(channel){
-    clearDraft();    if(mChoice) mChoice.hidden=true;
+    clearDraft();
+    if(doneTitle) doneTitle.textContent=DONE_TITLE;
+    if(doneText) doneText.innerHTML=DONE_TEXT;
+    doneChannel=$('#doneChannel');    if(mChoice) mChoice.hidden=true;
     if(mForm) mForm.hidden=true;
     if(doneChannel) doneChannel.textContent=channel;
     if(mDone){ mDone.hidden=false; var b=mDone.querySelector('button'); if(b) b.focus(); }
@@ -186,9 +234,4 @@
     showDone('your mail app');
     toast('Your mail app opened — press send there and we will reach you quickly.');
   });
-  /* reloaded / crashed mid-fill? put the visitor straight back into the
-     form with their draft — never strand them on the main menu */
-  try{
-    if(draftHasData(readDraft())) setTimeout(function(){ open(true); },600);
-  }catch(e){}
 })();

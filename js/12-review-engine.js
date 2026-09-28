@@ -90,7 +90,7 @@
       '<stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#a78bff"/></linearGradient></defs>'+
       '<circle class="rn-halo" cx="88" cy="150" r="52"/>'+
       '<circle class="rn-fill" cx="88" cy="150" r="44"/>'+ stars +
-      '<text class="rn-cap" x="88" y="212" text-anchor="middle">SHE RATED</text>'+
+      '<text class="rn-cap" x="88" y="212" text-anchor="middle">RATED</text>'+
       '<text class="rn-score" x="88" y="226" text-anchor="middle">'+lit+' / 5</text>'+
       '<circle class="rj-pulse" cx="196" cy="150" r="9"/>'+
       '<circle class="rj-pulse d2" cx="196" cy="150" r="9"/>'+
@@ -127,7 +127,7 @@
         '<g class="rcard-ic" transform="translate(432,214)"><rect x="-5.5" y="-1" width="11" height="9.5" rx="2"/><path d="M-3.2 -1v-2.4a3.2 3.2 0 0 1 6.4 0v2.4"/></g>'+
         '<text class="rcard-tt" x="432" y="240" text-anchor="middle">PRIVATE FEEDBACK</text>'+
         '<text class="rcard-ts" x="432" y="253" text-anchor="middle">if something went wrong</text>'+
-        '<text class="rcard-tf" x="432" y="265" text-anchor="middle">\u2192 SHE COMES BACK</text>'+
+        '<text class="rcard-tf" x="432" y="265" text-anchor="middle">\u2192 COMES BACK</text>'+
       '</g>'+
       '</svg>';
   }
@@ -138,8 +138,8 @@
   function loopVis(kind){
     var h = kind==='five'
       ? chip('i-star','PUBLIC REVIEW')+ARR+chip('i-eye','TRUST')+ARR+chip('i-user','NEW CUSTOMER')
-      : chip('i-wrench','FIXED')+ARR+chip('i-bell','WIN-BACK')+ARR+chip('i-loop','SHE RETURNS');
-    var note = kind==='five' ? '+1 REVIEW · 34 THIS MONTH' : 'HER NEXT VISIT · RATED FIVE STARS';
+      : chip('i-wrench','FIXED')+ARR+chip('i-bell','WIN-BACK')+ARR+chip('i-loop','THEY RETURN');
+    var note = kind==='five' ? '+1 REVIEW · 34 THIS MONTH' : 'NEXT VISIT · RATED FIVE STARS';
     return '<div class="vis-cyc">'+h+'</div><p class="vis-note">'+note+'</p>';
   }
   function googleVis(){
@@ -149,7 +149,7 @@
       '<span class="g-count">Google review</span></div>'+
       '<p class="g-text"><span id="gTw"></span><span class="g-caret"></span></p>'+
       '<div class="g-foot"><span class="g-av">S</span><span>Sara K. · just now</span>'+
-      '<span class="g-posted">via her PYRAXIS link</span></div>'+
+      '<span class="g-posted">via their PYRAXIS link</span></div>'+
       '</div>';
   }
   function ownerVis(){
@@ -295,7 +295,7 @@
     at(1100, function(){ typeEnd(); addMsg('in','<p>We heard you — we\u2019ve added a second server for Saturday evenings. Your next visit is 20% off, to make it right?</p>','21:20'); });
     at(1600, function(){ addMsg('out','<p>…alright. Saturday.</p>','21:21'); });
     at(700, function(){ logAdd('WIN-BACK SENT · 20% CODE · TRACKED'); });
-    at(500, function(){ logAdd('SHE REBOOKED · SATURDAY 19:30'); });
+    at(500, function(){ logAdd('REBOOKED · SATURDAY 19:30'); });
     at(500, function(){ logAdd('NEXT VISIT · RATED FIVE STARS'); });
     at(400, done);
   }

@@ -1,6 +1,6 @@
 # PYRAXIS — static site
 
-Single-file static website (`index.html` + `public/` assets). No build step, no dependencies to install.
+Static website: `index.html` + `css/` + `js/` + `public/` assets. No build step, no dependencies to install.
 
 ## Run
 
@@ -12,14 +12,16 @@ npx serve .
 
 ## Files
 
-- `index.html` — the entire site (markup, styles, scripts; Three.js + artwork self-hosted in `public/`, fonts via Google Fonts CDN)
+- `index.html` — page markup
+- `css/main.css` — all styles
+- `js/` — numbered section scripts plus WebGL/canvas engines (Three.js self-hosted in `public/vendor/`; fonts via Google Fonts CDN)
 - `privacy.html`, `terms.html` — legal pages
-- `public/` — wordmark, favicon, icons, founder frames
+- `public/` — wordmark, favicon, images, founder frames
 - `sitemap.xml`, `robots.txt` — SEO
 
 ## Leads
 
-The contact form delivers via pre-filled WhatsApp message to `919837104413` — no backend needed.
+The contact form sends leads by email through [Web3Forms](https://web3forms.com). Set `WEB3FORMS_KEY` in `js/21-modal-and-lead-form.js`. If it is not set, or sending fails, the form offers a pre-filled WhatsApp (`919837104413`) or email message instead.
 
 ## Deploy
 

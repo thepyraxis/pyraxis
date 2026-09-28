@@ -9,7 +9,7 @@
     {t:'Smarter decisions',    d:'You see who returns, who drifts and what actually works.'},
     {t:'Better experience',    d:'Each customer is remembered, so service feels personal.'},
     {t:'More returning',       d:'Timely follow-ups bring regulars back before they drift.'},
-    {t:'Reviews & referrals',  d:'Happy customers are asked at the right moment.'},
+    {t:'More reviews & referrals',  d:'Happy customers are asked at the right moment.'},
     {t:'More growth',          d:'Retention compounds — and feeds the record again.'}
   ];
   var TAU=Math.PI*2, LAP=15;                 /* seconds per full lap */

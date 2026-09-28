@@ -55,8 +55,12 @@
     fio.observe(sec||box);
   }else{ startFrames(); }
   addEventListener('resize',draw);
-  var sx=0, sf=1; box.style.cursor='grab';
+  /* phones / touch: portrait is scroll-driven only, no drag-to-scrub */
+  var NODRAG=matchMedia('(max-width:899px), (pointer:coarse)');
+  if(NODRAG.matches) box.setAttribute('aria-label','Aman Deep Sharma, founder of PYRAXIS');
+  var sx=0, sf=1; if(!NODRAG.matches) box.style.cursor='grab';
   box.addEventListener('pointerdown',function(e){
+    if(NODRAG.matches) return;
     dragging=true; sx=e.clientX; sf=cur;
     try{ box.setPointerCapture(e.pointerId); }catch(_){}
     box.style.cursor='grabbing';
