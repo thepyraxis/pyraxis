@@ -1240,6 +1240,12 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(relayout);
    what this exists to prevent. */
 let perfTier=0,perfBadT=0,perfWarmT=0;
 function perfGuard(dt){
+  /* DISABLED: the downgrade below cut the drawn point count (60%, then 35%)
+     ~1s and ~3s in on any slower GPU, and could resize the buffer. The swarm
+     visibly thinned/blinked out of nowhere = read as the animation
+     auto-reloading. Point count is already reduced up-front for touch/small
+     screens (N above), so no runtime downgrade is needed. */
+  return;
   perfWarmT+=dt;
   if(perfWarmT<0.8||!engine||!engine.points||perfTier>=2)return;
   if(dt>1/40)perfBadT+=dt; else perfBadT=Math.max(0,perfBadT-dt*2);
