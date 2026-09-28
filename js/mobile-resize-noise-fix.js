@@ -1,11 +1,12 @@
-/* MOBILE "AUTO-RELOAD" FIX — on phones the URL bar sliding in/out fires a height-only
-   'resize' on nearly every scroll. Every resize listener on the page rebuilt its
-   canvas / SVG paths, so animations visibly restarted (read as the page reloading).
-   Touch devices now ignore height-only resizes under 220px; real changes (rotation,
-   width change, big height change) still pass through. Desktop is untouched. */
+/* AUTO-RELOAD FIX — the URL bar sliding in/out on phones fires a height-only
+   'resize' on nearly every scroll, and simply resizing a desktop browser window
+   fires the same 'resize' repeatedly mid-drag. Some canvases (see hero-topo-field.js)
+   resize their backing buffer directly on every 'resize', which clears the canvas to
+   black for a frame — with several canvases doing this at once it reads as the whole
+   page reloading. Small height-only changes (<220px) are now ignored everywhere,
+   touch or mouse; a real change (rotation, width change, big height change) still
+   passes through untouched. */
 (function(){
-  var coarse=false;try{coarse=matchMedia('(pointer: coarse)').matches;}catch(e){}
-  if(!coarse)return;
   var lw=innerWidth,lh=innerHeight,add=window.addEventListener;
   function noise(e){
     if(e.__pxNoise===undefined){

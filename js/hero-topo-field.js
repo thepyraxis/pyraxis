@@ -172,9 +172,11 @@ function render(tSec,mx,my){
   gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
 }
 function resize(){
-  var dpr=Math.min(devicePixelRatio||1,2);
-  cv.width=Math.round(innerWidth*dpr);
-  cv.height=Math.round(innerHeight*dpr);
+  var dpr=Math.min(devicePixelRatio||1,1.5);
+  var w=Math.round(innerWidth*dpr), h=Math.round(innerHeight*dpr);
+  if(w===cv.width&&h===cv.height) return; /* same backing size: skip, don't wipe canvas to black for nothing */
+  cv.width=w;
+  cv.height=h;
   gl.viewport(0,0,cv.width,cv.height);
   gl.uniform2f(uRes,cv.width,cv.height);
   if(started) render(topoTime,mouse.x,mouse.y);
