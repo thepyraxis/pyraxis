@@ -264,7 +264,7 @@ setTimeout(()=>{if(!PIXELS_OK)fieldLive=true;},2400);
    low-end mobile GPUs are fill-rate bound, and a fullscreen 20k-point
    field at DPR 2 is what turns scroll into slideshow. Desktop keeps all. */
 const COARSE=window.matchMedia&&matchMedia('(pointer: coarse)').matches;
-const N=COARSE?1600:(innerWidth<720?7000:20000);
+const N=COARSE?1600:(innerWidth<720?6000:12000);
 const isMobile=innerWidth<720;
 /* PHONES/TOUCH: same world, but far fewer px of screen and only 3000 embers —
    each one reads bigger and brighter (additive) than on desktop, and the
@@ -618,7 +618,7 @@ const CAM=[
   [[0,4.5,20.5],[0,0,0]],
   [[0,15.5,20.5],[0,-1.5,0]],
   [[0,12.5,16.5],[0,.5,0]],
-  [[0,1.2,26.5],[0,-1,0]],
+  [[0,1.2,26.5],[-3.4,-1,0]],
 ];
 const WOB=[.02,.5,.1,1.5,.12,.14];
 const SIZ=[1.25,1.07,1.14,.96,1.09,1.14];
@@ -713,8 +713,8 @@ addEventListener('pointercancel',endDrag,{passive:true});
 /* ================= three.js setup ================= */
 try{
   const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:false,powerPreference:'high-performance'});
-  renderer.setClearColor(0x0a0a0d,0);  /* transparent: the topo field behind stays visible */
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1,COARSE?1:2));
+  renderer.setClearColor(0x0b0813,0);  /* transparent: the topo field behind stays visible */
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,COARSE?1:1.5));
   renderer.setSize(innerWidth,innerHeight,false);
 
   const scene=new THREE.Scene();
@@ -1241,9 +1241,9 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(relayout);
 let perfTier=0,perfBadT=0,perfWarmT=0;
 function perfGuard(dt){
   perfWarmT+=dt;
-  if(perfWarmT<2.5||!engine||!engine.points||perfTier>=2)return;
-  if(dt>1/24)perfBadT+=dt; else perfBadT=Math.max(0,perfBadT-dt*2);
-  if(perfBadT>1.8){
+  if(perfWarmT<1.2||!engine||!engine.points||perfTier>=2)return;
+  if(dt>1/40)perfBadT+=dt; else perfBadT=Math.max(0,perfBadT-dt*2);
+  if(perfBadT>.8){
     perfTier++;perfBadT=0;
     const range=perfTier===1?Math.floor(N*.6):Math.floor(N*.35);
     engine.points.geometry.setDrawRange(0,range);

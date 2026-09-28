@@ -35,10 +35,24 @@
      them need their own corner. */
   var COS30=Math.cos(Math.PI/6), CR=26; /* corner fillet radius, px */
   function rectHalf(sx,sy){ return {w:sx*COS30, h:sy}; }
+  /* point on the ACTUAL rounded-rect boundary (same fillet as hexPathAt) for a
+     ray from centre at `angle` — not the sharp-corner rect the old version
+     used, which made the comet/tail/ticks cut straight through the fillet
+     instead of gliding along it. */
   function hexAt(angle,sx,sy){
-    var h=rectHalf(sx,sy), dx=Math.cos(angle), dy=Math.sin(angle);
+    var h=rectHalf(sx,sy), r=Math.min(CR,h.w*.3,h.h*.3);
+    var dx=Math.cos(angle), dy=Math.sin(angle);
     var t=Math.min(dx?Math.abs(h.w/dx):Infinity, dy?Math.abs(h.h/dy):Infinity);
-    return {x:cx+dx*t, y:cy+dy*t};
+    var px=t*dx, py=t*dy, cx0=h.w-r, cy0=h.h-r;
+    if(Math.abs(px)>cx0 && Math.abs(py)>cy0){
+      var ox=(px<0?-1:1)*cx0, oy=(py<0?-1:1)*cy0;
+      var b=-(dx*ox+dy*oy), c=(ox*ox+oy*oy)-r*r, disc=b*b-c;
+      if(disc>=0){
+        var s=-b+Math.sqrt(disc); /* far intersection — the actual fillet arc, not the near/inner one */
+        if(s>0){ px=dx*s; py=dy*s; }
+      }
+    }
+    return {x:cx+px, y:cy+py};
   }
   function hexPathAt(sx,sy){
     var h=rectHalf(sx,sy), x0=cx-h.w,y0=cy-h.h,x1=cx+h.w,y1=cy+h.h, r=Math.min(CR,h.w*.3,h.h*.3);
