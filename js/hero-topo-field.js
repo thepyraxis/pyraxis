@@ -38,7 +38,17 @@ cv.addEventListener('webglcontextlost',function(e){
 },false);
 cv.addEventListener('webglcontextrestored',function(){
   glLost=false;
-  try{ initTopoProgram(); resize(); if(started)render(topoTime,mouse.x,mouse.y); }
+  try{
+    /* fresh context: every uniform is back to 0. resize() alone skips (same
+       backing size), leaving u_resolution=0 -> NaN -> black/garbled field. */
+    if(initTopoProgram()){
+      gl.viewport(0,0,cv.width,cv.height);
+      gl.uniform2f(uRes,cv.width,cv.height);
+      if(uRip) gl.uniform2fv(uRip,ripXY);
+      if(uRipT) gl.uniform1fv(uRipT,ripT);
+      if(started) render(topoTime,mouse.x,mouse.y);
+    }
+  }
   catch(e){}
   if(window.PYRAXIS_DEBUG)window.PYRAXIS_DEBUG.log('topo: context restored');
 },false);
@@ -171,7 +181,12 @@ function render(tSec,mx,my){
   gl.uniform2f(uMou,mx,my);
   gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
 }
+var lastIW=-1,lastIH=-1;
 function resize(){
+  /* height-only wobble (mobile URL bar, < 150px): keep the buffer. Resizing
+     it wipes the canvas to black for a frame. */
+  if(lastIW>=0&&innerWidth===lastIW&&Math.abs(innerHeight-lastIH)<150) return;
+  lastIW=innerWidth; lastIH=innerHeight;
   var dpr=Math.min(devicePixelRatio||1,1.5);
   var w=Math.round(innerWidth*dpr), h=Math.round(innerHeight*dpr);
   if(w===cv.width&&h===cv.height) return; /* same backing size: skip, don't wipe canvas to black for nothing */

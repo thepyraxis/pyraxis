@@ -1247,9 +1247,20 @@ function perfGuard(dt){
     perfTier++;perfBadT=0;
     const range=perfTier===1?Math.floor(N*.6):Math.floor(N*.35);
     engine.points.geometry.setDrawRange(0,range);
-    engine.renderer.setPixelRatio(perfTier===1?Math.min(devicePixelRatio||1,1.5):1);
-    engine.renderer.setSize(innerWidth,innerHeight,false);
-    engine.updateScale();
+    /* NEVER raise the pixel ratio while downgrading. Touch devices boot at
+       PR 1; the old tier-1 line forced min(dpr,1.5) = 1.5 on them, i.e.
+       2.25x the pixels on a device already running slow, and every
+       setPixelRatio/setSize resizes the drawing buffer, which wipes the
+       canvas (the hero visibly blinked ~10s in, then again at tier 2 —
+       read as the page reloading). Only touch the buffer when the ratio
+       really changes. */
+    const curPR=engine.renderer.getPixelRatio();
+    const want=perfTier===1?Math.min(curPR,1.25):1;
+    if(Math.abs(want-curPR)>.01){
+      engine.renderer.setPixelRatio(want);
+      engine.renderer.setSize(innerWidth,innerHeight,false);
+      engine.updateScale();
+    }
   }
 }
 
