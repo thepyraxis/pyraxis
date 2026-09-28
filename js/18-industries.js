@@ -3,12 +3,12 @@
   var IND=[
     ['Restaurants','i-fork','QR ordering, reservations and loyalty — without hiring another waiter.',['SCAN QR','ORDER','RECORDED','FEEDBACK','LOYALTY OFFER'],'A guest scans the table code, orders dessert, pays — and gets a personal reason to come back.'],
     ['Salons','i-cut','Booking, reminders and rebooking that keep the chair full.',['INSTAGRAM','WHATSAPP','BOOKED','REMINDER','REBOOKED'],'Six weeks after a haircut, the reminder arrives — not a blast, a nudge.'],
-    ['Clinics','i-tooth','Enquiries answered at midnight; the calendar never sits empty.',['ENQUIRY 11:31 PM','AI ANSWERS','APPOINTMENT','REMINDER'],'Clinical questions go to humans. Scheduling does not need one.'],
+    ['Clinics','i-tooth','Enquiries answered at midnight; the calendar never sits empty.',['ENQUIRY 23:31','AI ANSWERS','APPOINTMENT','REMINDER'],'Clinical questions go to humans. Scheduling does not need one.'],
     ['Gyms','i-dumbbell','Trials converted, memberships defended.',['TRIAL LEAD','QUALIFIED','TRIAL BOOKED','MEMBER','WIN-BACK'],'Attendance drops — the system notices before the cancellation does.'],
     ['Hotels','i-bed','From first enquiry to post-stay review — handled.',['ENQUIRY','AVAILABILITY','BOOKED','PRE-ARRIVAL','POST-STAY REVIEW'],'Guests arrive to "your room is ready" — and leave a review the same day.'],
     ['Car service','i-car','Every service quietly books its successor.',['WHATSAPP','SERVICE + VEHICLE','BOOKED','PAYMENT','NEXT SERVICE'],'The car forgets its oil change. PYRAXIS does not.'],
     ['Home services','i-wrench','"What do you need?" — then booked, dispatched, remembered.',['LEAD','AI QUALIFIES','TECHNICIAN','DONE','NEXT REMINDER'],'Every AC service schedules next season before the van leaves.'],
-    ['Consultants','i-user','Qualified calls land on your calendar while you work.',['LEAD','QUALIFIED','CALL BOOKED','FOLLOW-UP','REFERRAL'],'Only serious leads reach your calendar. The rest are nurtured until they are.'],
+    ['Consultants','i-user','Qualified calls land on your calendar while you work.',['LEAD','QUALIFIED','CALL BOOKED','FOLLOW-UP','REFERRAL'],'Only serious leads reach your calendar. Others get follow-up until they are ready.'],
     ['E-commerce','i-bag','The second purchase, engineered instead of hoped for.',['VISIT','CAPTURED','FIRST ORDER','DAY-10 FLOW','REPEAT PURCHASE'],'The second purchase is not luck. It is a message, ten days later.']
   ];
   var tabs=$('#indTabs'), panel=$('#indPanel'); if(!tabs||!panel) return;

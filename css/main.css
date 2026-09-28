@@ -87,11 +87,14 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
   padding:17px 26px;border-radius:2px;border:1px solid transparent;transition:background .25s,border-color .25s,color .25s,transform .25s}
 .btn svg{width:15px;height:15px;transition:transform .25s}
 .btn:hover svg{transform:translateX(3px)}
-.btn-solid{background:var(--ink);color:#0b0813}
-.btn-solid:hover{background:var(--pu2);color:#0b0813;transform:translateY(-1px)}
+.btn-solid{background:var(--pu2);color:#0b0813;box-shadow:0 0 12px rgba(167,139,255,.14);
+  transition:background .25s,box-shadow .3s,transform .25s}
+.btn-solid:hover{background:#b9a3ff;color:#0b0813;transform:translateY(-1px);box-shadow:0 0 18px rgba(167,139,255,.3)}
 .btn-ghost{border-color:var(--line2);color:var(--ink)}
 .btn-ghost:hover{border-color:var(--ink);background:transparent}
 .btn-sm{padding:12px 18px;letter-spacing:.1em}
+.nav-go{padding:14px 22px;font-size:11.5px;letter-spacing:.14em;background:rgba(167,139,255,.10);color:#d9d0ff;border-color:rgba(167,139,255,.38);box-shadow:none}
+.nav-go:hover{background:rgba(167,139,255,.18);color:#fff;border-color:rgba(167,139,255,.65);box-shadow:none;transform:none}  /* desktop: blends into dark nav; mobile rules below still override */
 .btn-lg{padding:20px 36px;font-size:13px}
 .ic{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .sr-sprite{position:absolute;width:0;height:0;overflow:hidden}
@@ -285,27 +288,6 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .gap-aside{display:flex;flex-direction:column;gap:26px;max-width:640px}
 @media(min-width:960px){.gap-grid{grid-template-columns:minmax(0,480px) 1fr}}
 @media(min-width:960px){.gap-aside{position:sticky;top:104px;align-self:start}}
-
-/* ============ 03b growth system (ported from Next.js GrowthSystem) ============ */
-.gsys-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:920px;margin:0 auto}
-.gnode{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line2);border-radius:2px;
-  padding:11px 17px;font:500 10px var(--mono);letter-spacing:.16em;color:var(--mut);text-transform:uppercase;
-  background:rgba(10,10,13,.9);transition:border-color .3s,color .3s,box-shadow .3s}
-.gnode .ic{width:13px;height:13px;color:var(--mut2);transition:color .3s}
-.gnode:hover{color:var(--ink)}
-.gnode.on{border-color:var(--pu);color:var(--ink);box-shadow:0 0 0 1px rgba(124,92,255,.35)}
-.gnode.on .ic{color:var(--pu2)}
-.gnode:focus-visible{outline:2px solid var(--pu2);outline-offset:3px}
-.gsys-panel{max-width:360px;margin:34px auto 0;text-align:center;min-height:176px}
-.gsys-panel .bar{width:1px;height:12px;background:rgba(124,92,255,.4);margin:0 auto 10px;opacity:0;transition:opacity .3s}
-.gsys-panel.live .bar{opacity:1}
-.gsys-panel h3{font:500 1.5rem var(--serif);color:var(--ink)}
-.gsys-panel .ben{font-size:.95rem;color:var(--mut);margin-top:8px}
-.gsys-panel .stat{font:500 1.9rem var(--serif);color:var(--pu2);margin-top:14px}
-.gsys-panel .statl{font:500 9px var(--mono);letter-spacing:.22em;color:var(--mut2);text-transform:uppercase;margin-top:4px}
-.gsys-swap{transition:opacity .18s ease,transform .18s ease}
-.gsys-swap.out{opacity:0;transform:translateY(8px)}
-@media (prefers-reduced-motion:reduce){.gsys-swap{transition:none}}
 
 /* ============ 04 builds: the system bus ============ */
 .bus{position:relative;max-width:760px;margin:0 auto;padding:8px 0 8px 58px}
@@ -662,7 +644,7 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .why-item p{color:var(--mut);margin-top:6px;max-width:54ch}
 @media(max-width:560px){.why-item{grid-template-columns:64px 1fr;gap:16px;padding:26px 0}.why-num{font-size:2rem}.why-item h3{font-size:1.2rem}}
 
-/* ============ 08b purpose (ported from Next.js founder-story) ============ */
+/* ============ 08b founder ============ */
 .purpose-grid{display:grid;gap:clamp(36px,5vw,64px);align-items:center}
 @media(min-width:980px){.purpose-grid{grid-template-columns:1fr 340px}}
 .purpose-statement{font:500 clamp(1.4rem,2.6vw,1.75rem)/1.4 var(--serif);color:var(--ink);margin:26px 0 0;max-width:22ch;text-wrap:balance}
@@ -762,18 +744,6 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
   .proc-card{padding:0;border:0;background:none}
   .proc-card:hover{transform:none;box-shadow:none}
 }
-
-/* ============ 13 proof ============ */
-.pf{max-width:640px;margin:0 auto;border:1px dashed rgba(255,255,255,.22);border-radius:12px;padding:32px 30px 26px;
-  position:relative;background:rgba(13,13,18,.88)}
-.pf-tag{position:absolute;top:-9px;left:24px;background:var(--bg);padding:0 12px;
-  font:500 9px var(--mono);letter-spacing:.26em;color:var(--pu2);text-transform:uppercase}
-.pf-rows>div{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
-.pf-rows>div:last-child{border-bottom:0}
-.pf-rows b{font:500 9px var(--mono);letter-spacing:.2em;color:var(--mut2);text-transform:uppercase}
-.pf-rows span{font-size:.95rem;color:var(--soft)}
-.pf-cta{margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
-.pf-cta p{font:italic 400 .95rem var(--serif);color:var(--mut)}
 
 /* ============ 14 compounding — the orbit ============
    One record at the centre; six stations on a slow orbit. A comet of light
@@ -932,11 +902,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
 .foot-links a{font:500 9.5px var(--mono);letter-spacing:.2em;color:var(--mut2);text-transform:uppercase;text-shadow:0 1px 3px rgba(0,0,0,.9),0 1px 10px rgba(0,0,0,.7)}
 .foot-links a:hover{color:var(--ink)}
 .foot-meta{font:400 9.5px var(--mono);letter-spacing:.14em;color:var(--mut2);text-shadow:0 1px 3px rgba(0,0,0,.9),0 1px 10px rgba(0,0,0,.7)}
-.foot-biz{font:400 12px/1.7 var(--sans);font-style:normal;color:var(--mut2);-webkit-user-select:none;user-select:none;text-shadow:0 1px 3px rgba(0,0,0,.9),0 1px 10px rgba(0,0,0,.7)}
-.foot-biz strong{color:var(--soft);font-weight:500}
-.foot-biz a{color:var(--mut2);text-decoration:underline;text-underline-offset:2px;-webkit-user-select:text;user-select:text;cursor:pointer}
-.foot-biz a:hover{color:var(--ink)}
-@media(min-width:860px){.foot-in{grid-template-columns:1fr auto;align-items:center}.foot-meta{grid-column:1/-1}.foot-biz{grid-column:1/-1}}
+@media(min-width:860px){.foot-in{grid-template-columns:1fr auto;align-items:center}.foot-meta{grid-column:1/-1}}
 
 /* ============ modal + toast ============ */
 .modal{position:fixed;inset:0;z-index:2000;display:grid;place-items:center;padding:22px}
@@ -1106,3 +1072,16 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
 .mq-track{will-change:transform}
 .deploy-card{contain:layout paint}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001s!important;animation-iteration-count:1!important}}
+
+/* ============ MOBILE / TOUCH + SINGLE CTA ============
+   Phones & touch: no WebGL ember field (index.html loader skips it) -> #gl hidden,
+   static PYRAXIS mark in the hero, founder portrait scroll-only (no drag). */
+.hero-mark{display:none}
+.brand img{max-width:100%;height:auto;min-width:0}
+@media(max-width:599px){.nav-go{display:none}}  /* phones: CTA lives in the hero + menu, nothing overflows the bar */
+@media(max-width:899px),(pointer:coarse){
+  #gl{display:none}
+  .hero-mark{display:block;width:clamp(72px,22vw,104px);margin:0 0 -14px;filter:drop-shadow(0 0 28px rgba(117,11,240,.45))}
+  .hero-mark svg{display:block;width:100%;height:auto}
+  .founder-canvas{cursor:default;touch-action:auto}
+}
