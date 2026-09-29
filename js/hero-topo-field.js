@@ -9,6 +9,11 @@
 var hero=document.getElementById('hero'), cv=document.getElementById('topo');
 if(!hero||!cv) return;
 var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* mobile: fixed full-page background — runs whole page, never hero-gated or scroll-faded */
+var MOBILE=!!window.__topoMobile||(matchMedia('(pointer: coarse)').matches)||innerWidth<900;
+/* low-end phones: fewer pixels, fewer frames. The contour drift is ~0.02 units/sec, so 15-20fps
+   is visually identical to 60fps while costing a third of the GPU work. */
+var LOW=!!((navigator.deviceMemory&&navigator.deviceMemory<=3)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4));
 var started=false, raf=0, heroOn=false;
 window.topoStart=function(){
   if(started) return; started=true;
@@ -19,7 +24,7 @@ window.topoStart=function(){
 };
 
 var gl=null;
-try{ gl=cv.getContext('webgl',{alpha:false,antialias:false,depth:false}); }
+try{ gl=cv.getContext('webgl',{alpha:false,antialias:false,depth:false,stencil:false,powerPreference:MOBILE?'low-power':'default'}); }
 catch(e){ gl=null; }
 if(!gl) return;
 
@@ -55,7 +60,7 @@ cv.addEventListener('webglcontextrestored',function(){
 
 var RIPS=5;
 var VS='attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0.,1.);}';
-var FS=[
+var FS=(MOBILE?'#define PXM 1\n':'')+[
 '#ifdef GL_FRAGMENT_PRECISION_HIGH',
 'precision highp float;',
 '#else',
@@ -83,6 +88,9 @@ var FS=[
 'void main(){',
 ' vec2 uv=gl_FragCoord.xy/u_resolution;',
 ' vec2 st=uv;st.x*=u_resolution.x/u_resolution.y;',
+'#ifdef PXM',
+' float inf=0.0; float ring=0.0; vec2 lens=st;',
+'#else',
 ' vec2 m=u_mouse;m.x*=u_resolution.x/u_resolution.y;',
 ' vec2 toM=st-m;',
 ' float inf=exp(-dot(toM,toM)*5.0);',
@@ -97,6 +105,7 @@ var FS=[
 '  ring+=exp(-w*w)*amp;',
 ' }',
 ' ring=min(ring,1.5);',
+'#endif',
 ' vec2 np=lens*1.4+vec2(u_time*0.015,u_time*0.025);',
 ' float n=snoise(np)*0.5+0.5+ring*0.85;',
 ' float tri=abs(fract(n*9.0)-0.5)*2.0;',
@@ -187,7 +196,9 @@ function resize(){
      it wipes the canvas to black for a frame. */
   if(lastIW>=0&&innerWidth===lastIW&&Math.abs(innerHeight-lastIH)<150) return;
   lastIW=innerWidth; lastIH=innerHeight;
-  var dpr=Math.min(devicePixelRatio||1,1.5);
+  /* phones: render the (soft, low-frequency) field at a fraction of CSS px and let the compositor
+     upscale it — ~3x fewer fragments, no visible loss at .28 opacity */
+  var dpr=MOBILE?(LOW?0.6:0.8):Math.min(devicePixelRatio||1,1.5);
   var w=Math.round(innerWidth*dpr), h=Math.round(innerHeight*dpr);
   if(w===cv.width&&h===cv.height) return; /* same backing size: skip, don't wipe canvas to black for nothing */
   cv.width=w;
@@ -243,13 +254,21 @@ if(glCanvas&&'MutationObserver' in window){
   }).observe(glCanvas,{attributes:true,attributeFilter:['class']});
 }
 
-var last=0;
+var last=0, lastDraw=0, lastScroll=-1e9, FRAME_MS=LOW?66:50;
+if(MOBILE) addEventListener('scroll',function(){ lastScroll=performance.now(); },{passive:true});
 function frame(t){
   raf=requestAnimationFrame(frame);
   if(!heroOn) return;
   if(glLost) return;  /* GPU context lost: wait for 'webglcontextrestored' */
+  /* phones: ~15-20fps, and hold the frame while the finger is scrolling so the GPU
+     serves the scroll compositor instead (drift is so slow the hold is invisible) */
+  if(MOBILE){
+    if(t-lastDraw<FRAME_MS) return;
+    if(performance.now()-lastScroll<140) return;
+    lastDraw=t;
+  }
   /* fully faded out by scroll: hold the last frame, skip GL work */
-  if(started&&(window.__topoVis||0)<=0.005) return;
+  if(!MOBILE&&started&&(window.__topoVis||0)<=0.005) return;
   if(lastT<0)lastT=t;
   var dt=(t-lastT)*0.001;lastT=t;
   if(dt<0)dt=0; if(dt>0.1)dt=0.1;  /* background tab / pause: resume, don't leap */
@@ -261,7 +280,8 @@ function frame(t){
 }
 function play(){ lastT=-1; if(!raf) raf=requestAnimationFrame(frame); }
 function pause(){ cancelAnimationFrame(raf); raf=0; }
-if('IntersectionObserver' in window){
+if(MOBILE){ heroOn=true; }
+else if('IntersectionObserver' in window){
   new IntersectionObserver(function(es){
     heroOn=es[0].isIntersecting;
     if(heroOn&&started) play(); else pause();

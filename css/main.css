@@ -51,6 +51,7 @@ body[data-cstate="text"] #cDot .d{width:2px;height:24px;margin:-12px 0 0 -1px;bo
 #gl.on{opacity:var(--gl-o,.8)}  /* JS sets --gl-o: lower on phones */
 #topo{position:fixed;inset:0;width:100%;height:100%;opacity:0;transition:opacity 1.4s ease;pointer-events:none;z-index:0}
 #topo.live{opacity:.28}
+@media(max-width:899px),(pointer:coarse){#topo.live{opacity:.5}}  /* phones: no ember field, so the contour field carries the background — desktop-level presence */
 #hero>.wrap{position:relative;z-index:1}
 .vig{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 44%,transparent 55%,rgba(8,6,4,.55) 100%)}
 #main,footer{position:relative;z-index:2}
@@ -1077,6 +1078,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
 /* ============ MOBILE / TOUCH + SINGLE CTA ============
    Phones & touch: no WebGL ember field (index.html loader skips it) -> #gl hidden,
    static PYRAXIS mark in the hero, founder portrait scroll-only (no drag). */
+.hero-mark{display:none}
 .brand img{max-width:100%;height:auto;min-width:0}
 @media(max-width:599px){.nav-go{display:none}}  /* phones: CTA lives in the hero + menu, nothing overflows the bar */
 @media(max-width:899px),(pointer:coarse){
@@ -1176,7 +1178,20 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
 /* mobile hero: copy sits clean above the ember field */
 @media(max-width:899px),(pointer:coarse){
   .hero-grid{position:relative}
-  .hero-grid>div{position:relative;z-index:1}
+  .hero-grid>div:not(.hero-mark){position:relative;z-index:1}
+  /* PYRAXIS mark = page backdrop, same spot the desktop ember mark sits: centred on the viewport,
+     ~58% of screen height / 70% of screen width max, behind the copy, above the contour field.
+     Lives directly under #hero (not inside .wrap) so the copy (.wrap, z-index 1) paints over it. */
+  #hero{--mw:min(72vw,56vh)}
+  @supports(height:1svh){#hero{--mw:min(72vw,56svh)}}
+  .hero-mark{display:block;position:absolute;z-index:0;width:var(--mw);height:auto;
+    left:calc(50% - .534*var(--mw));top:calc(50vh - .508*var(--mw));
+    margin:0;transform:none;pointer-events:none;opacity:.13;
+    -webkit-mask-image:none;mask-image:none;contain:layout paint}
+  @supports(height:1svh){.hero-mark{top:calc(50svh - .508*var(--mw))}}
+  .hero-mark svg{display:block;width:100%;height:auto}
+  /* no ember/globe canvas on phones */
+  #gl{display:none!important}
 }
 
 /* ---- mobile-first flow explainer: one customer, five touchpoints, one record ---- */
