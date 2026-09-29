@@ -198,6 +198,9 @@ function resize(){
 }
 addEventListener('resize',resize);
 
+/* PHONES/TOUCH: non-interactive — no lens follow, no click waves. */
+var NO_PTR=(window.matchMedia&&matchMedia('(pointer: coarse)').matches)||innerWidth<900;
+if(!NO_PTR){
 addEventListener('pointermove',function(e){
   var p=nrm(e); target.x=p.x; target.y=p.y;
   lastMoveAt=performance.now();
@@ -224,6 +227,7 @@ document.documentElement.addEventListener('mouseleave',function(){
 addEventListener('pointerup',function(e){
   if(e.pointerType!=='mouse'){ target.x=HOME.x; target.y=HOME.y; }
 },{passive:true});
+}
 
 if(uRip) gl.uniform2fv(uRip,ripXY);
 if(uRipT) gl.uniform1fv(uRipT,ripT);

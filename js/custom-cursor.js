@@ -5,7 +5,7 @@
 (function(){
 'use strict';
 var fine=window.matchMedia&&matchMedia('(pointer: fine)').matches;
-if(!fine) return;
+if(!fine||innerWidth<900) return; /* no custom cursor on phones / narrow (mobile emulation) */
 var cDot=document.getElementById('cDot'), cRing=document.getElementById('cRing'), rLabel=document.getElementById('rLabel');
 if(!cDot||!cRing||!rLabel) return;
 document.documentElement.classList.add('finecur');
