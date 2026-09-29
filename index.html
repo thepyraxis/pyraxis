@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"></noscript>
-<link rel="preload" as="image" href="public/img/earth-2048.jpg" fetchpriority="low">
+<link rel="preload" as="image" media="(min-width:900px)" href="public/img/earth-2048.jpg" fetchpriority="low">
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body id="hero-top">
@@ -122,6 +122,7 @@
   <!-- ============ 01 HERO ============ -->
   <section class="sec" id="hero" aria-label="PYRAXIS — customers, kept">
     <div class="hero-pool" aria-hidden="true"></div>
+    <div class="hero-mark" aria-hidden="true"><svg viewBox="0 0 2500 2500" focusable="false"><use href="#i-mark"/></svg></div>
     <div class="wrap">
       <div class="hero-grid">
         <div>
@@ -958,6 +959,13 @@
    (fewer embers, lower DPR, dimmer). Falls back to the topo field + static mark only when WebGL is
    missing or the device is very low-end. Three.js + engine load after the deferred scripts. */
 document.addEventListener('DOMContentLoaded',function(){
+  /* PHONES/TOUCH: no ember/globe engine, no scroll-driven morph. The contour (topo) field
+     becomes the fixed, always-on site background; the PYRAXIS mark is a static hero backdrop. */
+  if((window.matchMedia&&matchMedia('(pointer: coarse)').matches)||innerWidth<900){
+    window.__topoMobile=true;
+    if(window.topoStart) window.topoStart();
+    return;
+  }
   var ok=false;
   try{ var c=document.createElement('canvas'); ok=!!(window.WebGLRenderingContext&&(c.getContext('webgl')||c.getContext('experimental-webgl'))); }catch(e){}
   var weak=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
