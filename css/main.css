@@ -1230,4 +1230,4 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
 @media(prefers-reduced-motion:reduce){.fm-r{animation:none;opacity:1;transform:none}.fm-list::after{animation:none;transform:scaleY(1)}.fm-live i{animation:none}}
 
 /* phones: live ember field draws the PYRAXIS mark, so the static backdrop mark steps aside */
-.has-gl 
+.has-gl .hero-mark{display:none}
