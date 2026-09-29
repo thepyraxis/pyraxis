@@ -665,6 +665,9 @@ function endDrag(){
     document.body.classList.remove('dragging');
   }
 }
+/* PHONES/TOUCH: field is non-interactive — no pointer swell, ripple, or globe drag. */
+const NO_PTR=(window.matchMedia&&matchMedia('(pointer: coarse)').matches)||innerWidth<900;
+if(!NO_PTR){
 addEventListener('pointermove',e=>{
   lastActive=performance.now();
   if(e.pointerType!=='touch')ptrIn=true;
@@ -709,6 +712,7 @@ document.documentElement.addEventListener('pointerleave',()=>{ptrIn=false;},{pas
 addEventListener('blur',()=>{ptrIn=false;});
 addEventListener('pointerup',endDrag,{passive:true});
 addEventListener('pointercancel',endDrag,{passive:true});
+}
 
 /* ================= three.js setup ================= */
 try{

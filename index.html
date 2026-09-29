@@ -124,14 +124,13 @@
     <div class="hero-pool" aria-hidden="true"></div>
     <div class="wrap">
       <div class="hero-grid">
-        <div class="hero-mark" aria-hidden="true"><svg viewBox="0 0 2500 2500" focusable="false"><use href="#i-mark"/></svg></div>
         <div>
           <p class="kicker" data-n="01">Pyraxis — for local businesses</p>
           <h1>Every customer,<br><em>remembered.</em></h1>
           <p class="hero-promise">One connected system for local businesses. We replace scattered tools with one customer record that captures enquiries, books appointments and brings customers back.</p>
           <p class="lede">For restaurants, clinics, salons and other local businesses. Enquiries answered quickly, bookings without phone tag, follow-ups without spreadsheets.</p>
           <div class="hero-cta">
-            <a class="btn btn-solid" href="https://wa.me/919837104413" target="_blank" rel="noopener noreferrer"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>WhatsApp us</a>
+            <a class="btn btn-soft" href="https://wa.me/919837104413" target="_blank" rel="noopener noreferrer"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>WhatsApp us</a>
             <a class="btn btn-ghost" href="#how">See it run</a>
           </div>
         </div>
@@ -285,6 +284,21 @@
         <span class="jf key"><svg class="ic"><use href="#i-share"/></svg>REVIEW / REFERRAL ↺</span>
       </div>
 
+      <div class="flow-m" data-reveal>
+        <p class="fm-lead">Different doors in. <em>One customer record.</em></p>
+        <div class="fm-card" role="img" aria-label="One customer, five touchpoints, all saved on a single record">
+          <div class="fm-hd"><span class="fm-av">P</span><span class="fm-who"><b>Priya S.</b><small>Customer record</small></span><span class="fm-live"><i></i>Live</span></div>
+          <ol class="fm-list">
+          <li class="fm-r" style="--n:1"><span class="fm-ic"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span><span class="fm-tx"><b>Finds you on Google</b><small>Searches “dinner near me”</small></span><span class="fm-src">Google</span></li>
+          <li class="fm-r" style="--n:2"><span class="fm-ic"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg></span><span class="fm-tx"><b>Asks a question</b><small>Is a table free Friday?</small></span><span class="fm-src">WhatsApp</span></li>
+          <li class="fm-r" style="--n:3"><span class="fm-ic"><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg></span><span class="fm-tx"><b>Books a table</b><small>Friday · 8:00 pm · two guests</small></span><span class="fm-src">Booking</span></li>
+          <li class="fm-r" style="--n:4"><span class="fm-ic"><svg class="ic" aria-hidden="true"><use href="#i-qr"/></svg></span><span class="fm-tx"><b>Scans the QR at the table</b><small>Views menu, leaves a review</small></span><span class="fm-src">QR code</span></li>
+          <li class="fm-r" style="--n:5"><span class="fm-ic"><svg class="ic" aria-hidden="true"><use href="#i-share"/></svg></span><span class="fm-tx"><b>Brings a friend</b><small>Referred and tracked</small></span><span class="fm-src">Referral</span></li>
+          </ol>
+          <div class="fm-ft"><b>5</b> touchpoints <span>→</span> <b>1</b> record</div>
+        </div>
+        <p class="fm-note">Every enquiry, booking and visit is attached to the same person, so you always know who they are and where they came from.</p>
+      </div>
       <p class="cap how-sub" data-reveal>A · Entry points</p>
       <div class="flow" id="flow" aria-hidden="true">
         <svg class="flow-svg" id="flowSvg"></svg>
@@ -940,13 +954,15 @@
      rotate, no document.write fallback. If the file is ever missing, the
      WebGL sections below degrade gracefully via their own guards. -->
 <script>
-/* Phones / touch: no WebGL ember field (mark, galaxy, globe). Static mark in hero instead.
-   Three.js + ember engine are fetched only on desktop, after the deferred scripts have run. */
+/* Ember field (WebGL) now runs on phones too — the engine already scales itself down for touch
+   (fewer embers, lower DPR, dimmer). Falls back to the topo field + static mark only when WebGL is
+   missing or the device is very low-end. Three.js + engine load after the deferred scripts. */
 document.addEventListener('DOMContentLoaded',function(){
-  if(matchMedia('(max-width:899px), (pointer:coarse)').matches){
-    if(window.topoStart) window.topoStart();
-    return;
-  }
+  var ok=false;
+  try{ var c=document.createElement('canvas'); ok=!!(window.WebGLRenderingContext&&(c.getContext('webgl')||c.getContext('experimental-webgl'))); }catch(e){}
+  var weak=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
+  if(!ok||weak){ if(window.topoStart) window.topoStart(); return; }
+  document.documentElement.classList.add('has-gl');
   ['public/vendor/three-r159.min.js','js/ember-field-engine.js'].forEach(function(src){
     var s=document.createElement('script'); s.src=src; s.async=false; document.body.appendChild(s);
   });

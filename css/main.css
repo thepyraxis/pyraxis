@@ -44,7 +44,7 @@ body[data-cstate="view"] .r-label{opacity:1;color:var(--pu2);font-size:7px;lette
 body[data-cstate="view"] #cDot{opacity:0}
 body[data-cstate="text"] #cRing .r{width:0;height:0;margin:0;border-color:transparent}
 body[data-cstate="text"] #cDot .d{width:2px;height:24px;margin:-12px 0 0 -1px;border-radius:2px}
-@media (hover:none),(pointer:coarse){#cDot,#cRing{display:none}}
+@media (hover:none),(pointer:coarse),(max-width:899px){#cDot,#cRing{display:none!important}}
 
 /* ============ WEBGL EMBER FIELD — quiet, warm, behind content ============ */
 #gl{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:0;transition:opacity .8s ease .1s}
@@ -93,8 +93,9 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .btn-ghost{border-color:var(--line2);color:var(--ink)}
 .btn-ghost:hover{border-color:var(--ink);background:transparent}
 .btn-sm{padding:12px 18px;letter-spacing:.1em}
-.nav-go{padding:14px 22px;font-size:11.5px;letter-spacing:.14em;background:rgba(167,139,255,.10);color:#d9d0ff;border-color:rgba(167,139,255,.38);box-shadow:none}
-.nav-go:hover{background:rgba(167,139,255,.18);color:#fff;border-color:rgba(167,139,255,.65);box-shadow:none;transform:none}  /* desktop: blends into dark nav; mobile rules below still override */
+.nav-go{padding:14px 22px;font-size:11.5px;letter-spacing:.14em}
+.nav-go,.btn-soft{background:rgba(167,139,255,.10);color:#d9d0ff;border-color:rgba(167,139,255,.38);box-shadow:none}
+.nav-go:hover,.btn-soft:hover{background:rgba(167,139,255,.18);color:#fff;border-color:rgba(167,139,255,.65);box-shadow:none;transform:none}  /* quiet, blends into dark bg; mobile rules below still override */
 .btn-lg{padding:20px 36px;font-size:13px}
 .ic{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .sr-sprite{position:absolute;width:0;height:0;overflow:hidden}
@@ -1076,12 +1077,142 @@ footer{border-top:1px solid var(--line);padding:56px 0 44px}
 /* ============ MOBILE / TOUCH + SINGLE CTA ============
    Phones & touch: no WebGL ember field (index.html loader skips it) -> #gl hidden,
    static PYRAXIS mark in the hero, founder portrait scroll-only (no drag). */
-.hero-mark{display:none}
 .brand img{max-width:100%;height:auto;min-width:0}
 @media(max-width:599px){.nav-go{display:none}}  /* phones: CTA lives in the hero + menu, nothing overflows the bar */
 @media(max-width:899px),(pointer:coarse){
-  #gl{display:none}
-  .hero-mark{display:block;width:clamp(72px,22vw,104px);margin:0 0 -14px;filter:drop-shadow(0 0 28px rgba(117,11,240,.45))}
-  .hero-mark svg{display:block;width:100%;height:auto}
   .founder-canvas{cursor:default;touch-action:auto}
 }
+
+/* ==========================================================================
+   MOBILE PREMIUM LAYER (<=640px) — cinematic dark, quiet luxury.
+   Off-white primary CTA, hairline surfaces, serif headlines, one purple accent,
+   generous vertical rhythm. Desktop untouched.
+   ========================================================================== */
+@media(max-width:640px){
+  :root{--m-pad:24px;--m-card:rgba(255,255,255,.028);--m-hair:rgba(255,255,255,.09);--m-paper:#f2efe9}
+  .wrap{padding-inline:var(--m-pad)}
+  .sec{padding:72px 0}
+  .sec-head{margin-bottom:34px}
+
+  /* type: big calm serif, small quiet body */
+  .h2{font-size:clamp(2.15rem,9.6vw,2.6rem);line-height:1.04;letter-spacing:-.018em;margin:14px 0 12px;max-width:13ch}
+  .lede{font-size:.98rem;line-height:1.6;color:var(--mut);max-width:34ch}
+  .nav{border-bottom:1px solid var(--m-hair)}
+
+  /* hero */
+  #hero{padding-top:104px;padding-bottom:56px}
+  #hero h1{font-size:clamp(3.1rem,15vw,3.9rem);line-height:.98;letter-spacing:-.025em}
+  .hero-promise{font:400 1rem/1.6 var(--sans);color:var(--soft);max-width:31ch;margin:22px 0 0;letter-spacing:0}
+  .hero-promise em{font-style:normal;color:inherit}
+  #hero .lede{display:none}
+  .hero-cta{flex-direction:column;align-items:flex-start;gap:12px;margin-top:30px}
+  .hero-cta .btn-soft{background:var(--m-paper);color:#0b0813;border-color:var(--m-paper);border-radius:4px;padding:18px 26px;min-width:190px;justify-content:center;font-size:12.5px;letter-spacing:.06em;text-transform:none;font-weight:500}
+  .hero-cta .btn-soft:hover{background:#fff;color:#0b0813;border-color:#fff}
+  .hero-cta .btn-ghost{background:transparent;border-color:var(--m-hair);border-radius:4px;padding:16px 22px;text-transform:none;letter-spacing:.04em;font-weight:500}
+
+  /* surfaces: hairline glass cards, soft radius */
+  .stats{border-radius:12px;border-color:var(--m-hair);background:var(--m-hair)}
+  .stat{background:rgba(14,11,23,.86);padding:20px}
+  .device{box-shadow:0 0 0 1px var(--m-hair),0 30px 80px -30px rgba(0,0,0,.9)}
+  .why-item{padding:22px 0;border-top:1px solid var(--m-hair)}
+
+  /* eyebrow labels: tiny, spaced, purple */
+  .sec-head [class*="eyebrow"],.sec-head .kicker,.sec-head .tag{font-size:10.5px;letter-spacing:.2em;color:var(--pu2)}
+
+  /* buttons elsewhere: same paper CTA language */
+  .btn-solid{background:var(--m-paper);color:#0b0813;border-radius:4px;box-shadow:none}
+  .btn-solid:hover{background:#fff;color:#0b0813;box-shadow:none}
+}
+
+/* ==========================================================================
+   DESKTOP PREMIUM LAYER (>=900px) — cinematic dark, quiet luxury.
+   Off-white primary CTAs, sans nav, hairline glass cards, calm serif headlines.
+   ========================================================================== */
+@media(min-width:900px){
+  :root{--m-card:rgba(255,255,255,.03);--m-hair:rgba(255,255,255,.09);--m-paper:#f2efe9}
+
+  /* nav: quiet sentence-case sans, hairline base */
+  .nav{border-bottom:1px solid var(--m-hair)}
+  .nav-links{gap:30px}
+  .nav-links a{font:400 13px var(--sans);letter-spacing:.01em;text-transform:none;color:var(--soft)}
+  .nav-links a::after{background:var(--pu2)}
+
+  /* CTAs: paper-white primary, hairline secondary, soft-square corners */
+  .btn{border-radius:4px}
+  .btn-solid,.btn-soft,.nav-go{background:var(--m-paper);color:#0b0813;border-color:var(--m-paper);box-shadow:none}
+  .btn-solid:hover,.btn-soft:hover,.nav-go:hover{background:#fff;color:#0b0813;border-color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.25);transform:none}
+  .btn-soft,.btn-ghost{text-transform:none;letter-spacing:.02em;font-weight:500;font-size:13.5px}
+  .nav-go{padding:12px 18px;font-size:12.5px;letter-spacing:.02em;text-transform:none;font-weight:500}
+  .btn-ghost{background:rgba(255,255,255,.02);border-color:var(--m-hair)}
+  .btn-ghost:hover{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.05)}
+
+  /* hero: calmer scale, sans body */
+  #hero h1{font-size:clamp(3.6rem,5.6vw,5.4rem);line-height:1;letter-spacing:-.025em}
+  .hero-promise{font:400 1.05rem/1.65 var(--sans);color:var(--soft);max-width:38ch;letter-spacing:0}
+  .hero-promise em{font-style:normal;color:inherit}
+  #hero .lede{font-size:.95rem;max-width:44ch}
+
+  /* section heads: restrained serif, wide measure */
+  .sec{padding:clamp(88px,11vh,132px) 0}
+  .h2{font-size:clamp(2.6rem,4.2vw,3.7rem);line-height:1.04;letter-spacing:-.02em;max-width:20ch}
+  .lede{font-size:1rem;line-height:1.65}
+
+  /* surfaces: hairline glass, 8px radius */
+  .stats{border-radius:8px;border-color:var(--m-hair);background:var(--m-hair)}
+  .stat{background:rgba(14,11,23,.86)}
+  .why-item{border-top-color:var(--m-hair)}
+  .device{box-shadow:0 0 0 1px var(--m-hair),0 40px 100px -40px rgba(0,0,0,.9)}
+}
+
+/* mobile flow map: clustered chips + straight spine */
+@media(max-width:899px){
+  .flow-cols{gap:52px}
+  .flow-col{gap:10px;padding:18px 14px;border:1px solid var(--line2);border-radius:10px;background:rgba(255,255,255,.02)}
+  .flow-node{max-width:none}
+  .flow-term-row{margin-top:48px}
+  .flow-term{text-align:center;line-height:1.7;white-space:normal;max-width:100%}
+}
+
+/* mobile hero: copy sits clean above the ember field */
+@media(max-width:899px),(pointer:coarse){
+  .hero-grid{position:relative}
+  .hero-grid>div{position:relative;z-index:1}
+}
+
+/* ---- mobile-first flow explainer: one customer, five touchpoints, one record ---- */
+.flow-m{display:none}
+@media(max-width:899px){
+  .how-sub,.flow,.flow-cap{display:none}
+  .flow-m{display:block;margin-top:8px}
+  .fm-lead{font:400 1.5rem/1.15 var(--serif);color:var(--ink);margin:0 0 20px;letter-spacing:-.01em}
+  .fm-lead em{color:var(--pu2)}
+  .fm-card{border:1px solid var(--line2);border-radius:12px;background:rgba(255,255,255,.025);padding:18px 16px 16px}
+  .fm-hd{display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .fm-av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(167,139,255,.14);border:1px solid var(--pud);color:var(--pu2);font:500 15px var(--serif)}
+  .fm-who{display:flex;flex-direction:column;gap:2px;flex:1}
+  .fm-who b{font:600 14px var(--sans);color:var(--ink)}
+  .fm-who small{font:500 10px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mut2)}
+  .fm-live{display:inline-flex;align-items:center;gap:6px;font:500 10px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--pu2)}
+  .fm-live i{width:6px;height:6px;border-radius:50%;background:var(--pu2);animation:fmPulse 2s ease-in-out infinite}
+  .fm-list{list-style:none;position:relative;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:14px}
+  .fm-list::before{content:"";position:absolute;left:17px;top:18px;bottom:18px;width:1px;background:var(--line2)}
+  .fm-list::after{content:"";position:absolute;left:17px;top:18px;width:1px;height:calc(100% - 36px);background:var(--pu2);transform-origin:top;transform:scaleY(0);animation:fmRail 12s ease-in-out infinite}
+  .fm-r{position:relative;z-index:1;display:flex;align-items:center;gap:12px;opacity:.28;transform:translateY(4px);animation:fmIn 12s ease-in-out infinite;animation-delay:calc(var(--n)*1.5s - 1.2s)}
+  .fm-ic{width:36px;height:36px;flex:none;border-radius:9px;display:grid;place-items:center;background:var(--bg);border:1px solid var(--line2);color:var(--pu2)}
+  .fm-ic .ic{width:16px;height:16px}
+  .fm-tx{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+  .fm-tx b{font:500 14px/1.25 var(--sans);color:var(--ink)}
+  .fm-tx small{font:400 12px/1.3 var(--sans);color:var(--mut)}
+  .fm-src{font:500 9.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--pu2);border:1px solid var(--pud);border-radius:99px;padding:5px 9px;white-space:nowrap}
+  .fm-ft{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);text-align:center;font:400 13px var(--sans);color:var(--soft)}
+  .fm-ft b{font:400 1.35rem var(--serif);color:var(--pu2);margin:0 2px}
+  .fm-ft span{color:var(--mut2);margin:0 4px}
+  .fm-note{margin:16px 2px 0;font:400 .92rem/1.6 var(--sans);color:var(--mut)}
+}
+@keyframes fmIn{0%{opacity:.28;transform:translateY(4px)}6%,84%{opacity:1;transform:none}94%,100%{opacity:.28;transform:translateY(4px)}}
+@keyframes fmRail{0%{transform:scaleY(0)}55%,88%{transform:scaleY(1)}100%{transform:scaleY(0)}}
+@keyframes fmPulse{50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.fm-r{animation:none;opacity:1;transform:none}.fm-list::after{animation:none;transform:scaleY(1)}.fm-live i{animation:none}}
+
+/* phones: live ember field draws the PYRAXIS mark, so the static backdrop mark steps aside */
+.has-gl 
