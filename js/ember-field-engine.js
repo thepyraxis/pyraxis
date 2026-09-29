@@ -718,7 +718,7 @@ addEventListener('pointercancel',endDrag,{passive:true});
 try{
   const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:false,powerPreference:'high-performance'});
   renderer.setClearColor(0x0b0813,0);  /* transparent: the topo field behind stays visible */
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1,COARSE?1:1.25));
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,COARSE?1:(innerWidth*innerHeight>1600000?1:1.25)));  /* big screens: fewer fragments for the additive point cloud */
   renderer.setSize(innerWidth,innerHeight,false);
 
   const scene=new THREE.Scene();
@@ -1095,6 +1095,17 @@ try{
   posAttr.needsUpdate=true;
 
   engine={renderer,scene,camera,uniforms,group,morph,updateScale,posAttr,baseArr,globeBody,globeAtm,galFx,galGroup,barGroup,fly,points};
+
+  /* LAG FIX: globe body / atmosphere / galaxy start invisible, so their shader programs used to compile
+     the first time the visitor scrolled to them (a visible hang at the process rail and flow map).
+     Compile them now, while idle, then hide them again. compileAsync uses parallel compile when the
+     GPU driver supports it. */
+  try{
+    const hid=[globeBody,globeAtm,galGroup].filter(Boolean),was=hid.map(o=>o.visible);
+    hid.forEach(o=>{o.visible=true;});
+    (renderer.compileAsync?renderer.compileAsync(scene,camera):Promise.resolve(renderer.compile(scene,camera))).catch(()=>{});
+    hid.forEach((o,i)=>{o.visible=was[i];});
+  }catch(e){}
 }catch(err){
   canvas.remove();
 }
