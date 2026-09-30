@@ -1,13 +1,13 @@
 'use strict';
 function makeWA(opts){
   var body=opts.body, log=opts.log, clock=opts.clock, token=0, lastDir=null;
-  var TICK='<svg class="ticks" viewBox="0 0 18 12" aria-hidden="true"><path d="M2.5 6.4l3 3 7-8"/><path d="M8 9.2l1.1 1.1 7.2-8.2"/></svg>';
+  var TICK='<svg class="ticks" viewBox="0 0 18 12" aria-hidden="true"><path pathLength="1" d="M2.5 6.4l3 3 7-8"/><path pathLength="1" d="M8 9.2l1.1 1.1 7.2-8.2"/></svg>';
   function scroll(){ body.scrollTop=body.scrollHeight; }
   function life(m){
     var t=m.querySelector('.ticks');
     if(!t) return;
-    setTimeout(function(){ t.classList.add('dbl'); },500);
-    setTimeout(function(){ t.classList.add('read'); },1500);
+    setTimeout(function(){ t.classList.add('dbl'); },480);
+    setTimeout(function(){ t.classList.add('read'); },1400);
   }
   function bubble(dir,text,time){
     var m=document.createElement('div');
@@ -34,12 +34,25 @@ function makeWA(opts){
     if(clock) clock.textContent=time;
     return m;
   }
+  /* typing: header "typing…" + on-screen three-dot bubble on the side of the coming message */
   function typing(ms){
     var wa=body.closest('.wa');
     var st=wa?wa.querySelector('.wa-pres'):null;
     var orig=st?st.innerHTML:null;
-    if(st) st.textContent='typing\u2026';
-    return sleep(ms).then(function(){ if(st&&orig!=null) st.innerHTML=orig; });
+    var tEl=null;
+    if(!REDUCED && ms>0){
+      tEl=document.createElement('div');
+      tEl.className='wa-msg out wa-typing'+(lastDir==='out'?' cont':'');
+      tEl.innerHTML='<span class="tdots" aria-hidden="true"><i></i><i></i><i></i></span>';
+      body.appendChild(tEl);
+      raf2(function(){ tEl.classList.add('show'); });
+      scroll();
+    }
+    if(st){ st.textContent='typing\u2026'; st.classList.add('typing'); }
+    return sleep(ms).then(function(){
+      if(tEl){ tEl.classList.remove('show'); setTimeout(function(){ tEl.remove(); },220); }
+      if(st){ if(orig!=null) st.innerHTML=orig; st.classList.remove('typing'); }
+    });
   }
   function ev(text){
     if(!log) return sleep(200);
@@ -49,10 +62,19 @@ function makeWA(opts){
     raf2(function(){ li.classList.add('in'); });
     return sleep(280);
   }
+  function ripple(btn,e){
+    if(REDUCED) return;
+    var r=document.createElement('span'); r.className='wa-ripple';
+    var rc=btn.getBoundingClientRect();
+    r.style.left=((e&&e.clientX)?e.clientX-rc.left:rc.width/2)+'px';
+    r.style.top=((e&&e.clientY)?e.clientY-rc.top:rc.height/2)+'px';
+    btn.appendChild(r);
+    setTimeout(function(){ r.remove(); },700);
+  }
   function pick(i,time){
     var btns=body.querySelectorAll('.wa-btn');
     var b=btns[i]; if(!b) return sleep(200);
-    b.classList.add('used');
+    b.classList.add('used'); ripple(b,null);
     return sleep(600).then(function(){ bubble('in', b.textContent, time); });
   }
   var waitCancel=null;
@@ -70,6 +92,7 @@ function makeWA(opts){
         body.removeEventListener('click',onTap);
         waitCancel=null;
         t.classList.add('used');
+        ripple(t,e);
         for(var j=0;j<btns.length;j++){ btns[j].disabled=true; if(btns[j]!==t) btns[j].style.opacity='.45'; }
         var m=/(\d{2}:\d{2})/.exec(t.textContent||'');
         if(m&&picked) picked.slot=m[1];
