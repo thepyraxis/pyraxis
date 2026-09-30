@@ -8,7 +8,7 @@
       replayBtn=$('#revReplay');
   if(!body||!visEl) return;
 
-  var TICK='<svg class="ticks" viewBox="0 0 18 12" aria-hidden="true"><path d="M2.5 6.4l3 3 7-8"/><path d="M8 9.2l1.1 1.1 7.2-8.2"/></svg>';
+  var TICK='<svg class="ticks" viewBox="0 0 18 12" aria-hidden="true"><path pathLength="1" d="M2.5 6.4l3 3 7-8"/><path pathLength="1" d="M8 9.2l1.1 1.1 7.2-8.2"/></svg>';
   var PSTAR='<span class="pstar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.05 1.1-6.5-4.7-4.6 6.5-.95z"/></svg></span>';
   var SR5=PSTAR+PSTAR+PSTAR+PSTAR+PSTAR;
   var CHECK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5l5 5L19.5 7"/></svg>';
