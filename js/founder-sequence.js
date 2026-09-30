@@ -86,7 +86,15 @@
     var idx=Math.min(COUNT,Math.max(1,Math.round(p*(COUNT-1))+1));
     if(idx!==cur){ cur=idx; draw(); }
   }
-  addEventListener('scroll',function(){ requestAnimationFrame(onScroll); },{passive:true});
+  /* SCROLL-JERK FIX: one rect read per frame max, and none at all while the founder section is far
+     away (the section only animates while near the viewport). */
+  var fsQ=false;
+  addEventListener('scroll',function(){
+    if(fsQ) return;
+    var y=window.scrollY||0, top=sec?sec.offsetTop:0, h=sec?sec.offsetHeight:0;
+    if(sec && (y+innerHeight<top-innerHeight || y>top+h+innerHeight)) return;
+    fsQ=true; requestAnimationFrame(function(){ fsQ=false; onScroll(); });
+  },{passive:true});
   addEventListener('resize',function(){ draw(); onScroll(); });
   addEventListener('load',onScroll);
   onScroll();

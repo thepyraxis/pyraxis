@@ -50,13 +50,20 @@
   }
   build();
   var rz; addEventListener('resize',function(){ clearTimeout(rz); rz=setTimeout(build,220); });
+  var fr=0;
   addTicker(box,function(now){
+    /* SCROLL-JERK FIX: every frame this used to rewrite 12 SVG transforms (a repaint of the whole
+       flow map) even when a dot had not moved. Now: every 2nd frame, and only if it moved >0.35px. */
+    if((fr++&1)) return;
     if(t0==null) t0=now;
-    dots.forEach(function(d){
+    for(var i=0;i<dots.length;i++){
+      var d=dots[i];
       var u=((now-t0)/1000*d.sp+d.off)%1;
       var q=d.p.getPointAtLength(u*d.L);
-      d.g.setAttribute('transform','translate('+q.x+' '+q.y+')');
-    });
+      if(d.lx!==undefined && Math.abs(q.x-d.lx)<.35 && Math.abs(q.y-d.ly)<.35) continue;
+      d.lx=q.x; d.ly=q.y;
+      d.g.setAttribute('transform','translate('+q.x.toFixed(1)+' '+q.y.toFixed(1)+')');
+    }
   });
 })();
 

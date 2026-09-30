@@ -32,7 +32,13 @@ function showToast(msg){
    ends at the compounding section's centre — tail CTA/footer can grow or
    shrink freely without touching hero pacing. */
 let vh=innerHeight,range=1;
-var END_ANCHOR_SEL='#compounding';
+/* SECTION-KEYED STAGES: hiding sections shifted every stage. Each visible section is pinned to the
+   curP it had in the full layout, so the swarm story stays put: galaxy behind Purpose, globe forms
+   between Industries and the CTA. Sections that are hidden or missing are skipped. */
+const STAGE_KEYS=[['hero',0],['leak',.29],['system',.59],['builds',.94],['how',1.42],['qr',1.97],
+  ['reviews',2.5],['retain',3.0],['deployments',3.38],['purpose',3.85],['intel',3.95],['industries',4.2],['cta',5]];
+let keyPos=[],keyVal=[];
+var END_ANCHOR_SEL='#cta';  /* was #compounding, then #process (both hidden now) */
 function anchorScroll(){
   var a=document.querySelector(END_ANCHOR_SEL);
   if(!a) return document.documentElement.scrollHeight-vh;
@@ -47,6 +53,26 @@ function layout(){
   var anchored=anchorScroll();
   /* guard: if anchor is above the fold or unmeasurable, fall back */
   range=Math.max(vh*2,Math.min(fallback,Math.max(1,anchored)));
+  keyPos=[];keyVal=[];
+  const sy=window.scrollY||0;
+  for(let k=0;k<STAGE_KEYS.length;k++){
+    const el=document.getElementById(STAGE_KEYS[k][0]);
+    if(!el||!el.getClientRects().length)continue;      /* hidden (display:none) or absent */
+    const r=el.getBoundingClientRect();
+    let pos=k===0?0:(r.top+sy+r.height/2-vh/2);
+    pos=Math.max(0,Math.min(pos,fallback));
+    if(keyPos.length&&pos<=keyPos[keyPos.length-1])pos=keyPos[keyPos.length-1]+1;
+    keyPos.push(pos);keyVal.push(STAGE_KEYS[k][1]);
+  }
+}
+function mapP(c){
+  const n=keyPos.length;
+  if(n<2)return clamp(c/range,0,1)*5;                   /* fallback: old linear mapping */
+  if(c<=keyPos[0])return keyVal[0];
+  if(c>=keyPos[n-1])return keyVal[n-1];
+  let i=1;while(i<n-1&&c>keyPos[i])i++;
+  const t=(c-keyPos[i-1])/(keyPos[i]-keyPos[i-1]);
+  return keyVal[i-1]+(keyVal[i]-keyVal[i-1])*t;
 }
 layout();
 function relayout(){
@@ -717,7 +743,7 @@ addEventListener('pointercancel',endDrag,{passive:true});
 /* ================= three.js setup ================= */
 try{
   const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:false,powerPreference:'high-performance'});
-  renderer.setClearColor(0x0b0813,0);  /* transparent: the topo field behind stays visible */
+  renderer.setClearColor(0x000000,0);  /* transparent: the topo field behind stays visible */
   renderer.setPixelRatio(Math.min(devicePixelRatio||1,COARSE?1:(innerWidth*innerHeight>1600000?1:1.25)));  /* big screens: fewer fragments for the additive point cloud */
   renderer.setSize(innerWidth,innerHeight,false);
 
@@ -1299,7 +1325,7 @@ function tick(now){
      slow-fast-slow (hang) inside a single wheel tick. */
   cur=coarse||reduced?tgt:cur+(tgt-cur)*Math.min(1,dt*8);
   if(Math.abs(tgt-cur)<.5)cur=tgt;
-  curP=clamp(cur/range,0,1)*5;
+  curP=mapP(cur);
   const vel=(curP-lastFrameP)/dt;lastFrameP=curP;
   /* full rate always while visible: the 60→30fps step-down read as lag
      whenever the pointer rested — smoothness beats the battery saving */

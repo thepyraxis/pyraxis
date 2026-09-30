@@ -3,8 +3,17 @@
    reduced-motion users see the plain headline (gated by .js + media query). */
 (function(){
   'use strict';
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var h1=document.querySelector('#hero h1'); if(!h1) return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){ h1.classList.add('split'); return; }
+  /* JERK FIX: wait for the serif font (max 1.2s) before splitting/animating, so the headline never
+     re-wraps mid-animation when the web font swaps in. */
+  var done=false;
+  function run(){ if(done) return; done=true; build(); }
+  try{
+    var f=document.fonts&&document.fonts.load?Promise.all([document.fonts.load('400 1em "Instrument Serif"'),document.fonts.load('italic 400 1em "Instrument Serif"')]):Promise.resolve();
+    f.then(run,run); setTimeout(run,1200);
+  }catch(e){ run(); }
+  function build(){
   var step=80, i=0, lastWi=null;
   var frag=document.createDocumentFragment();
   function word(text,isEm){
@@ -27,6 +36,7 @@
       n.textContent.trim().split(/\s+/).filter(Boolean).forEach(function(w){ word(w,true); });
     }else{ frag.appendChild(n.cloneNode(true)); lastWi=null; }
   });
-  h1.innerHTML=''; h1.appendChild(frag);
+  h1.innerHTML=''; h1.appendChild(frag); h1.classList.add('split');
   requestAnimationFrame(function(){ requestAnimationFrame(function(){ h1.classList.add('in'); }); });
+  }
 })();

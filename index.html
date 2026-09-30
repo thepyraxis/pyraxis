@@ -1,10 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" style="background:#0b0813">
+<html lang="en" style="background:#000000">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#0b0813">
+<meta name="theme-color" content="#000000">
+<script>document.documentElement.classList.add('js');</script>
+<style>
+/* no-jerk: hide hero h1 + reveal items from very first paint, reveal in one smooth pass.
+   Failsafe animation un-hides after 2.5s even if JS dies. */
+.js #hero h1:not(.split){visibility:hidden;animation:h1show 0s 2.5s forwards}
+@keyframes h1show{to{visibility:visible}}
+</style>
 <title>PYRAXIS — Customers, kept.</title>
 <meta name="description" content="Pyraxis builds one connected system for local businesses — website, booking, follow-up and reviews around a single customer record.">
 <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
@@ -13,21 +20,23 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://thepyraxis.vercel.app/">
 <meta property="og:site_name" content="PYRAXIS">
-<meta property="og:image" content="https://thepyraxis.vercel.app/public/og-image.jpg">
-<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image" content="https://thepyraxis.vercel.app/public/og-image.webp">
+<meta property="og:image:type" content="image/webp">
 <meta property="og:image:width" content="1536">
 <meta property="og:image:height" content="1024">
 <meta property="og:image:alt" content="PYRAXIS — one connected system for local businesses.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="PYRAXIS — Customers, kept.">
 <meta name="twitter:description" content="One connected system for local businesses — website, booking, follow-up and reviews around a single customer record.">
-<meta name="twitter:image" content="https://thepyraxis.vercel.app/public/og-image.jpg">
+<meta name="twitter:image" content="https://thepyraxis.vercel.app/public/og-image.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"></noscript>
 <link rel="preload" as="image" media="(min-width:900px)" href="public/img/earth-2048.jpg" fetchpriority="low">
 <link rel="stylesheet" href="css/main.css">
+<link rel="preload" as="script" media="(min-width:900px) and (pointer:fine)" href="public/vendor/three-r159.min.js">
+<link rel="preload" as="script" media="(min-width:900px) and (pointer:fine)" href="js/ember-field-engine.js">
 </head>
 <body id="hero-top">
 <svg class="sr-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -98,7 +107,7 @@
       <a href="#builds">What it builds</a>
       <a href="#how">How it works</a>
       <a href="#qr">Live demo</a>
-      <a href="#why">Why PYRAXIS</a>
+      <a href="#purpose">Why PYRAXIS</a>
     </nav>
     <div class="nav-cta">
       <button class="btn btn-solid btn-sm nav-go" data-open-modal type="button">Build your system</button>
@@ -112,7 +121,7 @@
   <a href="#builds">What it builds</a>
   <a href="#how">How it works</a>
   <a href="#qr">Live demo</a>
-  <a href="#why">Why PYRAXIS</a>
+  <a href="#purpose">Why PYRAXIS</a>
   <button class="btn btn-solid" data-open-modal type="button">Build your system</button>
 </div>
 
@@ -273,7 +282,7 @@
         <h2 class="h2" id="how-h">Tuesday night, 23:31.</h2>
       </header>
 
-      <div class="jflow" id="jflow" data-reveal aria-label="The complete system flow">
+      <div class="jflow" id="jflow" hidden data-reveal aria-label="The complete system flow">
         <span class="jf"><svg class="ic"><use href="#i-globe"/></svg>GOOGLE · SOCIAL · QR · WHATSAPP</span><span class="jf-arr">→</span>
         <span class="jf"><svg class="ic"><use href="#i-qr"/></svg>CAPTURED</span><span class="jf-arr">→</span>
         <span class="jf"><svg class="ic"><use href="#i-spark"/></svg>AI ANSWERS</span><span class="jf-arr">→</span>
@@ -285,7 +294,7 @@
         <span class="jf key"><svg class="ic"><use href="#i-share"/></svg>REVIEW / REFERRAL ↺</span>
       </div>
 
-      <div class="flow-m" data-reveal>
+      <div class="flow-m" hidden data-reveal>
         <p class="fm-lead">Different doors in. <em>One customer record.</em></p>
         <div class="fm-card" role="img" aria-label="One customer, five touchpoints, all saved on a single record">
           <div class="fm-hd"><span class="fm-av">P</span><span class="fm-who"><b>Priya S.</b><small>Customer record</small></span><span class="fm-live"><i></i>Live</span></div>
@@ -300,8 +309,8 @@
         </div>
         <p class="fm-note">Every enquiry, booking and visit is attached to the same person, so you always know who they are and where they came from.</p>
       </div>
-      <p class="cap how-sub" data-reveal>A · Entry points</p>
-      <div class="flow" id="flow" aria-hidden="true">
+      <p class="cap how-sub" hidden data-reveal>A · Entry points</p>
+      <div class="flow" id="flow" hidden aria-hidden="true">
         <svg class="flow-svg" id="flowSvg"></svg>
         <div class="flow-cols">
           <div class="flow-col" id="fcL">
@@ -328,9 +337,9 @@
         </div>
         <div class="flow-term-row"><span class="flow-term" id="flowTerm"><i aria-hidden="true"></i>Every interaction attributed to a single record</span></div>
       </div>
-      <p class="cap flow-cap" data-reveal style="margin-top:26px">All entry points converge into one system</p>
+      <p class="cap flow-cap" hidden data-reveal style="margin-top:26px">All entry points converge into one system</p>
 
-      <p class="cap how-sub" data-reveal>B · Response at 23:31 · example</p>
+      <p class="cap how-sub" data-reveal>Response at 23:31 · example</p>
       <div class="duo">
         <div data-reveal>
           <p class="duo-lab bad">Without a system</p>
@@ -432,7 +441,7 @@
         </div>
       </div>
 
-      <div class="qr-loop" data-reveal>
+      <div class="qr-loop" hidden data-reveal>
         <p class="rw-lab good">Complete loop, one table · example</p>
         <div class="rw-row">
           <span class="fl-chip"><svg class="ic"><use href="#i-qr"/></svg>SCAN QR</span><span class="fl-arr">→</span>
@@ -447,7 +456,7 @@
         </div>
       </div>
 
-      <div class="qr-after" data-reveal>
+      <div class="qr-after" hidden data-reveal>
         <p class="qa-h">After seven visits, retained context</p>
         <div class="qa-rows">
           <div><b>Visited</b><span>7 times</span></div>
@@ -535,7 +544,7 @@
     </div>
   </section>
   <!-- ============ 08 FOLLOW-UP + RETENTION ============ -->
-  <section class="sec" id="retain" aria-labelledby="retain-h">
+  <section class="sec" id="retain" hidden aria-labelledby="retain-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="08">Follow-up</p>
@@ -606,12 +615,12 @@
   <section class="sec" id="deployments" aria-labelledby="deploy-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker" data-n="09">Recent work</p>
+        <p class="kicker" data-n="08">Recent work</p>
         <h2 class="h2" id="deploy-h">Installed, not mocked.</h2>
         <p class="lede">Live builds. The rest we show on a call.</p>
       </header>
       <div data-reveal>
-        <a class="btn btn-ghost btn-sm" href="#process">See how we work
+        <a class="btn btn-ghost btn-sm" href="#how">See how we work
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
         </a>
       </div>
@@ -678,7 +687,7 @@
       <div class="purpose-grid">
         <div>
           <header class="sec-head" style="margin-bottom:0;--d:0s" data-purpose>
-            <p class="kicker" data-n="10">Purpose</p>
+            <p class="kicker" data-n="09">Purpose</p>
             <h2 class="h2" id="purpose-h">Why PYRAXIS exists.</h2>
           </header>
           <p class="purpose-statement" data-purpose style="--d:.1s">Good local businesses lose customers they already earned.</p>
@@ -703,7 +712,7 @@
   </section>
 
   <!-- ============ 09 CUSTOMER INTELLIGENCE ============ -->
-  <section class="sec" id="intel" aria-labelledby="intel-h">
+  <section class="sec" id="intel" hidden aria-labelledby="intel-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="11">Customer record</p>
@@ -754,7 +763,7 @@
   <section class="sec" id="industries" aria-labelledby="ind-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker" data-n="12">Industries</p>
+        <p class="kicker" data-n="10">Industries</p>
         <h2 class="h2" id="ind-h">Same record. Your workflow.</h2>
       </header>
       <div class="ind" data-reveal>
@@ -765,7 +774,7 @@
   </section>
 
   <!-- ============ 11 WHY PYRAXIS ============ -->
-  <section class="sec" id="why" aria-labelledby="why-h">
+  <section class="sec" id="why" hidden aria-labelledby="why-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="13">Principles</p>
@@ -793,10 +802,10 @@
   </section>
 
   <!-- ============ 12 HOW WE BUILD IT ============ -->
-  <section class="sec" id="process" aria-labelledby="process-h">
+  <section class="sec" id="process" hidden aria-labelledby="process-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
-        <p class="kicker" data-n="14">Process</p>
+        <p class="kicker" data-n="11">Process</p>
         <h2 class="h2" id="process-h">After you get in touch.</h2>
       </header>
       <div class="proc" id="proc" data-reveal>
@@ -815,7 +824,7 @@
   <!-- ============ 13 PROOF ============ -->
 
   <!-- ============ 14 COMPOUNDING GROWTH ============ -->
-  <section class="sec" id="compounding" aria-labelledby="comp-h">
+  <section class="sec" id="compounding" hidden aria-labelledby="comp-h">
     <div class="wrap">
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="15">After launch</p>
@@ -850,7 +859,7 @@
   <!-- ============ 15 FINAL CTA ============ -->
   <section class="sec" id="cta" aria-labelledby="cta-h">
     <div class="wrap">
-      <p class="kicker center" data-n="16">Begin</p>
+      <p class="kicker center" data-n="11">Begin</p>
       <h2 class="cta-h" id="cta-h">Bring one regular<br>back next week.</h2>
       <p class="cta-mach">Website, booking, follow-up and reviews — together in <em>one record.</em></p>
       <button class="btn btn-solid btn-lg" data-open-modal type="button">Build your system
@@ -872,7 +881,7 @@
     </div>
     <nav class="foot-links" aria-label="Sections">
       <a href="#leak">The Gap</a><a href="#builds">What It Builds</a><a href="#how">How It Works</a>
-      <a href="#qr">Live Demo</a><a href="#reviews">Reviews</a><a href="#why">Principles</a><a href="#compounding">After Launch</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a>
+      <a href="#qr">Live Demo</a><a href="#reviews">Reviews</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a>
     </nav>
     <p class="foot-meta">© <span id="yr">2026</span> PYRAXIS — ONE CONNECTED SYSTEM</p>
   </div>
@@ -928,6 +937,7 @@
 <div id="cRing" aria-hidden="true"><div class="r"><span class="r-label" id="rLabel"></span></div></div>
 <div id="cDot" aria-hidden="true"><div class="d"></div></div>
 <script defer src="js/mobile-resize-noise-fix.js"></script>
+<script defer src="js/pause-offscreen-animations.js"></script>
 <script defer src="js/01-strict-and-dom-helpers.js"></script>
 <script defer src="js/02-premium-chrome.js"></script>
 <script defer src="js/03-ticker-system.js"></script>
@@ -958,6 +968,17 @@
 /* Ember field (WebGL) now runs on phones too — the engine already scales itself down for touch
    (fewer embers, lower DPR, dimmer). Falls back to the topo field + static mark only when WebGL is
    missing or the device is very low-end. Three.js + engine load after the deferred scripts. */
+/* RESIZE FIX: phone-vs-desktop mode (ember/globe engine vs static mark + topo backdrop) is decided
+   once at load. Crossing the 900px / touch breakpoint later (devtools device toggle, rotating a
+   tablet, snapping a window) left the wrong mode running - no PYRAXIS mark until manual reload.
+   When the mode flips, reload once the resize settles. Same-mode resizes are untouched. */
+(function(){
+  function mode(){ return ((window.matchMedia&&matchMedia('(pointer: coarse)').matches)||innerWidth<900)?'m':'d'; }
+  var was=mode(), t=null;
+  function check(){ clearTimeout(t); t=setTimeout(function(){ if(mode()!==was) location.reload(); },350); }
+  addEventListener('resize',check);
+  try{ matchMedia('(pointer: coarse)').addEventListener('change',check); }catch(e){}
+})();
 document.addEventListener('DOMContentLoaded',function(){
   /* PHONES/TOUCH: no ember/globe engine, no scroll-driven morph. The contour (topo) field
      becomes the fixed, always-on site background; the PYRAXIS mark is a static hero backdrop. */
@@ -967,9 +988,18 @@ document.addEventListener('DOMContentLoaded',function(){
     return;
   }
   var ok=false;
-  try{ var c=document.createElement('canvas'); ok=!!(window.WebGLRenderingContext&&(c.getContext('webgl')||c.getContext('experimental-webgl'))); }catch(e){}
+  /* RESIZE FIX: right after a device-toggle/resize the GPU process can refuse one context request.
+     One refusal used to mean 'no WebGL' for the whole page -> no ember mark until manual reload.
+     Ask up to 3 times, and release the probe context. */
+  for(var tr=0; tr<3&&!ok; tr++){
+    try{ var c=document.createElement('canvas'); var g=c.getContext('webgl')||c.getContext('experimental-webgl');
+      ok=!!(window.WebGLRenderingContext&&g);
+      if(g&&g.getExtension){ var lc=g.getExtension('WEBGL_lose_context'); if(lc) lc.loseContext(); } }catch(e){}
+  }
   var weak=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
-  if(!ok||weak){ if(window.topoStart) window.topoStart(); return; }
+  /* No engine on a desktop (weak GPU, no WebGL) used to leave the hero with NO PYRAXIS mark at all.
+     'no-gl' turns on the static mark (css) so the symbol is always there. */
+  if(!ok||weak){ document.documentElement.classList.add('no-gl'); if(window.topoStart) window.topoStart(); return; }
   document.documentElement.classList.add('has-gl');
   /* LAG FIX: parsing 670KB three.js + building 8500 embers + compiling shaders used to land in the
      same frames as every section script. Wait until the browser is idle (max 900ms) so first paint
@@ -979,7 +1009,16 @@ document.addEventListener('DOMContentLoaded',function(){
       var s=document.createElement('script'); s.src=src; s.async=false; document.body.appendChild(s);
     });
   };
-  if(window.requestIdleCallback) requestIdleCallback(boot,{timeout:900}); else setTimeout(boot,250);
+  /* FAST START: scripts are preloaded in <head> (download overlaps HTML/CSS), so boot right after first
+     paint. Headline reveal runs on the compositor (transform), so engine parse does not jerk it. */
+  requestAnimationFrame(function(){ requestAnimationFrame(boot); });
+  /* WATCHDOG: if the ember engine has not come alive in 8s (blocked script, GPU hiccup, context lost),
+     show the static mark instead of an empty hero; drop it again the moment the engine turns on. */
+  var wd=0, wdt=setInterval(function(){
+    var live=document.querySelector('#gl.on'), h=document.documentElement.classList;
+    if(live){ h.remove('no-gl'); clearInterval(wdt); }
+    else if(++wd>=6){ h.add('no-gl'); if(window.topoStart) window.topoStart(); if(wd>=14) clearInterval(wdt); }
+  },2000);
 });
 </script>
 <script defer src="js/founder-sequence.js"></script>
