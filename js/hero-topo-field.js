@@ -118,9 +118,9 @@ var FS=(MOBILE?'#define PXM 1\n':'')+[
  ' vig*=mix(0.5,1.0,smoothstep(0.0,0.22,uv.y));',
  ' vig*=mix(1.0,0.0,smoothstep(0.82,1.0,uv.y));',
  ' float g=clamp(topo*vig,0.0,1.0);',
- ' vec3 deep=vec3(0.010,0.005,0.026);',
- ' vec3 mid=vec3(0.070,0.034,0.185);',
- ' vec3 hot=vec3(0.290,0.190,0.620);',
+ ' vec3 deep=vec3(0.0,0.0,0.0);',
+ ' vec3 mid=vec3(0.045,0.040,0.075);',
+ ' vec3 hot=vec3(0.200,0.170,0.330);',
 ' vec3 col=mix(deep,mid,smoothstep(0.0,0.45,g));',
 ' col=mix(col,hot,smoothstep(0.45,1.0,g)*0.85);',
 ' gl_FragColor=vec4(col,1.0);',
@@ -198,7 +198,7 @@ function resize(){
   lastIW=innerWidth; lastIH=innerHeight;
   /* phones: render the (soft, low-frequency) field at a fraction of CSS px and let the compositor
      upscale it — ~3x fewer fragments, no visible loss at .28 opacity */
-  var dpr=MOBILE?(LOW?0.6:0.8):Math.min(devicePixelRatio||1,1.5);
+  var dpr=MOBILE?(LOW?0.6:0.8):1;  /* desktop: was up to 1.5x — the simplex-noise shader is soft, 1x looks identical and costs ~55% less GPU */
   var w=Math.round(innerWidth*dpr), h=Math.round(innerHeight*dpr);
   if(w===cv.width&&h===cv.height) return; /* same backing size: skip, don't wipe canvas to black for nothing */
   cv.width=w;
@@ -267,6 +267,7 @@ function frame(t){
     if(performance.now()-lastScroll<140) return;
     lastDraw=t;
   }
+  else{ if(t-lastDraw<33) return; lastDraw=t; }  /* desktop: 30fps cap — the contour drift is too slow to show it */
   /* fully faded out by scroll: hold the last frame, skip GL work */
   if(!MOBILE&&started&&(window.__topoVis||0)<=0.005) return;
   if(lastT<0)lastT=t;

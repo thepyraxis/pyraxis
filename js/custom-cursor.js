@@ -26,13 +26,28 @@ function resolveText(){
   if(tg&&tg.closest&&tg.closest('input,textarea')){setState('text');return;}
   setState(textAt(MX,MY)?'text':'default');
 }
-function queueResolve(){ if(textPend)return; textPend=true; requestAnimationFrame(resolveText); }
+/* SCROLL-JERK FIX: resolveText runs elementFromPoint + caretRangeFromPoint + getClientRects, a
+   forced hit-test/layout. It used to run on EVERY scroll frame and every mousemove, which stalls
+   scrolling in text-dense sections (flow map, phones). Now: never while scrolling (one pass 220ms
+   after scroll stops), and mouse moves are limited to ~1 pass per 70ms. */
+var scrolling=false, scrollT=0, lastResolve=0;
+function queueResolve(){
+  if(textPend||scrolling)return;
+  var wait=Math.max(0,70-(performance.now()-lastResolve));
+  textPend=true;
+  if(wait>0) setTimeout(function(){ requestAnimationFrame(function(){ lastResolve=performance.now(); resolveText(); }); },wait);
+  else requestAnimationFrame(function(){ lastResolve=performance.now(); resolveText(); });
+}
+function onScrollCursor(){
+  scrolling=true; clearTimeout(scrollT);
+  scrollT=setTimeout(function(){ scrolling=false; queueResolve(); },220);
+}
 addEventListener('mousemove',function(e){
   MX=e.clientX; MY=e.clientY;
   if(!seen){seen=true;document.body.classList.add('cur-on');}
   queueResolve();
 },{passive:true});
-addEventListener('scroll',queueResolve,{passive:true});
+addEventListener('scroll',onScrollCursor,{passive:true});
 addEventListener('mousedown',function(){document.body.classList.add('pressing');});
 addEventListener('mouseup',function(){document.body.classList.remove('pressing');});
 document.addEventListener('mouseleave',function(){document.body.classList.remove('cur-on');});
