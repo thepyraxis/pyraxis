@@ -9,15 +9,16 @@
 <style>
 /* no-jerk: hide hero h1 + reveal items from very first paint, reveal in one smooth pass.
    Failsafe animation un-hides after 2.5s even if JS dies. */
-.js #hero h1:not(.split){visibility:hidden;animation:h1show 0s 2.5s forwards}
+.js #hero h1:not(.split){visibility:hidden;animation:h1show 0s 1s forwards}
 @keyframes h1show{to{visibility:visible}}
 </style>
-<title>PYRAXIS — Customers, kept.</title>
+<title>PYRAXIS — Every customer, remembered.</title>
 <meta name="description" content="Pyraxis builds one connected system for local businesses — website, booking, follow-up and reviews around a single customer record.">
 <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
-<meta property="og:title" content="PYRAXIS — Customers, kept.">
+<meta property="og:title" content="PYRAXIS — Every customer, remembered.">
 <meta property="og:description" content="One connected system for local businesses — website, booking, follow-up and reviews around a single customer record.">
 <meta property="og:type" content="website">
+<link rel="canonical" href="https://thepyraxis.vercel.app/">
 <meta property="og:url" content="https://thepyraxis.vercel.app/">
 <meta property="og:site_name" content="PYRAXIS">
 <meta property="og:image" content="https://thepyraxis.vercel.app/public/og-image.webp">
@@ -26,7 +27,7 @@
 <meta property="og:image:height" content="1024">
 <meta property="og:image:alt" content="PYRAXIS — one connected system for local businesses.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="PYRAXIS — Customers, kept.">
+<meta name="twitter:title" content="PYRAXIS — Every customer, remembered.">
 <meta name="twitter:description" content="One connected system for local businesses — website, booking, follow-up and reviews around a single customer record.">
 <meta name="twitter:image" content="https://thepyraxis.vercel.app/public/og-image.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -106,7 +107,7 @@
     <nav class="nav-links" aria-label="Primary">
       <a href="#builds">What it builds</a>
       <a href="#how">How it works</a>
-      <a href="#qr">Live demo</a>
+      <a href="#qr">QR demo</a>
       <a href="#purpose">Why PYRAXIS</a>
     </nav>
     <div class="nav-cta">
@@ -120,7 +121,7 @@
 <div class="mnav" id="mnav">
   <a href="#builds">What it builds</a>
   <a href="#how">How it works</a>
-  <a href="#qr">Live demo</a>
+  <a href="#qr">QR demo</a>
   <a href="#purpose">Why PYRAXIS</a>
   <button class="btn btn-solid" data-open-modal type="button">Build your system</button>
 </div>
@@ -138,7 +139,7 @@
           <p class="kicker" data-n="01">Pyraxis — for local businesses</p>
           <h1>Every customer,<br><em>remembered.</em></h1>
           <p class="hero-promise">One connected system for local businesses. We replace scattered tools with one customer record that captures enquiries, books appointments and brings customers back.</p>
-          <p class="lede">For restaurants, clinics, salons and other local businesses. Enquiries answered quickly, bookings without phone tag, follow-ups without spreadsheets.</p>
+          <p class="lede"><span class="lede-short">For restaurants, clinics, salons and other local businesses.</span> <span class="lede-more">Enquiries answered quickly, bookings without phone tag, follow-ups without spreadsheets.</span></p>
           <div class="hero-cta">
             <a class="btn btn-soft" href="https://wa.me/919837104413" target="_blank" rel="noopener noreferrer"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>WhatsApp us</a>
             <a class="btn btn-ghost" href="#how">See it run</a>
@@ -543,73 +544,6 @@
       </div>
     </div>
   </section>
-  <!-- ============ 08 FOLLOW-UP + RETENTION ============ -->
-  <section class="sec" id="retain" hidden aria-labelledby="retain-h">
-    <div class="wrap">
-      <header class="sec-head" data-reveal>
-        <p class="kicker" data-n="08">Follow-up</p>
-        <h2 class="h2" id="retain-h">Retention, automated.</h2>
-        <p class="lede">Most customers decide after more than one contact. The system keeps in touch until they do. Messages shown are examples.</p>
-      </header>
-
-      <div class="dtx" id="dtx" data-reveal>
-        <div class="dtx-rail" aria-hidden="true"><i></i></div>
-        <ol class="dtx-list">
-          <li class="dtx-day" style="--i:0">
-            <span class="dtx-dot"></span>
-            <div><span class="dtx-h">DAY 0<span>THANK YOU</span></span>
-              <div class="dtx-msg"><span>Thanks for getting in touch — I can hold a slot for you.</span><span class="meta">10:02<svg class="ticks" viewBox="0 0 18 12"><path d="M2.5 6.4l3 3 7-8"/><path d="M8 9.2l1.1 1.1 7.2-8.2"/></svg></span></div>
-            </div>
-          </li>
-          <li class="dtx-day" style="--i:1">
-            <span class="dtx-dot"></span>
-            <div><span class="dtx-h">DAY 2<span>CHECK-IN</span></span>
-              <div class="dtx-msg"><span>Still thinking it over? I can keep Friday open.</span><span class="meta">09:14<svg class="ticks" viewBox="0 0 18 12"><path d="M2.5 6.4l3 3 7-8"/><path d="M8 9.2l1.1 1.1 7.2-8.2"/></svg></span></div>
-            </div>
-          </li>
-          <li class="dtx-day" style="--i:2">
-            <span class="dtx-dot"></span>
-            <div><span class="dtx-h">DAY 5<span>USEFUL</span></span>
-              <div class="dtx-msg"><span>What a deep clean actually covers — a 5-minute read.</span><span class="meta">11:30<svg class="ticks" viewBox="0 0 18 12"><path d="M2.5 6.4l3 3 7-8"/><path d="M8 9.2l1.1 1.1 7.2-8.2"/></svg></span></div>
-            </div>
-          </li>
-          <li class="dtx-day" style="--i:3">
-            <span class="dtx-dot"></span>
-            <div><span class="dtx-h">DAY 10<span>THEY REPLY</span></span>
-              <div class="dtx-msg"><span>Shall I just book it? Friday morning is free.</span><span class="meta">08:45<svg class="ticks" viewBox="0 0 18 12"><path d="M2.5 6.4l3 3 7-8"/><path d="M8 9.2l1.1 1.1 7.2-8.2"/></svg></span></div>
-              <div class="dtx-msg reply" style="margin-top:8px"><span>Yes — Friday at 20:00 works.</span><span class="meta">08:51</span></div>
-            </div>
-          </li>
-        </ol>
-      </div>
-
-      <div class="rows">
-        <div data-reveal>
-          <p class="rw-lab bad">Single transaction</p>
-          <div class="rw-row">
-            <span class="fl-chip"><svg class="ic"><use href="#i-card"/></svg>VISIT — ₹1,500</span><span class="fl-arr">→</span>
-            <span class="fl-chip"><svg class="ic"><use href="#i-user"/></svg>PAYS AT THE COUNTER</span><span class="fl-arr">→</span>
-            <span class="fl-chip"><svg class="ic"><use href="#i-moon"/></svg>LEAVES</span><span class="fl-arr">→</span>
-            <span class="fl-chip gone">NEVER HEARD FROM AGAIN</span>
-          </div>
-          <p class="rw-cap bad">One transaction. No retained context.</p>
-        </div>
-        <div data-reveal>
-          <p class="rw-lab good">With the system</p>
-          <div class="rw-row">
-            <span class="fl-chip"><svg class="ic"><use href="#i-card"/></svg>VISIT — ₹1,500</span><span class="fl-arr">→</span>
-            <span class="fl-chip"><svg class="ic"><use href="#i-heart"/></svg>THANK YOU</span><span class="fl-arr">→</span>
-            <span class="fl-chip"><svg class="ic"><use href="#i-star"/></svg>FEEDBACK + REVIEW</span><span class="fl-arr">→</span>
-            <span class="fl-chip"><svg class="ic"><use href="#i-tag"/></svg>DAY-30 OFFER</span><span class="fl-arr">→</span>
-            <span class="fl-chip"><svg class="ic"><use href="#i-loop"/></svg>SECOND VISIT</span><span class="fl-arr">→</span>
-            <span class="fl-chip key"><svg class="ic"><use href="#i-user"/></svg>REGULAR ↺</span>
-          </div>
-          <p class="rw-cap">One relationship. Compounding.</p>
-        </div>
-      </div>
-      <blockquote class="pull center" style="margin-top:clamp(40px,6vw,60px)" data-reveal>One visit earns once. A returning customer keeps earning.</blockquote>
-    </div>
-  </section>
 
   <!-- ============ 08A RECENT DEPLOYMENTS (ported from Next.js portfolio) ============ -->
   <section class="sec" id="deployments" aria-labelledby="deploy-h">
@@ -711,53 +645,6 @@
     </div>
   </section>
 
-  <!-- ============ 09 CUSTOMER INTELLIGENCE ============ -->
-  <section class="sec" id="intel" hidden aria-labelledby="intel-h">
-    <div class="wrap">
-      <header class="sec-head" data-reveal>
-        <p class="kicker" data-n="11">Customer record</p>
-        <h2 class="h2" id="intel-h">Rahul, on one card.</h2>
-      </header>
-      <div class="stats" data-reveal aria-label="Customer base overview — demonstration data">
-        <div class="stat"><label>Customers</label><output data-count="2483">2,483</output></div>
-        <div class="stat"><label>Active</label><output data-count="1820">1,820</output></div>
-        <div class="stat"><label>Returning</label><output data-count="320">320</output></div>
-        <div class="stat"><label>High-value</label><output data-count="190">190</output></div>
-        <div class="stat"><label>Inactive</label><output data-count="87">87</output></div>
-        <div class="stat"><label>At risk</label><output data-count="66">66</output></div>
-      </div>
-      <p class="cap stats-cap" data-reveal>DEMO VIEW · DEMONSTRATION DATA</p>
-      <div class="intel-grid">
-        <div data-reveal>
-          <p class="own-before"><b>WITHOUT CONTEXT</b>"Rahul? He visits occasionally."</p>
-          <p class="own-after"><b>WITH INTELLIGENCE</b></p>
-          <div class="rahul">
-            <div class="rh-top">
-              <span class="rh-av">RV</span>
-              <p class="rh-name">RAHUL V.<small>CAME FROM GOOGLE · BOOKS ON WHATSAPP</small></p>
-              <span class="rh-tag">RETURNING CUSTOMER</span>
-            </div>
-            <dl class="rh-grid">
-              <div><dt>Visits</dt><dd>12</dd></div>
-              <div><dt>Lifetime spend</dt><dd>₹28,400</dd></div>
-              <div><dt>Avg purchase</dt><dd>₹2,367</dd></div>
-              <div><dt>Last visit</dt><dd>18 days ago</dd></div>
-              <div><dt>Bookings</dt><dd>14 · 12 attended</dd></div>
-              <div><dt>Reviews · referrals</dt><dd>2 · 1</dd></div>
-            </dl>
-            <p class="rh-next"><svg class="ic"><use href="#i-bell"/></svg>NEXT: 6-MONTH VISIT DUE — REMINDER SCHEDULED</p>
-          </div>
-        </div>
-        <div data-reveal>
-          <p class="qa-h2">THE QUESTIONS, ANSWERED</p>
-          <div class="qa-block"><span class="qa-q">"Who are my best customers?"</span><p class="qa-a">Ranked by visits, spend and referrals — not by memory.</p></div>
-          <div class="qa-block"><span class="qa-q">"Who hasn’t come back?"</span><p class="qa-a">66 customers going quiet. Win-backs already queued.</p></div>
-          <div class="qa-block"><span class="qa-q">"What brings customers in?"</span><p class="qa-a">Every booking attributed — Google, QR, referral, Instagram.</p></div>
-          <p class="stop">STOP GUESSING. UNDERSTAND YOUR CUSTOMERS.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ============ 10 INDUSTRIES ============ -->
   <section class="sec" id="industries" aria-labelledby="ind-h">
@@ -773,88 +660,10 @@
     </div>
   </section>
 
-  <!-- ============ 11 WHY PYRAXIS ============ -->
-  <section class="sec" id="why" hidden aria-labelledby="why-h">
-    <div class="wrap">
-      <header class="sec-head" data-reveal>
-        <p class="kicker" data-n="13">Principles</p>
-        <h2 class="h2" id="why-h">First look, then build.</h2>
-      </header>
-      <div class="why" data-reveal>
-        <div class="why-item">
-          <span class="why-num" aria-hidden="true">01</span>
-          <div><h3>Diagnose before building</h3><p>We identify where customers are lost before recommending what to build.</p></div>
-        </div>
-        <div class="why-item">
-          <span class="why-num" aria-hidden="true">02</span>
-          <div><h3>Systems, not isolated tools</h3><p>Connected capabilities that add up over time, not extra software to maintain.</p></div>
-        </div>
-        <div class="why-item">
-          <span class="why-num" aria-hidden="true">03</span>
-          <div><h3>Automate the repetitive</h3><p>Enquiries, bookings, reminders and follow-up run automatically.</p></div>
-        </div>
-        <div class="why-item">
-          <span class="why-num" aria-hidden="true">04</span>
-          <div><h3>Human judgement where it counts</h3><p>Automation handles the repeatable. People handle exceptions and relationships.</p></div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ============ 12 HOW WE BUILD IT ============ -->
-  <section class="sec" id="process" hidden aria-labelledby="process-h">
-    <div class="wrap">
-      <header class="sec-head" data-reveal>
-        <p class="kicker" data-n="11">Process</p>
-        <h2 class="h2" id="process-h">After you get in touch.</h2>
-      </header>
-      <div class="proc" id="proc" data-reveal>
-        <i class="proc-rail" aria-hidden="true"></i><i class="proc-fill" aria-hidden="true"></i><i class="proc-dot" id="procDot" aria-hidden="true"></i>
-        <ol class="proc-ol">
-          <li style="--i:0"><span class="proc-i">01</span><div><b>Discover</b><span>Where customers are lost today — mapped before anything is built.</span></div></li>
-          <li style="--i:1"><span class="proc-i">02</span><div><b>Design</b><span>A system drawn around your real customer journey.</span></div></li>
-          <li style="--i:2"><span class="proc-i">03</span><div><b>Build</b><span>Website, AI and flows — connected from day one.</span></div></li>
-          <li style="--i:3"><span class="proc-i">04</span><div><b>Launch</b><span>Live, tested, capturing real customers.</span></div></li>
-          <li style="--i:4"><span class="proc-i">05</span><div><b>Improve</b><span>Data shows what to sharpen next.</span></div></li>
-        </ol>
-      </div>
-    </div>
-  </section>
 
   <!-- ============ 13 PROOF ============ -->
 
-  <!-- ============ 14 COMPOUNDING GROWTH ============ -->
-  <section class="sec" id="compounding" hidden aria-labelledby="comp-h">
-    <div class="wrap">
-      <header class="sec-head" data-reveal>
-        <p class="kicker" data-n="15">After launch</p>
-        <h2 class="h2" id="comp-h">Kept customers compound.</h2>
-        <p class="lede">Each visit makes the next one easier to earn.</p>
-      </header>
-
-      <div class="orbit" id="orbit" data-reveal>
-        <p class="sr-only">The compounding growth loop: customer data leads to smarter decisions, which create a better experience, which brings more returning customers, which generates more reviews and referrals, which produces more growth — which feeds back into customer data.</p>
-        <canvas class="orb-cv" id="orbCv" aria-hidden="true"></canvas>
-        <div class="orb-core" aria-hidden="true">
-          <span class="orb-eyebrow">One record · compounding</span>
-          <div class="orb-read" id="orbRead">
-            <span class="orb-rn" id="orbRn">01</span>
-            <p class="orb-rt" id="orbRt">Customer data</p>
-            <p class="orb-rd" id="orbRd">Every visit, booking and message lands in one record.</p>
-          </div>
-          <div class="orb-meta"><span id="orbCycle">CYCLE 01</span><span class="orb-dots" id="orbDots"></span></div>
-        </div>
-        <ol class="orb-list">
-          <li class="ob" style="--k:0"><button type="button" class="ob-b" aria-label="Step 1: Customer Data — Every visit, booking and message lands in one record."><span class="ob-chip"><svg class="ic" aria-hidden="true"><use href="#i-receipt"/></svg></span><span class="ob-tx"><span class="ob-n">01</span><span class="ob-t">CUSTOMER DATA</span></span></button></li>
-          <li class="ob" style="--k:1"><button type="button" class="ob-b" aria-label="Step 2: Smarter Decisions — You see who returns, who drifts and what actually works."><span class="ob-chip"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></span><span class="ob-tx"><span class="ob-n">02</span><span class="ob-t">SMARTER DECISIONS</span></span></button></li>
-          <li class="ob" style="--k:2"><button type="button" class="ob-b" aria-label="Step 3: Better Experience — Each customer is remembered, so service feels personal."><span class="ob-chip"><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg></span><span class="ob-tx"><span class="ob-n">03</span><span class="ob-t">BETTER EXPERIENCE</span></span></button></li>
-          <li class="ob" style="--k:3"><button type="button" class="ob-b" aria-label="Step 4: More Returning — Timely follow-ups bring regulars back before they drift."><span class="ob-chip"><svg class="ic" aria-hidden="true"><use href="#i-loop"/></svg></span><span class="ob-tx"><span class="ob-n">04</span><span class="ob-t">MORE RETURNING</span></span></button></li>
-          <li class="ob" style="--k:4"><button type="button" class="ob-b" aria-label="Step 5: More Reviews &amp; Referrals — Happy customers are asked at the right moment."><span class="ob-chip"><svg class="ic" aria-hidden="true"><use href="#i-share"/></svg></span><span class="ob-tx"><span class="ob-n">05</span><span class="ob-t">MORE REVIEWS &amp; REFERRALS</span></span></button></li>
-          <li class="ob" style="--k:5"><button type="button" class="ob-b" aria-label="Step 6: More Growth — Retention compounds — and feeds the record again."><span class="ob-chip"><svg class="ic" aria-hidden="true"><use href="#i-chart"/></svg></span><span class="ob-tx"><span class="ob-n">06</span><span class="ob-t">MORE GROWTH</span></span></button></li>
-        </ol>
-      </div>
-    </div>
-  </section>
 
   <!-- ============ 15 FINAL CTA ============ -->
   <section class="sec" id="cta" aria-labelledby="cta-h">
@@ -881,7 +690,7 @@
     </div>
     <nav class="foot-links" aria-label="Sections">
       <a href="#leak">The Gap</a><a href="#builds">What It Builds</a><a href="#how">How It Works</a>
-      <a href="#qr">Live Demo</a><a href="#reviews">Reviews</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a>
+      <a href="#qr">QR Demo</a><a href="#reviews">Reviews</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a>
     </nav>
     <p class="foot-meta">© <span id="yr">2026</span> PYRAXIS — ONE CONNECTED SYSTEM</p>
   </div>
@@ -907,10 +716,10 @@
             </select>
           </label>
           <label>What should we fix first?<input type="text" name="need" placeholder="Missed messages, no-shows, no reviews…" maxlength="140"></label>
-          <label>Mobile (WhatsApp)<input type="tel" name="phone" autocomplete="tel" placeholder="+91…" maxlength="24"><span class="f-warn" id="phoneWarn" hidden></span></label>
-          <label>Email<input type="email" name="email" autocomplete="email" placeholder="you@company.com" maxlength="120"><span class="f-warn" id="emailWarn" hidden></span></label>
-          <p class="f-err" id="fErr" hidden></p>
-          <label class="f-consent"><input type="checkbox" name="consent" id="leadConsent"> I agree to be contacted about this request and have read the <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</label>
+          <label>Mobile (WhatsApp)<input type="tel" name="phone" autocomplete="tel" aria-describedby="fErr phoneWarn" placeholder="+91…" maxlength="24"><span class="f-warn" id="phoneWarn" role="status" hidden></span></label>
+          <label>Email<input type="email" name="email" autocomplete="email" aria-describedby="fErr emailWarn" placeholder="you@company.com" maxlength="120"><span class="f-warn" id="emailWarn" role="status" hidden></span></label>
+          <p class="f-err" id="fErr" role="alert" hidden></p>
+          <label class="f-consent"><input type="checkbox" name="consent" id="leadConsent" aria-describedby="fErr"> I agree to be contacted about this request and have read the <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</label>
           <p class="f-note">We will get back to you as soon as we can.</p>
           <button class="btn btn-solid btn-wide" type="submit">Request my system</button>
         </form>
@@ -934,6 +743,11 @@
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="sticky-cta" id="stickyCta" aria-label="Quick actions">
+  <a class="btn btn-soft" href="https://wa.me/919837104413" target="_blank" rel="noopener noreferrer">WhatsApp us</a>
+  <button class="btn btn-solid" type="button" data-open-modal>Build your system</button>
+</div>
+<button class="motion-toggle" id="motionToggle" type="button" aria-pressed="false">Pause animations</button>
 <div id="cRing" aria-hidden="true"><div class="r"><span class="r-label" id="rLabel"></span></div></div>
 <div id="cDot" aria-hidden="true"><div class="d"></div></div>
 <script defer src="js/mobile-resize-noise-fix.js"></script>
@@ -955,10 +769,9 @@
 <script defer src="js/16-qr-demo.js"></script>
 <script defer src="js/17-counters.js"></script>
 <script defer src="js/18-industries.js"></script>
-<script defer src="js/19-process-rail.js"></script>
-<script defer src="js/20-compounding-orbit.js"></script>
 <script defer src="js/21-modal-and-lead-form.js"></script>
 <script defer src="js/22-footer-year.js"></script>
+<script defer src="js/23-sticky-cta-and-motion.js"></script>
 <script defer src="js/hero-word-reveal.js"></script>
 <script defer src="js/hero-topo-field.js"></script>
 <!-- Self-hosted Three.js r159 (public/vendor): no CDN dependency, no SRI to

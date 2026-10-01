@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pyraxis.com/sitemap.xml
+Sitemap: https://thepyraxis.vercel.app/sitemap.xml

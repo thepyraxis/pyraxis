@@ -121,8 +121,9 @@
     if(phoneWarn) phoneWarn.hidden=true;
     if(emailWarn) emailWarn.hidden=true;
     if(err) err.hidden=true;
+    [name,phone,email,consent].forEach(function(i){ if(i) i.removeAttribute('aria-invalid'); });
     if(bad){
-      bad.classList.add('bad');
+      bad.classList.add('bad'); bad.setAttribute('aria-invalid','true');
       if(err){ err.textContent='Please add your name.'; err.hidden=false; }
       bad.focus(); return;
     }
@@ -135,12 +136,12 @@
     if(!contactStr){
       if(!pval&&!emval){
         if(err){ err.textContent='Add your mobile number or your email — either works.'; err.hidden=false; }
-        phone.classList.add('bad'); email.classList.add('bad');
+        phone.classList.add('bad'); email.classList.add('bad'); phone.setAttribute('aria-invalid','true'); email.setAttribute('aria-invalid','true');
         phone.focus(); return;
       }
       /* something typed, nothing valid — hard block, red on the wrong field(s) */
-      if(pBad) phone.classList.add('bad');
-      if(eBad) email.classList.add('bad');
+      if(pBad){ phone.classList.add('bad'); phone.setAttribute('aria-invalid','true'); }
+      if(eBad){ email.classList.add('bad'); email.setAttribute('aria-invalid','true'); }
       if(err){ err.textContent='That '+(pBad&&eBad?'number and email don’t':pBad?'number doesn’t':'email doesn’t')+' look right — check and try again.'; err.hidden=false; }
       (pBad?phone:email).focus(); return;
     }
@@ -148,7 +149,7 @@
     if(pBad){ phone.classList.add('warn'); if(phoneWarn){ phoneWarn.textContent='That number looks wrong — we’ll use your email.'; phoneWarn.hidden=false; } }
     if(eBad){ email.classList.add('warn'); if(emailWarn){ emailWarn.textContent='That email looks wrong — we’ll use your number.'; emailWarn.hidden=false; } }
     if(consent && !consent.checked){
-      consent.parentNode.classList.add('bad');
+      consent.parentNode.classList.add('bad'); consent.setAttribute('aria-invalid','true');
       if(err){ err.textContent='Please tick the consent box so we can get back to you.'; err.hidden=false; }
       consent.focus(); return;
     }
