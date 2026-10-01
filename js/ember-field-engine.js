@@ -656,6 +656,33 @@ const ROT=[0,.015,.16,.03,.08,.05];
    Nagpur): rot = PI/2 - ph. Single knob — nudge by a small amount (radians)
    and re-check if India isn't quite centred; a full turn is TAU (~6.283). */
 const GLOBE_HOME_Y=-2.95;
+/* GLOBE_HOME_X — X tilt (radians) bringing India's latitude (~21.5°N, Nagpur) to the vertical centre
+   of the disc. Positive = north pole leans toward camera. */
+const GLOBE_HOME_X=.375;
+/* GLOBE_SPIN_SPEED — idle rotation, radians/sec. .15 = one full turn in ~42s (real Earth direction, west to east).
+   India starts dead centre when the globe forms, then spins away and comes back each turn. */
+const GLOBE_SPIN_SPEED=.15;
+/* SCROLL-BOUND ROTATION — rotation is a pure function of scroll progress (cumulative table below), never a
+   time accumulator. Scrolling up retraces scrolling down exactly: no snap-back whip, no unwinding spin. */
+const ROT_K=9,ROTC=[0];
+for(let k=0;k<ROT.length-1;k++)ROTC.push(ROTC[k]+(ROT[k]+ROT[k+1])*.5*ROT_K);
+const GLOBE_HOME_EFF=GLOBE_HOME_Y+TAU*Math.round((ROTC[4]-GLOBE_HOME_Y)/TAU);  /* fixed short-way target, never flips */
+let ryS=null,ryV=0;  /* rendered heading + its velocity (critically damped, see smoothDamp) */
+/* smoothDamp — critically damped spring toward a target. Unlike a fixed angular-speed cap, it ALWAYS
+   settles in a fixed time no matter how far it has to travel and never overshoots, so a fast scroll-up
+   can't leave the mark creeping round in slow motion after the scroll has stopped. Returns [value,velocity]. */
+const _sd=[0,0];
+function smoothDamp(c,t,v,smoothTime,maxSpeed,dt){
+  const om=2/smoothTime,x=om*dt,ex=1/(1+x+.48*x*x+.235*x*x*x);
+  const maxCh=maxSpeed*smoothTime;
+  let ch=clamp(c-t,-maxCh,maxCh);
+  const tt=c-ch,tmp=(v+om*ch)*dt;
+  v=(v-om*tmp)*ex;
+  let out=tt+(ch+tmp)*ex;
+  if((t-c>0)===(out>t)){out=t;v=0;}   /* never overshoot */
+  _sd[0]=out;_sd[1]=v;return _sd;
+}
+const GLOBE_IDLE_SPIN=true;    /* slow ambient turn once the world has formed. false = globe holds still */
 const CA=['#ffffff','#f0eeff','#ffffff','#ece6ff','#ffffff','#faf9ff'].map(c=>new THREE.Color(c));
 const CB=['#9d74ff','#7a68c8','#8a72ec','#7c66dc','#9468ff','#8a82b4'].map(c=>new THREE.Color(c));
 
@@ -668,7 +695,7 @@ let repelAmt=0,ptrIn=false;
 let lastActive=performance.now(),rippleEnd=0;
 const ripT=[-1000,-1000,-1000,-1000,-1000];  /* ripple pool birth times, shader clock */
 let lastGlO='';
-let globeMix=0,globeMixS=0,globeSpin=0,globeTilt=0,globeDragX=0,globeDragY=0,globeDragging=false,grabHint=false;
+let globeMix=0,globeMixS=0,globeMixV=0,globeSpin=0,globeTilt=0,globeDragX=0,globeDragY=0,globeDragging=false,grabHint=false;
 /* late-texture melt: if the earth map resolves mid-finale, the particle
    target crossfades in instead of teleporting the swarm */
 let globeBlendFrom=null,globeBlendLand=null,globeBlendToLand=null,globeBlendT=1;
@@ -744,6 +771,11 @@ addEventListener('pointercancel',endDrag,{passive:true});
 try{
   const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:false,powerPreference:'high-performance'});
   renderer.setClearColor(0x000000,0);  /* transparent: the topo field behind stays visible */
+  /* GPU CONTEXT LOSS — without preventDefault the browser never restores the context: the field freezes or
+     goes blank and only a manual refresh brings it back (reads as 'it reloaded by itself'). Cancel the
+     default so three.js can rebuild GL state on 'webglcontextrestored' and the swarm just resumes. */
+  canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();},false);
+  canvas.addEventListener('webglcontextrestored',()=>{lastGlO='';ryS=null;ryV=0;},false);
   renderer.setPixelRatio(Math.min(devicePixelRatio||1,COARSE?1:(innerWidth*innerHeight>1600000?1:1.25)));  /* big screens: fewer fragments for the additive point cloud */
   renderer.setSize(innerWidth,innerHeight,false);
 
@@ -1244,7 +1276,12 @@ bootEarth();
 
 /* ================= events ================= */
 let lastW=innerWidth,lastH=innerHeight;
+let resizeT=null;
 addEventListener('resize',()=>{
+  /* a window drag fires dozens of resizes: do the buffer resize + shape rebuild ONCE when it settles */
+  clearTimeout(resizeT);resizeT=setTimeout(onResizeSettled,120);
+});
+function onResizeSettled(){
   relayout();
   /* width-gated (+ a real height jump, e.g. tablet split-view): mobile
      URL-bar show/hide fires small height-only resizes on scroll — those
@@ -1262,7 +1299,7 @@ addEventListener('resize',()=>{
   if(innerWidth!==lastW){ lastW=innerWidth; refreshOpening(); }
   lastH=innerHeight;
   setTimeout(relayout,300);
-});
+}
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(relayout);
 /* NOTE: no continuous ResizeObserver on #main here on purpose. The review
    engine appends ~10 syslog lines + chat messages over ~18s after first
@@ -1323,7 +1360,7 @@ function tick(now){
   /* single smoothing layer: fast follow so one scroll = one move.
      The old dt*3.2 + 0.6s glide double-smoothing caused
      slow-fast-slow (hang) inside a single wheel tick. */
-  cur=coarse||reduced?tgt:cur+(tgt-cur)*Math.min(1,dt*8);
+  cur=coarse||reduced?tgt:cur+(tgt-cur)*(1-Math.exp(-dt*6));
   if(Math.abs(tgt-cur)<.5)cur=tgt;
   curP=mapP(cur);
   const vel=(curP-lastFrameP)/dt;lastFrameP=curP;
@@ -1430,7 +1467,7 @@ function tick(now){
     u.uWobble.value=wob;
     u.uSize.value=siz*(1+introGlow*.3)*SZ_MUL;
     const energy=Math.sin(Math.PI*f)*clamp(Math.abs(vel)*1.4,0,1);
-    u.uEnergy.value=Math.min(1.3,lerp(u.uEnergy.value,(reduced?energy*.4:energy)+introGlow,.25));
+    u.uEnergy.value=Math.min(1.3,lerp(u.uEnergy.value,(reduced?energy*.4:energy)+introGlow,1-Math.exp(-dt*7)));
     u.uColA.value.copy(CA[i]).lerp(CA[i+1],e);
     u.uColB.value.copy(CB[i]).lerp(CB[i+1],e);
 
@@ -1440,8 +1477,11 @@ function tick(now){
           glass fades in beneath the arriving embers (bodyFade) →
           atmosphere ring breathes on last (atmFade). —— */
     globeMix=sstep(clamp((curP-4.05)/.8,0,1));
-    globeMixS+=(globeMix-globeMixS)*Math.min(1,dt*1.8);
-    const gmE=globeMixS*globeMixS*(3-2*globeMixS);
+    /* critically damped follow (not a first-order lerp): eases IN as well as out, so the world condenses
+       with a soft start and a soft landing instead of lurching the moment the scroll crosses its threshold */
+    {const r=smoothDamp(globeMixS,globeMix,globeMixV,.5,3,dt);globeMixS=clamp(r[0],0,1);globeMixV=r[1];}
+    if(Math.abs(globeMix-globeMixS)<.0005&&Math.abs(globeMixV)<.0005){globeMixS=globeMix;globeMixV=0;}
+    const gmE=globeMixS*globeMixS*globeMixS*(globeMixS*(globeMixS*6-15)+10);   /* quintic: gentle both ends */
     u.uGlobe.value=globeMixS;
     /* HERO TOPO FIELD — presence follows scroll, not a binary gate: full
        while the mark shows, melting out as the journey leaves the hero.
@@ -1512,44 +1552,39 @@ function tick(now){
     u.uAspect.value=engine.camera.aspect;
     ndc.lerp(ndcT,Math.min(1,dt*4.5));        /* slow camera drift — floats, doesn't swing */
 
-    rotFree+=rs*dt;
-    let rot=rotFree;
-    if(curP<0.65){
-      const b=sstep(clamp((0.65-curP)/.65,0,1));
-      const target=Math.round(rotFree/TAU)*TAU;
-      let d=target-rotFree;
-      d-=Math.round(d/TAU)*TAU;
-      rot=rotFree+d*b;
-    }
-    engine.group.rotation.y=rot;
+    /* heading = f(scroll) + tiny bounded drift; globe adds a fixed-target spin-into-place */
+    const rotScroll=lerp(ROTC[i],ROTC[i+1],e)*(reduced?.4:1);
+    /* ambient drift only AFTER the hero — the PYRAXIS mark must hold dead still once scroll stops */
+    let rot=rotScroll+(reduced?0:Math.sin(now*.00007)*.05*(1-heroGate));
+    let ryT=rot;
     if(globeMixS>0){
-      /* SPIN-INTO-PLACE — as the globe condenses (gmE 0→1), the baseline
-         heading eases from wherever free rotation left off toward the
-         India-centered home angle (nearest congruent turn, so it always
-         turns the short way, never whips around). Combined with the
-         spin-up below this reads as the world turning to face you as it
-         forms, then settling into its slow idle drift from there. */
-      const homeTarget=GLOBE_HOME_Y+Math.round((rot-GLOBE_HOME_Y)/TAU)*TAU;
-      rot+=(homeTarget-rot)*gmE;
-      /* gentle spin-up DURING the transition: faster while assembling
-         (1-gmE weights it), settles to the slow steady turn once formed —
-         so the globe visibly starts turning as it condenses, not only after */
-      if(!globeDragging&&!reduced)globeSpin+=dt*(.035+.05*(1-gmE));
+      rot+=(GLOBE_HOME_EFF-rot)*gmE;
+      if(!globeDragging&&!reduced&&GLOBE_IDLE_SPIN)globeSpin+=dt*GLOBE_SPIN_SPEED*gmE;  /* + = west-to-east, real Earth direction */
+      if(gmE>.98){  /* globe fully formed: a whole-turn wrap is invisible, keeps the later unwind <= half a turn */
+        globeSpin-=Math.round(globeSpin/TAU)*TAU;globeDragY-=Math.round(globeDragY/TAU)*TAU;
+      }
       const tiltT=(globeDragging||reduced)?0:clamp(-ndc.y*.35,-1.1,1.1);
       globeTilt+=(tiltT-globeTilt)*Math.min(1,dt*3);
-      /* spin and tilt EASE IN through gmE — the world winds itself up */
-      engine.group.rotation.y=rot+(globeSpin+globeDragY)*gmE;
-      engine.group.rotation.x=(globeTilt+globeDragX)*gmE;
+      ryT=rot+(globeSpin+globeDragY)*gmE;
+      engine.group.rotation.x=(GLOBE_HOME_X+globeTilt+globeDragX)*gmE;
     }else{
+      globeSpin=0;
       engine.group.rotation.x=0;
     }
+    /* RENDERED HEADING — critically damped: one smooth turn to the target, then it STOPS. Fixed settle time
+       regardless of distance (the old 1.8 rad/s cap made a long unwind crawl on after the scroll ended).
+       Tight while dragging the globe so it still tracks the cursor. */
+    if(ryS===null)ryS=ryT;
+    {const r=smoothDamp(ryS,ryT,ryV,globeDragging?.12:.3,8,dt);ryS=r[0];ryV=r[1];}
+    if(Math.abs(ryT-ryS)<.003&&Math.abs(ryV)<.02){ryS=ryT;ryV=0;}
+    engine.group.rotation.y=ryS;
 
     /* DUST LAYER — the room breathes around the world */
     if(dust){
       const tS=now/1000;
       dust.uniforms.uTime.value=tS;
       dust.uniforms.uOpacity.value=(.5+u.uEnergy.value*.25)*DUST_MUL;
-      dust.group.rotation.y=tS*.006+rotFree*.18+curP*.12;
+      dust.group.rotation.y=tS*.006+rotScroll*.18+curP*.12;
       dust.group.rotation.x=curP*.08;
       dust.group.rotation.z=Math.sin(tS*.07)*.03;
     }
