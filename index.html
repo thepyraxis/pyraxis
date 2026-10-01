@@ -977,7 +977,6 @@
   var was=mode(), t=null;
   function check(){ clearTimeout(t); t=setTimeout(function(){ if(mode()!==was) location.reload(); },350); }
   addEventListener('resize',check);
-  try{ matchMedia('(pointer: coarse)').addEventListener('change',check); }catch(e){}
 })();
 document.addEventListener('DOMContentLoaded',function(){
   /* PHONES/TOUCH: no ember/globe engine, no scroll-driven morph. The contour (topo) field
