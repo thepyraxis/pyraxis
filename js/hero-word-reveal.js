@@ -11,7 +11,7 @@
   function run(){ if(done) return; done=true; build(); }
   try{
     var f=document.fonts&&document.fonts.load?Promise.all([document.fonts.load('400 1em "Instrument Serif"'),document.fonts.load('italic 400 1em "Instrument Serif"')]):Promise.resolve();
-    f.then(run,run); setTimeout(run,1200);
+    f.then(run,run); setTimeout(run,700);
   }catch(e){ run(); }
   function build(){
   var step=80, i=0, lastWi=null;

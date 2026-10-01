@@ -6,15 +6,17 @@
     if(!tick){ tick=true; requestAnimationFrame(function(){ nav.classList.toggle('scrolled',scrollY>26); tick=false; }); }
   },{passive:true});
   if(burger&&mnav){
-    burger.addEventListener('click',function(){
-      var open=!mnav.classList.contains('open');
+    function setMenu(open){
       mnav.classList.toggle('open',open);
       burger.setAttribute('aria-expanded',String(open));
+      burger.setAttribute('aria-label',open?'Close menu':'Open menu');
       document.body.style.overflow=open?'hidden':'';
+    }
+    burger.addEventListener('click',function(){ setMenu(!mnav.classList.contains('open')); });
+    $$('#mnav a, #mnav button').forEach(function(a){ a.addEventListener('click',function(){ setMenu(false); }); });
+    document.addEventListener('keydown',function(e){
+      if(e.key==='Escape' && mnav.classList.contains('open')){ setMenu(false); burger.focus(); }
     });
-    $$('#mnav a').forEach(function(a){ a.addEventListener('click',function(){
-      mnav.classList.remove('open'); document.body.style.overflow='';
-    }); });
   }
 })();
 
