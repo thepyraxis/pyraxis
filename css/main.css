@@ -394,7 +394,7 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .ch-cap .b{display:none;color:var(--pu2)}
 .chain.connected .ch-cap .a{display:none}.chain.connected .ch-cap .b{display:inline}
 .ch-stage{display:grid;grid-template-columns:22px 1fr;align-items:center}
-.ch-dot{width:13px;height:13px;border-radius:50%;border:1px solid rgba(255,255,255,.32);background:var(--bg);transition:border-color .6s}
+.ch-dot{width:13px;height:13px;border-radius:50%;border:1px solid rgba(255,255,255,.32);background:var(--bg);transition:border-color .6s;justify-self:center}
 .chain.connected .ch-dot{border-color:var(--pu)}
 .ch-name{font:500 11.5px var(--mono);letter-spacing:.24em;color:var(--soft);padding-left:14px;transition:color .6s}
 .chain.connected .ch-name{color:var(--ink)}
@@ -406,7 +406,7 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 .ch-rail::before{top:0;height:calc(50% - 13px)}
 .ch-rail::after{bottom:0;height:calc(50% - 13px)}
 .chain.connected .ch-rail::before,.chain.connected .ch-rail::after{background:var(--pu);height:calc(50% - 1px)}
-.ch-x,.ch-j{position:absolute;left:3px;top:50%;translate:0 -50%;width:15px;height:15px;display:grid;place-items:center}
+.ch-x,.ch-j{position:absolute;left:3.5px;top:50%;translate:0 -50%;width:15px;height:15px;display:grid;place-items:center}
 .ch-x{color:#6d6d76;transition:opacity .4s var(--d,0ms),transform .4s var(--d,0ms)}
 .ch-x svg{width:11px;height:11px}
 .chain.connected .ch-x{opacity:0;transform:scale(.4) rotate(90deg)}
@@ -444,9 +444,9 @@ h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 #builds::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
   background:radial-gradient(75% 70% at 50% 55%,rgba(0,0,0,.66),transparent 72%)}
 #builds>.wrap{position:relative;z-index:1}
-.bus-line{position:absolute;left:23.5px;top:8px;bottom:8px;width:1px;background:var(--line);opacity:.75}
-#busFill{position:absolute;left:23.5px;top:8px;width:1px;bottom:8px;background:var(--pu);transform:scaleY(0);transform-origin:top}
-#busPulse{position:absolute;left:18px;top:0;width:11px;height:11px;border-radius:50%;background:var(--pu2);
+.bus-line{position:absolute;left:25px;top:8px;bottom:8px;width:1px;background:var(--line);opacity:.75}
+#busFill{position:absolute;left:25px;top:8px;width:1px;bottom:8px;background:var(--pu);transform:scaleY(0);transform-origin:top}
+#busPulse{position:absolute;left:20px;top:0;width:11px;height:11px;border-radius:50%;background:var(--pu2);
   box-shadow:0 0 14px rgba(124,92,255,.9);opacity:0;transition:opacity .4s;z-index:2}
 .mod{position:relative;display:flex;align-items:center;gap:16px;border:1px solid var(--line);border-radius:9px;
   background:rgba(13,13,18,.88);padding:14px 18px;margin:10px 0;transition:border-color .5s,background .5s}

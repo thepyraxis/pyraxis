@@ -1637,6 +1637,12 @@ function tick(now){
       lerp(cp[0][1],cn[0][1],e)+ndc.y*1.0*damp,
       lerp(cp[0][2],cn[0][2],e)
     );
+    /* RESPONSIVE FRAMING — every stage is tuned for wide screens; on narrow
+       windows the shrinking horizontal FOV crops the formations into giants.
+       Dolly out as aspect falls so mark, swarm, galaxy and globe all fit. */
+    {var fitA=engine.camera.aspect||1;
+     var fit=Math.max(.52,Math.min(1,fitA/1.05));
+     engine.camera.position.z/=fit;}
     if(introT<1){
       const gp=clamp(introT,0,1),ez=1-Math.pow(1-gp,3);
       engine.camera.position.z+=(1-ez)*10;
