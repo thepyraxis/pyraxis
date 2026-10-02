@@ -1380,3 +1380,8 @@ html.motion-off #gl,html.motion-off #topo{visibility:hidden}
 .deploy-stat a:focus-visible .arr{transform:translateX(6px)}
 .ind-tab:focus-visible{color:var(--ink);outline:2px solid var(--pu2);outline-offset:2px;border-radius:4px}
 .ind-panel:focus-visible{outline:2px solid var(--pu);outline-offset:3px}
+
+/* motion pause toggle (WCAG 2.2.2) — ported from v1 */
+/* motion toggle retired — hard-hidden so no stale markup can ever show it */
+.motion-toggle{display:none!important}
+@media print{.sticky-cta{display:none}}
