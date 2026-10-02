@@ -85,21 +85,30 @@ function makeWA(opts){
     if(!btns.length) return sleep(200);
     for(var i=0;i<btns.length;i++){ btns[i].removeAttribute('tabindex'); }
     return new Promise(function(resolve){
-      function onTap(e){
-        var t=e.target;
-        while(t&&t!==body){ if(t.classList&&t.classList.contains('wa-btn')) break; t=t.parentNode; }
-        if(!t||t===body||t.disabled) return;
+      var settled=false, auto=null;
+      function choose(t){
+        if(settled||!t||t===body||t.disabled) return;
+        settled=true;
+        if(auto) clearTimeout(auto);
         body.removeEventListener('click',onTap);
         waitCancel=null;
         t.classList.add('used');
-        ripple(t,e);
+        ripple(t,null);
         for(var j=0;j<btns.length;j++){ btns[j].disabled=true; if(btns[j]!==t) btns[j].style.opacity='.45'; }
         var m=/(\d{2}:\d{2})/.exec(t.textContent||'');
         if(m&&picked) picked.slot=m[1];
         bubble('in',t.textContent,time);
         sleep(600).then(function(){ if(tok===token) resolve(); });
       }
-      waitCancel=function(){ body.removeEventListener('click',onTap); };
+      function onTap(e){
+        var t=e.target;
+        while(t&&t!==body){ if(t.classList&&t.classList.contains('wa-btn')) break; t=t.parentNode; }
+        choose(t);
+      }
+      /* auto-demo fallback: if the visitor never taps, the first slot is
+         picked for them so the confirmation always plays */
+      auto=setTimeout(function(){ choose(btns[0]); },6500);
+      waitCancel=function(){ if(auto) clearTimeout(auto); body.removeEventListener('click',onTap); };
       body.addEventListener('click',onTap);
     });
   }

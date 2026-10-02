@@ -13,6 +13,7 @@ function addTicker(watch,fn){
 function ensureLoop(){ if(rafId==null) rafId=requestAnimationFrame(frame); }
 function frame(){
   var now=performance.now(), any=false, i;
+  if(motionOff()){ rafId=null; return; }  /* paused: stop the loop, resume via ensureLoop() */
   for(i=0;i<tickers.length;i++){ if(tickers[i].on){ any=true; tickers[i].fn(now); } }
   rafId = any ? requestAnimationFrame(frame) : null;
 }

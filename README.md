@@ -21,7 +21,7 @@ npx serve .
 
 ## Leads
 
-The contact form sends leads by email through [Web3Forms](https://web3forms.com). Set `WEB3FORMS_KEY` in `js/21-modal-and-lead-form.js`. If it is not set, or sending fails, the form offers a pre-filled WhatsApp (`919837104413`) or email message instead.
+No form. Every "Build your system" button opens WhatsApp (`919837104413`) with a prefilled message (business type, fix first, name). Email shown in footer: thepyraxis@gmail.com.
 
 ## Deploy
 

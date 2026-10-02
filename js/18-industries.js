@@ -15,15 +15,31 @@
   IND.forEach(function(x,i){
     var b=document.createElement('button'); b.type='button'; b.className='ind-tab';
     b.setAttribute('role','tab'); b.setAttribute('aria-selected','false');
+    b.id='indTab'+i; b.setAttribute('aria-controls','indPanel'); b.tabIndex=-1;
     b.innerHTML='<svg class="ic"><use href="#'+x[1]+'"/></svg><span>'+x[0]+'</span><i></i>';
     b.addEventListener('click',function(){ select(i); });
+    b.addEventListener('keydown',function(e){
+      var n=IND.length, k=-1;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown') k=(i+1)%n;
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp') k=(i-1+n)%n;
+      else if(e.key==='Home') k=0;
+      else if(e.key==='End') k=n-1;
+      if(k<0) return;
+      e.preventDefault(); select(k); $$('.ind-tab',tabs)[k].focus();
+    });
     tabs.appendChild(b);
   });
+  panel.setAttribute('tabindex','0');
   function select(i){
     $$('.ind-tab',tabs).forEach(function(t,j){
-      t.classList.toggle('on',j===i); t.setAttribute('aria-selected',String(j===i));
+      t.classList.toggle('on',j===i); t.setAttribute('aria-selected',String(j===i)); t.tabIndex=(j===i)?0:-1;
     });
     var x=IND[i];
+    /* Restaurants and Clinics are demonstrated live elsewhere on this page —
+       link them; every other workflow is an illustrative example. */
+    var see=i===0?' <a class="ind-see" href="#qr">See the live demo →</a>'
+      :i===2?' <a class="ind-see" href="#how">See the live demo →</a>':'';
+    panel.setAttribute('aria-labelledby','indTab'+i);
     panel.classList.remove('in');
     raf2(function(){
       panel.innerHTML='<p class="kicker" data-n="↳">Workflow, adapted</p><h3 class="ind-title">'+x[0]+'</h3>'+
@@ -31,7 +47,7 @@
         '<div class="ind-flow">'+x[3].map(function(f,k){
           return '<span class="fl-chip'+(k===x[3].length-1?' key':'')+'" style="--i:'+k+'">'+f+'</span>';
         }).join('<span class="fl-arr">→</span>')+'</div>'+
-        '<p class="ind-sc">&quot;'+x[4]+'&quot;</p>';
+        '<p class="ind-sc"><span class="ind-ill">Illustrative journey · </span>&quot;'+x[4]+'&quot;</p>'+see;
       panel.classList.add('in');
     });
     if(REDUCED) panel.classList.add('in');

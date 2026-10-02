@@ -10,6 +10,7 @@
     es.forEach(function(e){
       if(e.isIntersecting){
         if(!timer) timer=setInterval(function(){
+          if(motionOff()) return;
           chips.forEach(function(c,j){ c.classList.toggle('on', j===i); });
           i=(i+1)%chips.length;
         },900);

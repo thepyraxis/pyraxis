@@ -168,6 +168,7 @@
     if(typer) clearInterval(typer);
     var i=0;
     typer=setInterval(function(){
+      if(motionOff()) return;
       i++; el.textContent=text.slice(0,i);
       if(i>=text.length){
         clearInterval(typer); typer=null;
@@ -202,8 +203,8 @@
     current=which;
     endFive.classList.toggle('on', which==='five');
     endTwo.classList.toggle('on', which==='two');
-    if(s4) s4.textContent = which==='five' ? 'THE SHARE' : 'THE FIX';
-    if(s5) s5.textContent = which==='five' ? 'THE LOOP' : 'THE WIN-BACK';
+    if(s4) s4.textContent = 'THE RESPONSE';
+    if(s5) s5.textContent = 'THE FOLLOW-UP';
     reset();
     if(typer){ clearInterval(typer); typer=null; }
     var t=0, skipFrom=0;
@@ -214,7 +215,7 @@
       var when=t;
       if(REDUCED){ curT=when; fn(); return; }
       if(when<=skipFrom){ curT=when; fn(); return; }
-      timeouts.push({id:setTimeout(function(){ curT=when; fn(); },when),when:when});
+      timeouts.push({id:setTimeout(function(){ whenOn(function(){ curT=when; fn(); }); },when),when:when});
     }
     function done(){
       var other = which==='five' ? endTwo : endFive;
