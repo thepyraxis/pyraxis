@@ -1,6 +1,5 @@
 'use strict';
-/* Mobile sticky CTA (shown after the hero, hidden while modal or menu is open)
-   + "Pause animations" toggle. */
+/* Mobile sticky CTA (shown after the hero, hidden while modal or menu is open). */
 (function(){
   var bar=document.getElementById('stickyCta'), modal=document.getElementById('modal'), mnav=document.getElementById('mnav'), hero=document.getElementById('hero');
   function update(){
@@ -15,14 +14,5 @@
     if(modal) new MutationObserver(update).observe(modal,{attributes:true,attributeFilter:['hidden']});
     if(mnav) new MutationObserver(update).observe(mnav,{attributes:true,attributeFilter:['class']});
     update();
-  }
-  var t=document.getElementById('motionToggle');
-  if(t){
-    t.addEventListener('click',function(){
-      var off=!document.documentElement.classList.contains('motion-off');
-      document.documentElement.classList.toggle('motion-off',off);
-      t.setAttribute('aria-pressed',String(off));
-      t.textContent=off?'Resume animations':'Pause animations';
-    });
   }
 })();

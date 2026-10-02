@@ -6,12 +6,6 @@
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#000000">
 <script>document.documentElement.classList.add('js');</script>
-<style>
-/* no-jerk: hide hero h1 + reveal items from very first paint, reveal in one smooth pass.
-   Failsafe animation un-hides after 2.5s even if JS dies. */
-.js #hero h1:not(.split){visibility:hidden;animation:h1show 0s 1s forwards}
-@keyframes h1show{to{visibility:visible}}
-</style>
 <title>PYRAXIS — Every customer, remembered.</title>
 <meta name="description" content="Pyraxis builds one connected system for local businesses — website, booking, follow-up and reviews around a single customer record.">
 <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
@@ -32,7 +26,7 @@
 <meta name="twitter:image" content="https://thepyraxis.vercel.app/public/og-image.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"></noscript>
 <link rel="preload" as="image" media="(min-width:900px)" href="public/img/earth-2048.jpg" fetchpriority="low">
 <link rel="stylesheet" href="css/main.css">
@@ -108,10 +102,12 @@
       <a href="#builds">What it builds</a>
       <a href="#how">How it works</a>
       <a href="#qr">QR demo</a>
-      <a href="#purpose">Why PYRAXIS</a>
+      <a href="#deployments">Work</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#purpose">Purpose</a>
     </nav>
     <div class="nav-cta">
-      <button class="btn btn-solid btn-sm nav-go" data-open-modal type="button">Build your system</button>
+      <a class="btn btn-solid btn-sm nav-go" href="https://wa.me/919837104413?text=Hi%20PYRAXIS%21%20I%27d%20like%20to%20build%20my%20system.%0A%0ABusiness%20type%3A%20%0AFix%20first%3A%20%0AName%3A%20" target="_blank" rel="noopener noreferrer">Build your system</a>
       <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mnav">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9h18M3 15h18"/></svg>
       </button>
@@ -122,8 +118,11 @@
   <a href="#builds">What it builds</a>
   <a href="#how">How it works</a>
   <a href="#qr">QR demo</a>
-  <a href="#purpose">Why PYRAXIS</a>
-  <button class="btn btn-solid" data-open-modal type="button">Build your system</button>
+  <a href="#deployments">Work</a>
+  <a href="#reviews">Reviews</a>
+  <a href="#industries">Industries</a>
+  <a href="#purpose">Purpose</a>
+  <a class="btn btn-solid" href="https://wa.me/919837104413?text=Hi%20PYRAXIS%21%20I%27d%20like%20to%20build%20my%20system.%0A%0ABusiness%20type%3A%20%0AFix%20first%3A%20%0AName%3A%20" target="_blank" rel="noopener noreferrer">Build your system</a>
 </div>
 
 <main id="main" class="journey">
@@ -136,35 +135,35 @@
     <div class="wrap">
       <div class="hero-grid">
         <div>
-          <p class="kicker" data-n="01">Pyraxis — for local businesses</p>
+          <p class="kicker" data-n="01">PYRAXIS — for local businesses</p>
           <h1>Every customer,<br><em>remembered.</em></h1>
-          <p class="hero-promise">One connected system for local businesses. We replace scattered tools with one customer record that captures enquiries, books appointments and brings customers back.</p>
-          <p class="lede"><span class="lede-short">For restaurants, clinics, salons and other local businesses.</span> <span class="lede-more">Enquiries answered quickly, bookings without phone tag, follow-ups without spreadsheets.</span></p>
+          <p class="hero-promise">Capture enquiries, manage bookings and automate follow-ups. One connected system that helps local businesses turn more customers into repeat buyers.</p>
           <div class="hero-cta">
-            <a class="btn btn-soft" href="https://wa.me/919837104413" target="_blank" rel="noopener noreferrer"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>WhatsApp us</a>
-            <a class="btn btn-ghost" href="#how">See it run</a>
+            <a class="btn btn-solid btn-hero" href="https://wa.me/919837104413?text=Hi%20PYRAXIS%21%20I%27d%20like%20to%20build%20my%20system.%0A%0ABusiness%20type%3A%20%0AFix%20first%3A%20%0AName%3A%20" target="_blank" rel="noopener noreferrer"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>Build your system</a>
+            <a class="btn btn-ghost" href="#how"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>See a live demo</a>
           </div>
+          <noscript><p class="hero-note">PYRAXIS builds one connected customer system for local businesses: enquiries, bookings, follow-ups and reviews in one record. <a href="https://wa.me/919837104413?text=Hi%20PYRAXIS%21%20I%27d%20like%20to%20build%20my%20system.%0A%0ABusiness%20type%3A%20%0AFix%20first%3A%20%0AName%3A%20">Message us on WhatsApp</a> or email <a href="mailto:thepyraxis@gmail.com">thepyraxis@gmail.com</a>.</p></noscript>
         </div>
       </div>
 
       <div class="model" data-reveal aria-label="The PYRAXIS journey">
-        <span class="mp"><svg class="ic"><use href="#i-search"/></svg>Attract</span><span class="ma">→</span>
-        <span class="mp"><svg class="ic"><use href="#i-qr"/></svg>Capture</span><span class="ma">→</span>
-        <span class="mp"><svg class="ic"><use href="#i-card"/></svg>Book</span><span class="ma">→</span>
-        <span class="mp"><svg class="ic"><use href="#i-heart"/></svg>Serve</span><span class="ma">→</span>
-        <span class="mp"><svg class="ic"><use href="#i-eye"/></svg>Note</span><span class="ma">→</span>
-        <span class="mp"><svg class="ic"><use href="#i-loop"/></svg>Keep</span><span class="ma">→</span>
-        <span class="mp"><svg class="ic"><use href="#i-share"/></svg>Refer</span><span class="ma">→</span>
-        <span class="mp key"><svg class="ic"><use href="#i-chart"/></svg>Repeat</span>
+        <span class="mp"><svg class="ic"><use href="#i-user"/></svg><b>Attract</b><small>Get more enquiries</small></span><span class="ma" aria-hidden="true">→</span>
+        <span class="mp"><svg class="ic"><use href="#i-chat"/></svg><b>Capture</b><small>Via WhatsApp</small></span><span class="ma" aria-hidden="true">→</span>
+        <span class="mp"><svg class="ic"><use href="#i-cal"/></svg><b>Book</b><small>Manage reservations</small></span><span class="ma" aria-hidden="true">→</span>
+        <span class="mp"><svg class="ic"><use href="#i-heart"/></svg><b>Serve</b><small>Delight your customers</small></span><span class="ma" aria-hidden="true">→</span>
+        <span class="mp"><svg class="ic"><use href="#i-receipt"/></svg><b>Note</b><small>Keep customer details</small></span><span class="ma" aria-hidden="true">→</span>
+        <span class="mp"><svg class="ic"><use href="#i-loop"/></svg><b>Keep</b><small>Automate follow-ups</small></span><span class="ma" aria-hidden="true">→</span>
+        <span class="mp"><svg class="ic"><use href="#i-chart"/></svg><b>Refer</b><small>Turn customers into reviews</small></span><span class="ma" aria-hidden="true">→</span>
+        <span class="mp key"><svg class="ic"><use href="#i-star"/></svg><b>Repeat</b><small>Grow sustainably</small></span>
       </div>
     </div>
   </section>
 
-  <!-- ============ MARQUEE ============ -->
-  <div class="mq" aria-hidden="true">
+  <!-- ============ MARQUEE LOOP ============ -->
+  <div class="mq" aria-label="What the system does">
     <div class="mq-track">
-      <div class="mq-group"><span>Website</span><span>AI Receptionist</span><span>Simple Booking</span><span>Follow-Up Automation</span><span>Repeat Purchase</span><span>Smart Reviews</span></div>
-      <div class="mq-group"><span>Website</span><span>AI Receptionist</span><span>Simple Booking</span><span>Follow-Up Automation</span><span>Repeat Purchase</span><span>Smart Reviews</span></div>
+      <div class="mq-group"><span>AI RECEPTIONIST</span><span>Simple Booking</span><span>FOLLOW-UP AUTOMATION</span><span>Repeat Purchase</span><span>SMART REVIEWS</span><span>Website</span></div>
+      <div class="mq-group" aria-hidden="true"><span>AI RECEPTIONIST</span><span>Simple Booking</span><span>FOLLOW-UP AUTOMATION</span><span>Repeat Purchase</span><span>SMART REVIEWS</span><span>Website</span></div>
     </div>
   </div>
 
@@ -180,25 +179,24 @@
           <div class="chain" id="chain">
             <p class="ch-cap"><span class="a">The journey — today</span><span class="b">The journey — connected</span></p>
             <div class="ch-stage"><span class="ch-dot"></span><span class="ch-name">DISCOVERY</span></div>
-            <div class="ch-gap" style="--d:0ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">Discovery without capture. Interested visitors, no record.</p></div>
+            <div class="ch-gap" style="--d:0ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">Visitors arrive, but their enquiries aren't captured.</p></div>
             <div class="ch-stage"><span class="ch-dot"></span><span class="ch-name">ENQUIRY</span></div>
-            <div class="ch-gap" style="--d:120ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">Enquiries arrive after hours and remain unanswered.</p></div>
+            <div class="ch-gap" style="--d:120ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">Messages arrive after hours and go unanswered.</p></div>
             <div class="ch-stage"><span class="ch-dot"></span><span class="ch-name">RESPONSE</span></div>
-            <div class="ch-gap" style="--d:240ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">Slow replies. By then, the customer has chosen elsewhere.</p></div>
+            <div class="ch-gap" style="--d:240ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">Delayed replies send potential customers elsewhere.</p></div>
             <div class="ch-stage"><span class="ch-dot"></span><span class="ch-name">BOOKING</span></div>
-            <div class="ch-gap" style="--d:360ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">Booking without automated follow-through.</p></div>
+            <div class="ch-gap" style="--d:360ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">Customers book, but receive no follow-up.</p></div>
             <div class="ch-stage"><span class="ch-dot"></span><span class="ch-name">RETURN</span></div>
-            <div class="ch-gap" style="--d:480ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">One transaction, no reason to return.</p></div>
+            <div class="ch-gap" style="--d:480ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">Without a reason to reconnect, customers may not return.</p></div>
             <div class="ch-stage"><span class="ch-dot"></span><span class="ch-name">REVIEW / REFERRAL</span></div>
-            <div class="ch-close" aria-hidden="true"><span>PYRAXIS CLOSES THE GAPS →</span></div>
+            <div class="ch-gap" style="--d:600ms"><span class="ch-rail"><span class="ch-x" aria-hidden="true"><svg viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.4"><path d="M2 2l8 8M10 2l-8 8"/></svg></span><span class="ch-j" aria-hidden="true"><i></i></span></span><p class="ch-loss">No timely request for feedback or referrals.</p></div>
+            <div class="ch-close" aria-hidden="true"><span>PYRAXIS CLOSES THE GAPS</span></div>
           </div>
         </div>
         <aside class="gap-aside" data-reveal>
           <blockquote class="pull">They slip away in the small gaps between contacts.</blockquote>
-          <p class="lede">A delayed reply, a missed follow-up, a quiet lapse in return visits. We close those gaps with a single, connected record.</p>
+          <p class="lede">A delayed reply, a missed follow-up or a forgotten return visit can cost a business a valuable customer. An enquiry arriving at 11 PM may become a booking elsewhere by morning. We close those gaps with one connected customer system.</p>
         </aside>
-      </div>
-        </div>
       </div>
     </div>
   </section>
@@ -209,7 +207,7 @@
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="03">What it is</p>
         <h2 class="h2" id="system-h">Seven tools. <em>One record.</em></h2>
-        <p class="lede">Search, website, messaging, bookings, and payments — combined into one customer profile. No duplication, no gaps.</p>
+        <p class="lede">Every enquiry, booking and payment connected to one customer record. Know where customers came from, what they booked and when to follow up.</p>
       </header>
 
       <div class="merge" id="merge" data-reveal>
@@ -217,7 +215,7 @@
 
         <div class="merge-stage">
           <div class="mc" aria-hidden="true">
-            <div class="mc-hd"><i></i><strong>PYRAXIS · CUSTOMER RECORD</strong><em>Sara K.</em></div>
+            <div class="mc-hd"><i></i><strong>PYRAXIS · CUSTOMER RECORD</strong><em>Sara K. · since 2023</em></div>
             <ol class="mc-rows">
               <li style="--i:0"><span class="mc-src"><svg class="ic"><use href="#i-search"/></svg>Google</span><span class="mc-val">CAME FROM GOOGLE MAPS</span></li>
               <li style="--i:1"><span class="mc-src"><svg class="ic"><use href="#i-window"/></svg>Website</span><span class="mc-val">BROWSED THE MENU · TUESDAY</span></li>
@@ -230,6 +228,7 @@
             <div class="mc-ft"><svg class="ic"><use href="#i-loop"/></svg>SEVEN TOOLS · ONE RECORD</div>
           </div>
         </div>
+        <p class="merge-cap">Illustrative example</p>
       </div>
     </div>
   </section>
@@ -248,7 +247,7 @@
         <p class="sr-only">The eight components of the PYRAXIS system: website, AI receptionist, messaging, booking, follow-up automation, referrals, reviews, and customer history — all connected to one shared customer record.</p>
         <i class="bus-line" aria-hidden="true"></i><i id="busFill" aria-hidden="true"></i><i id="busPulse" aria-hidden="true"></i>
 
-        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-01</span><span class="mod-ic"><svg class="ic"><use href="#i-window"/></svg></span><span class="mod-t"><b>Conversion-Optimised Website</b><span>Built to win enquiries, not just show information.</span></span></div>
+        <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-01</span><span class="mod-ic"><svg class="ic"><use href="#i-window"/></svg></span><span class="mod-t"><b>Conversion-Optimised Website</b><span>Built to win enquiries — each one lands in the customer record.</span></span></div>
         <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-02</span><span class="mod-ic"><svg class="ic"><use href="#i-spark"/></svg></span><span class="mod-t"><b>AI Receptionist</b><span>Answers and books enquiries for you, even when you are busy.</span></span></div>
         <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-03</span><span class="mod-ic"><svg class="ic"><use href="#i-chat"/></svg></span><span class="mod-t"><b>Customer Messaging</b><span>WhatsApp and SMS, where customers already respond.</span></span></div>
         <div class="mod"><i class="mod-n" aria-hidden="true"></i><span class="mod-num">C-04</span><span class="mod-ic"><svg class="ic"><use href="#i-cal"/></svg></span><span class="mod-t"><b>Simple Booking</b><span>From first interest to confirmed booking in one flow.</span></span></div>
@@ -362,14 +361,16 @@
                   <div class="wa-date">TODAY</div>
                   <div class="wa-msg in show"><span class="wa-c">Hi — do you do teeth cleaning? Anything this week?</span><span class="wa-meta">23:31</span></div>
                   <div class="wa-msg in show" style="margin-top:10px"><span class="wa-c">…hello?</span><span class="wa-meta">23:58</span></div>
-                  <div class="wa-sys" style="margin-top:14px"><span>Delivered. Never read. The clinic opens at 09:00.</span></div>
+                  <div class="wa-sys" style="margin-top:14px"><span>Delivered · no reply. The clinic opens at 09:00.</span></div>
+                  <div class="wa-date">TOMORROW</div>
+                  <div class="wa-sys" style="margin-top:10px"><span>Seen 09:04 · no reply ever came.</span></div>
                 </div>
                 <footer class="wa-ft"></footer>
               </div>
             </div>
             <div class="d-home" aria-hidden="true"></div>
           </div>
-          <p class="duo-cap bad">Delayed response. Booking lost to a faster reply.</p>
+          <p class="duo-cap bad">No reply. No booking captured.</p>
         </div>
 
         <div data-reveal>
@@ -400,6 +401,7 @@
           <ol class="syslog" id="duoLog"></ol>
         </div>
       </div>
+      <p class="cap duo-end" data-reveal>One enquiry. Two outcomes.</p>
     </div>
   </section>
 
@@ -417,14 +419,14 @@
             <p class="tent-cap">TABLE 12 · TERRA GARDEN</p>
             <div class="qrcode"><span id="tentQR"></span><span class="scanline" aria-hidden="true"></span></div>
             <h3>SCAN FOR A SPECIAL OFFER</h3>
-            <p>DESSERT ON THE HOUSE</p>
+            <p class="offer">DESSERT ON THE HOUSE</p>
           </div>
           <p class="cap" style="margin-top:16px;text-align:center">The QR is the entry point, not the product</p>
         </div>
         <div data-reveal>
           <div class="device">
             <div class="d-island" aria-hidden="true"></div>
-            <div class="d-scr" style="height:520px;background:#f6f5f2">
+            <div class="d-scr" style="height:480px;background:#f6f5f2">
               <div class="d-status" style="color:#1b1b1f;background:#fff">
                 <span class="d-clock">20:14</span>
                 <span class="d-sig" aria-hidden="true"></span>
@@ -440,6 +442,13 @@
           <p class="q-hint"><i aria-hidden="true"></i>TAP ANYTHING — IT’S A LIVE DEMO</p>
           <ol class="syslog" id="qrLog" style="margin-top:18px"></ol>
         </div>
+      </div>
+      <div class="qr-steps" data-reveal aria-label="One scan, three steps">
+        <div class="qr-step"><span class="qs-n">01</span><span class="qs-t"><b>Scan</b><small>Enter the system</small></span></div>
+        <span class="qs-arr" aria-hidden="true">→</span>
+        <div class="qr-step"><span class="qs-n">02</span><span class="qs-t"><b>Order or book</b><small>Complete an action</small></span></div>
+        <span class="qs-arr" aria-hidden="true">→</span>
+        <div class="qr-step"><span class="qs-n">03</span><span class="qs-t"><b>Remembered</b><small>Enable follow-up</small></span></div>
       </div>
 
       <div class="qr-loop" hidden data-reveal>
@@ -477,11 +486,11 @@
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="07">Reviews</p>
         <h2 class="h2" id="reviews-h">Every review has a destination.</h2>
-        <p class="lede">Every customer is asked. Every answer goes somewhere useful.</p>
+        <p class="lede">Every customer is heard. Every response leads to a useful next step.</p>
       </header>
 
       <div class="rev" id="rev" data-reveal>
-        <p class="sr-only">Animated demonstration of the review system. After each visit, every customer is asked for a star rating and offered the same easy path to share publicly. A five-star rating leads to a public Google review. A two-star rating sends a private alert to the owner, the issue is fixed and the customer is won back.</p>
+        <p class="sr-only">Animated demonstration of the review system. After each visit, every customer is asked for a rating and offered the same public review path; low ratings also open a private recovery path with the owner.</p>
 
         <div class="rev-top">
           <div class="rev-railwrap">
@@ -489,8 +498,8 @@
               <li><button type="button" data-beat="0" aria-label="Jump to beat 1: the ask"><i>1</i><span>THE ASK</span></button></li>
               <li><button type="button" data-beat="1" aria-label="Jump to beat 2: the rating"><i>2</i><span>THE RATING</span></button></li>
               <li><button type="button" data-beat="2" aria-label="Jump to beat 3: the channels"><i>3</i><span>THE CHANNELS</span></button></li>
-              <li><button type="button" data-beat="3" aria-label="Jump to beat 4"><i>4</i><span id="revS4">THE SHARE</span></button></li>
-              <li><button type="button" data-beat="4" aria-label="Jump to beat 5"><i>5</i><span id="revS5">THE LOOP</span></button></li>
+              <li><button type="button" data-beat="3" aria-label="Jump to beat 4: the response"><i>4</i><span id="revS4">THE RESPONSE</span></button></li>
+              <li><button type="button" data-beat="4" aria-label="Jump to beat 5: the follow-up"><i>5</i><span id="revS5">THE FOLLOW-UP</span></button></li>
             </ol>
             <i class="rev-prog" id="revProg" aria-hidden="true"></i>
           </div>
@@ -560,7 +569,7 @@
       </div>
       <div class="deploy-grid">
         <div data-reveal>
-        <article class="deploy-card" tabindex="0" role="group" aria-label="Eateria, Restaurant Website and Digital Ordering, result: Live Website">
+        <article class="deploy-card" role="group" aria-label="Eateria, Restaurant Website and Digital Ordering, result: Live Website">
           <span class="deploy-num" aria-hidden="true">01</span>
           <i class="deploy-glow" aria-hidden="true"></i>
           <div class="deploy-body">
@@ -578,7 +587,7 @@
         </article>
         </div>
         <div data-reveal>
-        <article class="deploy-card" tabindex="0" role="group" aria-label="ServicePro AI Agent, AI Automation and Lead Engagement, case study available on request">
+        <article class="deploy-card" role="group" aria-label="ServicePro AI Agent, AI Automation and Lead Engagement, case study available on request">
           <span class="deploy-num" aria-hidden="true">02</span>
           <i class="deploy-glow" aria-hidden="true"></i>
           <div class="deploy-body">
@@ -595,7 +604,7 @@
         </article>
         </div>
         <div data-reveal>
-        <article class="deploy-card" tabindex="0" role="group" aria-label="StayVista Retreats, Booking System and Automation, case study available on request">
+        <article class="deploy-card" role="group" aria-label="StayVista Retreats, Booking System and Automation, case study available on request">
           <span class="deploy-num" aria-hidden="true">03</span>
           <i class="deploy-glow" aria-hidden="true"></i>
           <div class="deploy-body">
@@ -627,11 +636,12 @@
           <p class="purpose-statement" data-purpose style="--d:.1s">Good local businesses lose customers they already earned.</p>
           <div class="purpose-support" data-purpose style="--d:.2s">
             <p>A message answered too late. A booking with no reminder. A regular who quietly stopped coming, and nobody noticed.</p>
-            <p>PYRAXIS exists to close those gaps: one connected system, built around how your customers find, book and return, so growth no longer depends on memory and manual follow-up.</p>
+            <p>PYRAXIS exists to close those gaps: one connected system, built around how your customers find, book and return, so growth no longer depends on memory and manual follow-up. I build every system like it's my own shop on the line — one record, no gaps.</p>
           </div>
           <div class="purpose-founder" data-purpose style="--d:.3s">
             <b>Aman Deep Sharma</b>
             <span>Founder · PYRAXIS</span>
+            <a class="purpose-link" href="#cta">Let's build something that works <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
           </div>
         </div>
         <div class="purpose-visual">
@@ -669,11 +679,11 @@
   <section class="sec" id="cta" aria-labelledby="cta-h">
     <div class="wrap">
       <p class="kicker center" data-n="11">Begin</p>
-      <h2 class="cta-h" id="cta-h">Bring one regular<br>back next week.</h2>
+      <h2 class="cta-h" id="cta-h">Turn first visits<br>into repeat business.</h2>
       <p class="cta-mach">Website, booking, follow-up and reviews — together in <em>one record.</em></p>
-      <button class="btn btn-solid btn-lg" data-open-modal type="button">Build your system
+      <a class="btn btn-solid btn-lg" href="https://wa.me/919837104413?text=Hi%20PYRAXIS%21%20I%27d%20like%20to%20build%20my%20system.%0A%0ABusiness%20type%3A%20%0AFix%20first%3A%20%0AName%3A%20" target="_blank" rel="noopener noreferrer">Build your system on WhatsApp
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
-      </button>
+      </a>
       <p class="cta-sub">Tell us how customers find you today. We will map it, build it, and show it running.</p>
       <a class="cta-loop" href="#hero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 12a8 8 0 1 1-2.5-5.8M20 3.5V8h-4.5"/></svg>BACK TO TOP</a>
     </div>
@@ -689,68 +699,26 @@
         <p class="foot-tag">One connected system for local businesses.</p>
     </div>
     <nav class="foot-links" aria-label="Sections">
-      <a href="#leak">The Gap</a><a href="#builds">What It Builds</a><a href="#how">How It Works</a>
-      <a href="#qr">QR Demo</a><a href="#reviews">Reviews</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a>
+      <a href="#builds">What it builds</a><a href="#how">How it works</a><a href="#qr">QR demo</a>
+      <a href="#deployments">Work</a><a href="#reviews">Reviews</a><a href="#industries">Industries</a><a href="#purpose">Purpose</a>
+      <a href="privacy.html">Privacy</a><a href="terms.html">Terms</a>
     </nav>
+    <div class="foot-contact">
+      <a href="https://wa.me/919837104413" target="_blank" rel="noopener noreferrer">WhatsApp +91 98371 04413</a>
+      <a href="mailto:thepyraxis@gmail.com">thepyraxis@gmail.com</a>
+    </div>
     <p class="foot-meta">© <span id="yr">2026</span> PYRAXIS — ONE CONNECTED SYSTEM</p>
   </div>
 </footer>
 
-<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" hidden>
-  <div class="modal-back" data-close-modal></div>
-  <div class="modal-card">
-    <button class="modal-x" data-close-modal type="button" aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 5l14 14M19 5L5 19"/></svg>
-    </button>
-    <div id="modalBody">
-      <div id="mForm">
-        <p class="kicker" data-n="✳">Pyraxis</p>
-        <h3 id="mTitle">Build your system.</h3>
-        <p class="m-lede">Tell us how customers find you today. We will map it, build it, and show it running.</p>
-        <form id="leadForm" novalidate>
-          <label>Your name<input type="text" name="name" autocomplete="name" maxlength="80" spellcheck="false" autocorrect="off" autocapitalize="words"></label>
-          <label>Business type
-            <select name="type">
-              <option>Restaurant</option><option>Salon</option><option>Clinic</option><option>Gym</option>
-              <option>Hotel</option><option>Car service</option><option>Home services</option><option>Consultant / coach</option><option>E-commerce</option><option>Other</option>
-            </select>
-          </label>
-          <label>What should we fix first?<input type="text" name="need" placeholder="Missed messages, no-shows, no reviews…" maxlength="140"></label>
-          <label>Mobile (WhatsApp)<input type="tel" name="phone" autocomplete="tel" aria-describedby="fErr phoneWarn" placeholder="+91…" maxlength="24"><span class="f-warn" id="phoneWarn" role="status" hidden></span></label>
-          <label>Email<input type="email" name="email" autocomplete="email" aria-describedby="fErr emailWarn" placeholder="you@company.com" maxlength="120"><span class="f-warn" id="emailWarn" role="status" hidden></span></label>
-          <p class="f-err" id="fErr" role="alert" hidden></p>
-          <label class="f-consent"><input type="checkbox" name="consent" id="leadConsent" aria-describedby="fErr"> I agree to be contacted about this request and have read the <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</label>
-          <p class="f-note">We will get back to you as soon as we can.</p>
-          <button class="btn btn-solid btn-wide" type="submit">Request my system</button>
-        </form>
-      </div>
-      <div id="mChoice" hidden>
-        <p class="kicker" data-n="✳">Pyraxis</p>
-        <h3>Send it your way.</h3>
-        <p class="m-lede">Pick where your request opens — review and press send there.</p>
-        <button class="btn btn-solid btn-wide" type="button" id="chWa">Continue on WhatsApp</button>
-        <button class="btn btn-ghost btn-wide" type="button" id="chMail">Continue by email</button>
-        <button class="m-back" type="button" id="chBack">← Edit details</button>
-      </div>
-      <div id="mDone" class="m-done" hidden>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="10.5"/><path d="M7.5 12.5l3 3 6-7"/></svg>
-        <h4 id="doneTitle">Almost sent.</h4>
-        <p id="doneText">Your message is waiting in <b id="doneChannel">WhatsApp</b> — press send there and we will reach you quickly.</p>
-        <button class="btn btn-solid btn-wide" type="button" data-close-modal>Done</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="sticky-cta" id="stickyCta" aria-label="Quick actions">
-  <a class="btn btn-soft" href="https://wa.me/919837104413" target="_blank" rel="noopener noreferrer">WhatsApp us</a>
-  <button class="btn btn-solid" type="button" data-open-modal>Build your system</button>
+  <a class="btn btn-solid" href="https://wa.me/919837104413?text=Hi%20PYRAXIS%21%20I%27d%20like%20to%20build%20my%20system.%0A%0ABusiness%20type%3A%20%0AFix%20first%3A%20%0AName%3A%20" target="_blank" rel="noopener noreferrer">Build your system on WhatsApp</a>
 </div>
-<button class="motion-toggle" id="motionToggle" type="button" aria-pressed="false">Pause animations</button>
 <div id="cRing" aria-hidden="true"><div class="r"><span class="r-label" id="rLabel"></span></div></div>
 <div id="cDot" aria-hidden="true"><div class="d"></div></div>
 <script defer src="js/mobile-resize-noise-fix.js"></script>
+<script defer src="js/debug-diagnostics.js"></script>
 <script defer src="js/pause-offscreen-animations.js"></script>
 <script defer src="js/01-strict-and-dom-helpers.js"></script>
 <script defer src="js/02-premium-chrome.js"></script>
@@ -769,10 +737,8 @@
 <script defer src="js/16-qr-demo.js"></script>
 <script defer src="js/17-counters.js"></script>
 <script defer src="js/18-industries.js"></script>
-<script defer src="js/21-modal-and-lead-form.js"></script>
 <script defer src="js/22-footer-year.js"></script>
 <script defer src="js/23-sticky-cta-and-motion.js"></script>
-<script defer src="js/hero-word-reveal.js"></script>
 <script defer src="js/hero-topo-field.js"></script>
 <!-- Self-hosted Three.js r159 (public/vendor): no CDN dependency, no SRI to
      rotate, no document.write fallback. If the file is ever missing, the
@@ -788,7 +754,13 @@
 (function(){
   function mode(){ return ((window.matchMedia&&matchMedia('(pointer: coarse)').matches)||innerWidth<900)?'m':'d'; }
   var was=mode(), t=null;
-  function check(){ clearTimeout(t); t=setTimeout(function(){ if(mode()!==was) location.reload(); },350); }
+  /* double-confirmed: a single odd reading (zoom rounding, scrollbar flicker,
+     devtools dock) must never reload the page. Reload only if the flipped
+     mode is still flipped 600ms later. */
+  function check(){ clearTimeout(t); t=setTimeout(function(){
+    if(mode()===was) return;
+    setTimeout(function(){ if(mode()!==was) location.reload(); },600);
+  },350); }
   addEventListener('resize',check);
 })();
 document.addEventListener('DOMContentLoaded',function(){

@@ -200,9 +200,9 @@ function buildMarkShape(sm){
   const shiftY=wide?-visH*0.03:0;
   for(let i=0;i<N;i++){
     const k=(Math.random()*m)|0;
-    pos[i*3]  =(sm.pts[k*2]-cx)*s+(Math.random()-.5)*.34+shiftX;
-    pos[i*3+1]=-(sm.pts[k*2+1]-cy)*s+(Math.random()-.5)*.34+shiftY;
-    pos[i*3+2]=(Math.random()-.5)*.9;
+    pos[i*3]  =(sm.pts[k*2]-cx)*s+(Math.random()-.5)*.13+shiftX;
+    pos[i*3+1]=-(sm.pts[k*2+1]-cy)*s+(Math.random()-.5)*.13+shiftY;
+    pos[i*3+2]=(Math.random()-.5)*.35;
     acc[i]=sm.acc[k];
   }
   return{pos,acc};
@@ -508,7 +508,7 @@ attribute float aAcc;
 attribute float aLand;
 attribute vec4 aGA;   /* galaxy: size mult, alpha, soft, - */
 attribute vec3 aGC;   /* galaxy: colour */
-uniform float uTime,uWobble,uSize,uScaleH,uEnergy,uPtrStr,uGlobe,uGal,uWind;
+uniform float uTime,uWobble,uSize,uScaleH,uEnergy,uPtrStr,uGlobe,uGal,uWind,uHero;
 uniform float uRepel,uAspect;   /* scroll-field repel: strength (0 in hero), viewport aspect */
 uniform vec2 uRepelPos;         /* cursor in NDC */
 uniform vec3 uPointer;
@@ -584,24 +584,24 @@ void main(){
     }
   }
   vDepth=-mv.z;
-  gl_PointSize=min(uSize*aSize*(1.+vHit*.55)*mix(1.,aGA.x,uGal)*(1.+uEnergy*.4+vAcc*.4)*(1.-uGlobe*.3)*.09*uScaleH/max(vDepth,.1),72.);
+  gl_PointSize=min(uSize*aSize*(1.+.3*uHero)*(1.+vHit*.55)*mix(1.,aGA.x,uGal)*(1.+uEnergy*.4+vAcc*.4)*(1.-uGlobe*.3)*.09*uScaleH/max(vDepth,.1),72.);
   gl_Position=projectionMatrix*mv;
 }`;
 const FRAG=`
 uniform vec3 uColA,uColB,uAcc,uGViolet;
-uniform float uTime,uGlobe,uGal;
+uniform float uTime,uGlobe,uGal,uHero;
 varying float vMix,vGlow,vDepth,vSeed,vAcc,vLand,vFres,vBack,vShell;
 varying vec3 vGC;varying vec2 vGS;varying float vHit;
 void main(){
   vec2 c=gl_PointCoord-.5;
   float d=length(c);
   if(d>.5)discard;
-  /* SHARP SPRITE — crisp bright core + small soft halo (was one wide
-     blurry falloff), livelier per-particle twinkle */
-  float core=1.-smoothstep(.15,.33,d);
+  /* CRYSTAL SPRITE — hard-cut core, near-zero halo: edgy diamond facets, not soft embers */
+  float core=1.-smoothstep(.08,.22,d);
+  core=pow(core,1.35);
   float halo=1.-smoothstep(0.,.5,d);
   halo*=halo;
-  float a=min(core*.95+halo*mix(.4,.06,uGal),1.);
+  float a=min(core*.98+halo*mix(.14,.03,uGal),1.);
   /* GALAXY — bokeh / nebula embers swap the sharp spark for a soft disc, and
      every ember takes its own alpha; all gated by uGal so no other stage changes */
   float dd=d*2.;
@@ -609,16 +609,18 @@ void main(){
   a=mix(a,sa,vGS.y*uGal);
   a*=mix(1.,vGS.x,uGal);
   a*=.68+.32*sin(uTime*(1.8+vSeed*2.6)+vSeed*37.);
+  a=mix(a,min(a*1.18+.06,1.),uHero);   /* MARK-ONLY lift — later stages keep default twinkle */
   /* TOUCH — embers under the cursor flash and twinkle fast */
   float tw=.5+.5*sin(uTime*(16.+vSeed*22.)+vSeed*61.);
   a=min(a*(1.+vHit*(.6+1.6*tw)),1.);
   a*=1.-smoothstep(40.,88.,vDepth);
   a*=smoothstep(.4,3.5,vDepth);
   vec3 col=mix(uColB,uColA,clamp(vMix*.72+vGlow,0.,1.));
-  col+=uColA*vGlow*.9;
+  col+=uColA*vGlow*1.05;
   col=mix(col,uAcc*(.75+vGlow*.5),vAcc*.85);
   col=mix(col,vGC*1.0*(1.+vGlow*.4),uGal);       /* galaxy palette */
-  col=mix(col,vec3(1.),core*.28*(1.-vGS.y*uGal));          /* hot white centre — spark */
+  col=mix(col,vec3(1.),core*core*.32*(1.-vGS.y*uGal));          /* restrained sparkle — violet stays violet */
+  col*=1.+.18*uHero;                              /* MARK-ONLY gain — dispersal onward stays default */
   /* GENESIS — the world IS its particles. Landed embers become the skin:
      a dim violet interior floor (texture, not glow — city-light sparkle)
      and a bright limb. The gate is radius-based (vShell), so the flying
@@ -644,7 +646,7 @@ const CAM=[
   [[0,4.5,20.5],[0,0,0]],
   [[0,15.5,20.5],[0,-1.5,0]],
   [[0,12.5,16.5],[0,.5,0]],
-  [[0,1.2,26.5],[-3.4,-1,0]],
+  [[0,1.2,29.2],[-3.4,-1,0]],
 ];
 const WOB=[.02,.5,.1,1.5,.12,.14];
 const SIZ=[1.25,1.07,1.14,.96,1.09,1.14];
@@ -662,6 +664,7 @@ const GLOBE_HOME_X=.375;
 /* GLOBE_SPIN_SPEED — idle rotation, radians/sec. .15 = one full turn in ~42s (real Earth direction, west to east).
    India starts dead centre when the globe forms, then spins away and comes back each turn. */
 const GLOBE_SPIN_SPEED=.15;
+const GLOBE_FORM_SPIN=1.8;   /* extra gentle spin (rad/s) while the particles gather into the globe; eases to 0 as it forms. 0 = off */
 /* SCROLL-BOUND ROTATION — rotation is a pure function of scroll progress (cumulative table below), never a
    time accumulator. Scrolling up retraces scrolling down exactly: no snap-back whip, no unwinding spin. */
 const ROT_K=9,ROTC=[0];
@@ -696,6 +699,7 @@ let lastActive=performance.now(),rippleEnd=0;
 const ripT=[-1000,-1000,-1000,-1000,-1000];  /* ripple pool birth times, shader clock */
 let lastGlO='';
 let globeMix=0,globeMixS=0,globeMixV=0,globeSpin=0,globeTilt=0,globeDragX=0,globeDragY=0,globeDragging=false,grabHint=false;
+let flingV=0,lastMoveT=0,camPar=1;  /* release-fling velocity (rad/s), last-move timestamp, camera-parallax ramp */
 /* late-texture melt: if the earth map resolves mid-finale, the particle
    target crossfades in instead of teleporting the swarm */
 let globeBlendFrom=null,globeBlendLand=null,globeBlendToLand=null,globeBlendT=1;
@@ -730,9 +734,14 @@ addEventListener('pointermove',e=>{
   ndcT.set(nx,ny);
   /* dragging the world — your GlobeCanvas gestures, verbatim in feel */
   if(globeDragging){
-    globeDragY+=(e.clientX-dragPX)*.005;
-    globeDragX=clamp(globeDragX+(e.clientY-dragPY)*.005,-Math.PI/2.2,Math.PI/2.2);
+    const dx=e.clientX-dragPX,dy=e.clientY-dragPY;
+    globeDragY+=dx*.005;                                            /* 1:1 — drag right turns the front of the world right */
+    globeDragX=clamp(globeDragX+dy*.005,-.9,.7);                    /* HOME_X+drag stays < PI/2 so left/right never inverts */
     dragPX=e.clientX;dragPY=e.clientY;
+    /* fling inertia from the last fast movement of the gesture */
+    const nw=performance.now(),dts=(nw-lastMoveT)/1000;lastMoveT=nw;
+    if(dts>0&&dts<.12)flingV=clamp(dx*.005/dts,-3,3);
+    else if(dts>=.12)flingV=0;
   }
 },{passive:true});
 addEventListener('pointerdown',e=>{
@@ -758,11 +767,22 @@ addEventListener('pointerdown',e=>{
   if(globeMixS>.5&&e.target instanceof Element&&!e.target.closest('button,a,input,textarea,label')){
     globeDragging=true;
     dragPX=e.clientX;dragPY=e.clientY;
+    lastMoveT=performance.now();flingV=0;
     document.body.classList.add('dragging');
   }
 },{passive:true});
 document.documentElement.addEventListener('pointerleave',()=>{ptrIn=false;},{passive:true});
 addEventListener('blur',()=>{ptrIn=false;});
+addEventListener('keydown',e=>{   /* arrow keys turn the world too */
+  if(globeMixS<=.5||(e.target instanceof Element&&e.target.closest('input,textarea,select,[contenteditable]')))return;
+  const k=e.key;let used=true;
+  if(k==='ArrowLeft')globeDragY-=.14;
+  else if(k==='ArrowRight')globeDragY+=.14;
+  else if(k==='ArrowUp')globeDragX=clamp(globeDragX-.09,-.9,.7);
+  else if(k==='ArrowDown')globeDragX=clamp(globeDragX+.09,-.9,.7);
+  else used=false;
+  if(used)ptrBoost=Math.min(ptrBoost+.5,1);
+});
 addEventListener('pointerup',endDrag,{passive:true});
 addEventListener('pointercancel',endDrag,{passive:true});
 }
@@ -849,7 +869,7 @@ try{
 
   const uniforms={
     uTime:{value:0},uWobble:{value:.02},uSize:{value:1.12},uScaleH:{value:1},
-    uEnergy:{value:0},uPtrStr:{value:1},uGlobe:{value:0},uGal:{value:0},uWind:{value:1},
+    uEnergy:{value:0},uPtrStr:{value:1},uGlobe:{value:0},uGal:{value:0},uWind:{value:1},uHero:{value:1},
     uPointer:{value:new THREE.Vector3(999,999,999)},
     uRepel:{value:0},uRepelPos:{value:new THREE.Vector2(9,9)},uAspect:{value:innerWidth/innerHeight},
     uRip:{value:[new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3()]},
@@ -1352,7 +1372,7 @@ function perfGuard(dt){
 let cur=window.scrollY||0,lastFrameP=0,lastNow=performance.now(),flyAcc=0;
 function tick(now){
   requestAnimationFrame(tick);
-  if(document.hidden)return;  /* background tab: skip work, rAF re-arms on return */
+  if(document.hidden||document.documentElement.classList.contains('motion-off'))return;  /* background tab / paused: skip work */
   const dt=clamp((now-lastNow)/1000,.001,.05);lastNow=now;
   perfGuard(dt);
 
@@ -1360,7 +1380,7 @@ function tick(now){
   /* single smoothing layer: fast follow so one scroll = one move.
      The old dt*3.2 + 0.6s glide double-smoothing caused
      slow-fast-slow (hang) inside a single wheel tick. */
-  cur=coarse||reduced?tgt:cur+(tgt-cur)*(1-Math.exp(-dt*6));
+  cur=coarse||reduced?tgt:cur+(tgt-cur)*(1-Math.exp(-dt*9));
   if(Math.abs(tgt-cur)<.5)cur=tgt;
   curP=mapP(cur);
   const vel=(curP-lastFrameP)/dt;lastFrameP=curP;
@@ -1477,9 +1497,10 @@ function tick(now){
           glass fades in beneath the arriving embers (bodyFade) →
           atmosphere ring breathes on last (atmFade). —— */
     globeMix=sstep(clamp((curP-4.05)/.8,0,1));
-    /* critically damped follow (not a first-order lerp): eases IN as well as out, so the world condenses
-       with a soft start and a soft landing instead of lurching the moment the scroll crosses its threshold */
-    {const r=smoothDamp(globeMixS,globeMix,globeMixV,.5,3,dt);globeMixS=clamp(r[0],0,1);globeMixV=r[1];}
+    /* tight follow (not the old 0.5s inertia): the gates must track the
+       geometry 1:1 or the world visibly re-phases a step behind after fast
+       scrolls. Still critically damped, just with a ~120ms settle. */
+    {const r=smoothDamp(globeMixS,globeMix,globeMixV,.12,8,dt);globeMixS=clamp(r[0],0,1);globeMixV=r[1];}
     if(Math.abs(globeMix-globeMixS)<.0005&&Math.abs(globeMixV)<.0005){globeMixS=globeMix;globeMixV=0;}
     const gmE=globeMixS*globeMixS*globeMixS*(globeMixS*(globeMixS*6-15)+10);   /* quintic: gentle both ends */
     u.uGlobe.value=globeMixS;
@@ -1494,11 +1515,11 @@ function tick(now){
       }
       if(window.__topoNoTrans){
         /* full through the hero, melting away across the Problem section.
-           Multiplier matches #topo.live (0.28) so the JS takeover at 1.5s
-           is seamless — the old 0.55 doubled brightness in one frame. */
+           Multiplier matches #topo.live (0.45) so the JS takeover at 1.5s
+           is seamless. */
         const tf=1-sstep(clamp((curP-0.25)/0.45,0,1));
         window.__topoVis=tf;
-        topoCv.style.opacity=(0.28*tf).toFixed(3);
+        topoCv.style.opacity=(0.45*tf).toFixed(3);
       }else{ window.__topoVis=1; }
     }
     if(texReady)texFade=Math.min(1,texFade+dt/0.9);   /* map melts onto the glass */
@@ -1536,6 +1557,7 @@ function tick(now){
        through the mark, melting out by curP~0.7) so it never re-appears
        once the field has moved into dispersal/coherence/galaxy/globe. */
     const heroGate=1-sstep(clamp((curP-0.25)/0.45,0,1));
+    u.uHero.value=heroGate;   /* MARK-ONLY brightness/size gate — 1 on the symbol, 0 after */
     u.uPtrStr.value=(1+ptrBoost)*pdamp*(1.-globeMixS*.55)*heroGate;
     u.uWind.value=1-.6*sstep(clamp((curP-.8)/1.2,0,1));   /* full gust on the mark, lighter later */
     /* SCROLL-FIELD REPEL — the counterpart to heroGate: 0 while the mark is
@@ -1559,16 +1581,20 @@ function tick(now){
     let ryT=rot;
     if(globeMixS>0){
       rot+=(GLOBE_HOME_EFF-rot)*gmE;
-      if(!globeDragging&&!reduced&&GLOBE_IDLE_SPIN)globeSpin+=dt*GLOBE_SPIN_SPEED*gmE;  /* + = west-to-east, real Earth direction */
-      if(gmE>.98){  /* globe fully formed: a whole-turn wrap is invisible, keeps the later unwind <= half a turn */
-        globeSpin-=Math.round(globeSpin/TAU)*TAU;globeDragY-=Math.round(globeDragY/TAU)*TAU;
+      /* idle spin never stops (even mid-drag) — drag and fling simply ADD to it, like a real turned globe */
+      if(!reduced){
+        const fm=1-gmE;   /* 1 while the swarm is still gathering -> 0 once the world is formed */
+        globeSpin+=dt*((GLOBE_IDLE_SPIN?GLOBE_SPIN_SPEED*gmE:0)+GLOBE_FORM_SPIN*fm*fm);  /* same west-to-east direction, so it just slows into the idle turn */
       }
-      const tiltT=(globeDragging||reduced)?0:clamp(-ndc.y*.35,-1.1,1.1);
-      globeTilt+=(tiltT-globeTilt)*Math.min(1,dt*3);
-      ryT=rot+(globeSpin+globeDragY)*gmE;
+      /* released: coast on the last flick, bleed off exponentially (~0.45s half-life) */
+      if(!globeDragging){globeDragY+=flingV*dt*gmE;flingV*=Math.exp(-dt*2.2);if(Math.abs(flingV)<.005)flingV=0;}
+      /* whole turns are invisible, and drag/spin are drawn directly (not smoothed), so wrapping can't whip */
+      {const ws=Math.round(globeSpin/TAU)*TAU,wd=Math.round(globeDragY/TAU)*TAU;globeSpin-=ws;globeDragY-=wd;}
+      globeTilt=0;   /* fixed home tilt: the world no longer leans toward the cursor, so a release never drifts it */
+      ryT=rot;       /* only the scroll/home heading is smoothed; spin+drag are added raw below */
       engine.group.rotation.x=(GLOBE_HOME_X+globeTilt+globeDragX)*gmE;
     }else{
-      globeSpin=0;
+      globeSpin=0;flingV=0;
       engine.group.rotation.x=0;
     }
     /* RENDERED HEADING — critically damped: one smooth turn to the target, then it STOPS. Fixed settle time
@@ -1577,7 +1603,7 @@ function tick(now){
     if(ryS===null)ryS=ryT;
     {const r=smoothDamp(ryS,ryT,ryV,globeDragging?.12:.3,8,dt);ryS=r[0];ryV=r[1];}
     if(Math.abs(ryT-ryS)<.003&&Math.abs(ryV)<.02){ryS=ryT;ryV=0;}
-    engine.group.rotation.y=ryS;
+    engine.group.rotation.y=ryS+(globeMixS>0?(globeSpin+globeDragY)*gmE:0);  /* direct, zero-lag: tracks the cursor 1:1 */
 
     /* DUST LAYER — the room breathes around the world */
     if(dust){
@@ -1589,7 +1615,8 @@ function tick(now){
       dust.group.rotation.z=Math.sin(tS*.07)*.03;
     }
 
-    const damp=sstep(clamp(curP/0.8,0,1));
+    camPar+=((globeDragging?0:1)-camPar)*Math.min(1,dt*6);  /* camera stops chasing the cursor while you drag the globe */
+    const damp=sstep(clamp(curP/0.8,0,1))*camPar;
     const cp=CAM[i],cn=CAM[i+1];
     engine.camera.position.set(
       lerp(cp[0][0],cn[0][0],e)+ndc.x*1.5*damp,

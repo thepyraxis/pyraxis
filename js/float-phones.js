@@ -20,6 +20,8 @@ var CFG=[
 var devs=document.querySelectorAll('.device:not(.phone--dead)');
 CFG.forEach(function(c,i){
   var d=devs[i]; if(!d) return;
+  /* comparison phones stay stationary — messages animate, devices don't */
+  if(d.closest('.duo')) return;
   var stage=d.parentElement; stage.classList.add('fp-stage');
   d.classList.add('fp-on');
   d.style.setProperty('--rx',c.rx+'deg'); d.style.setProperty('--ry',c.ry+'deg'); d.style.setProperty('--rz',c.rz+'deg');

@@ -3,9 +3,10 @@
   var outs=$$('[data-count]'); if(!outs.length) return;
   function finish(o){
     var final=+o.getAttribute('data-count');
-    if(REDUCED){ o.textContent=final.toLocaleString('en-IN'); return; }
+    if(REDUCED||motionOff()){ o.textContent=final.toLocaleString('en-IN'); return; }
     var t0=performance.now(), DUR=1500;
     (function step(now){
+      if(motionOff()){ o.textContent=final.toLocaleString('en-IN'); return; }
       var p=Math.min(1,(now-t0)/DUR), ease=1-Math.pow(1-p,4);
       o.textContent=Math.round(final*ease).toLocaleString('en-IN');
       if(p<1) requestAnimationFrame(step);

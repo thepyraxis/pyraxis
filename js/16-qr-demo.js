@@ -74,13 +74,13 @@
     item.classList.add('sel');
     var done=$('#qDone'); if(!done) return;
     cur.d.forEach(function(line,i){
-      setTimeout(function(){
+      setTimeout(function(){ whenOn(function(){
         var div=document.createElement('div');
         div.innerHTML='<svg class="ic"><use href="#i-check"/></svg><span>'+line+'</span>';
         done.appendChild(div);
         raf2(function(){ div.classList.add('in'); });
         if(i===cur.d.length-1) pushLog(cur.tag);
-      }, 380+i*420);
+      }); }, 380+i*420);
     });
   }
   qv.addEventListener('click',function(e){
@@ -97,7 +97,7 @@
     if(tent) tent.classList.add('live');
     if(REDUCED){ vWelcome(); pushLog('QR SCANNED · TABLE 12'); return; }
     vScan();
-    setTimeout(function(){ vWelcome(); pushLog('QR SCANNED · TABLE 12'); },1600);
+    setTimeout(function(){ whenOn(function(){ vWelcome(); pushLog('QR SCANNED · TABLE 12'); }); },1600);
   }
   if('IntersectionObserver' in window){
     var io=new IntersectionObserver(function(es){
