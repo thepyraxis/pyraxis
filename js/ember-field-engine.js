@@ -464,7 +464,9 @@ const GAL={R:new Float32Array(N),TH:new Float32Array(N),Y:new Float32Array(N),OM
 }
 /* shapes[4] is a live buffer: galaxyStep() re-projects it from polar coords
    as the disc turns differentially (inner disk faster than the rim). */
-function galaxyStep(dt){
+function galaxyStep(dt,spd){
+  if(spd===undefined)spd=1;
+  dt*=spd;
   if(dt>0){
     /* ease to a near-stop after ~120 Myr of viewing so the arms never wind up */
     GAL.T+=dt*1.3*Math.max(0,1-(GAL.T-GAL.T0)/120);
@@ -472,7 +474,7 @@ function galaxyStep(dt){
   const P=shapes[4],R=GAL.R,TH=GAL.TH,Y=GAL.Y,OM=GAL.OM,T=GAL.T;
   for(let j=0;j<N;j++){
     const th=TH[j]+T*OM[j],r=R[j],j3=j*3;
-    P[j3]=Math.cos(th)*r;P[j3+1]=Y[j];P[j3+2]=Math.sin(th)*r;
+    P[j3]=Math.cos(th)*r;P[j3+1]=Y[j];P[j3+2]=-Math.sin(th)*r;   /* mirrored: disc turns the same way as the globe (+y), arms stay trailing; also matches the bar glow's rotation */
   }
 }
 shapes.push(new Float32Array(N*3));
@@ -638,6 +640,12 @@ void main(){
   }
   gl_FragColor=vec4(col,a);
 }`;
+
+/* ================= CINEMATIC FEEL — tune the scroll motion here =================
+   v1 (soft, inertial, "cinematic") : SCROLL_FOLLOW=6, GLOBE_SMOOTH=.5,  GLOBE_MAXV=3
+   v2 (tight, 1:1 tracking)         : SCROLL_FOLLOW=9, GLOBE_SMOOTH=.12, GLOBE_MAXV=8
+   Higher SCROLL_FOLLOW = snappier. Higher GLOBE_SMOOTH = slower, softer globe condense. */
+const SCROLL_FOLLOW=6, GLOBE_SMOOTH=.12, GLOBE_MAXV=8;   /* ONE soft layer (SCROLL_FOLLOW) drives everything; gates/heading stay tight so globe+galaxy never lag the particles */
 
 /* ================= scroll keyframes ================= */
 const CAM=[
@@ -1145,8 +1153,8 @@ try{
        the disc onto the world — zero at BOTH segment ends, peak mid-flight,
        so the boundary with the previous segment stays perfectly continuous. */
     const slow=(i===4);
-    const rate=slow?1.15:1.9;
-    const st=(slow?.42:.35)*(i===0?.5:1);
+    const st=(slow?.28:.35)*(i===0?.5:1);
+    const rate=slow?1/(1-st):1.9;   /* slow: stagger+travel = exactly the segment, so the world is complete at its end */
     for(let j=0;j<N;j++){
       const d=SEEDS[j]*st;
       let l=(t-d)*rate;
@@ -1159,9 +1167,9 @@ try{
       const z=A[j3+2]+(B[j3+2]-A[j3+2])*e+DIRS[j3+2]*s;
       if(slow){
         const sw=1.2*e*(1-e),cw=Math.cos(sw),sn=Math.sin(sw);
-        baseArr[j3]=x*cw-z*sn;
+        baseArr[j3]=x*cw+z*sn;
         baseArr[j3+1]=y;
-        baseArr[j3+2]=x*sn+z*cw;
+        baseArr[j3+2]=-x*sn+z*cw;   /* +y sense: same as disc spin, heading and globe spin */
       }else{
         baseArr[j3]=x;baseArr[j3+1]=y;baseArr[j3+2]=z;
       }
@@ -1315,6 +1323,8 @@ function onResizeSettled(){
     engine.camera.updateProjectionMatrix();
     engine.renderer.setSize(innerWidth,innerHeight,false);
     engine.updateScale();
+    /* setSize wipes the buffer: draw straight away (same task) so no blank frame is ever composited */
+    engine.renderer.render(engine.scene,engine.camera);
   }
   if(innerWidth!==lastW){ lastW=innerWidth; refreshOpening(); }
   lastH=innerHeight;
@@ -1380,7 +1390,7 @@ function tick(now){
   /* single smoothing layer: fast follow so one scroll = one move.
      The old dt*3.2 + 0.6s glide double-smoothing caused
      slow-fast-slow (hang) inside a single wheel tick. */
-  cur=coarse||reduced?tgt:cur+(tgt-cur)*(1-Math.exp(-dt*9));
+  cur=coarse||reduced?tgt:cur+(tgt-cur)*(1-Math.exp(-dt*SCROLL_FOLLOW));
   if(Math.abs(tgt-cur)<.5)cur=tgt;
   curP=mapP(cur);
   const vel=(curP-lastFrameP)/dt;lastFrameP=curP;
@@ -1392,8 +1402,8 @@ function tick(now){
 
     /* GALAXY — while it is (or is about to be) on screen the disc turns
        differentially: re-project shapes[4] and force a morph each frame */
-    const galOn=!reduced&&curP>3&&curP<4.85;
-    if(galOn)galaxyStep(dt);
+    const galOn=!reduced&&curP>3&&curP<5;
+    if(galOn)galaxyStep(dt,1-sstep(clamp((curP-4.5)/.5,0,1)));   /* spin eases out, never freezes mid-flight */
     const dirty=engine.morph(curP,galOn);
 
     /* CINEMATIC INTRO: embers → the PYRAXIS mark */
@@ -1500,7 +1510,7 @@ function tick(now){
     /* tight follow (not the old 0.5s inertia): the gates must track the
        geometry 1:1 or the world visibly re-phases a step behind after fast
        scrolls. Still critically damped, just with a ~120ms settle. */
-    {const r=smoothDamp(globeMixS,globeMix,globeMixV,.12,8,dt);globeMixS=clamp(r[0],0,1);globeMixV=r[1];}
+    {const r=smoothDamp(globeMixS,globeMix,globeMixV,GLOBE_SMOOTH,GLOBE_MAXV,dt);globeMixS=clamp(r[0],0,1);globeMixV=r[1];}
     if(Math.abs(globeMix-globeMixS)<.0005&&Math.abs(globeMixV)<.0005){globeMixS=globeMix;globeMixV=0;}
     const gmE=globeMixS*globeMixS*globeMixS*(globeMixS*(globeMixS*6-15)+10);   /* quintic: gentle both ends */
     u.uGlobe.value=globeMixS;
@@ -1589,7 +1599,11 @@ function tick(now){
       /* released: coast on the last flick, bleed off exponentially (~0.45s half-life) */
       if(!globeDragging){globeDragY+=flingV*dt*gmE;flingV*=Math.exp(-dt*2.2);if(Math.abs(flingV)<.005)flingV=0;}
       /* whole turns are invisible, and drag/spin are drawn directly (not smoothed), so wrapping can't whip */
-      {const ws=Math.round(globeSpin/TAU)*TAU,wd=Math.round(globeDragY/TAU)*TAU;globeSpin-=ws;globeDragY-=wd;}
+      /* wrap ONLY when the world is fully formed (gmE==1): the render multiplies by gmE, so a wrap mid-transition
+         would pop the world by gmE*TAU. Spin stays in [0,TAU) so scroll-down always turns +y and scroll-up always
+         unwinds -y — never a random direction. */
+      if(gmE<=.999&&globeSpin>TAU)globeSpin=TAU;   /* stalled mid-transition: never wind up more than one turn */
+      if(gmE>.999){globeSpin-=Math.floor(globeSpin/TAU)*TAU;globeDragY-=Math.round(globeDragY/TAU)*TAU;}
       globeTilt=0;   /* fixed home tilt: the world no longer leans toward the cursor, so a release never drifts it */
       ryT=rot;       /* only the scroll/home heading is smoothed; spin+drag are added raw below */
       engine.group.rotation.x=(GLOBE_HOME_X+globeTilt+globeDragX)*gmE;
@@ -1601,7 +1615,7 @@ function tick(now){
        regardless of distance (the old 1.8 rad/s cap made a long unwind crawl on after the scroll ended).
        Tight while dragging the globe so it still tracks the cursor. */
     if(ryS===null)ryS=ryT;
-    {const r=smoothDamp(ryS,ryT,ryV,globeDragging?.12:.3,8,dt);ryS=r[0];ryV=r[1];}
+    {const r=smoothDamp(ryS,ryT,ryV,globeDragging?.12:.14,8,dt);ryS=r[0];ryV=r[1];}
     if(Math.abs(ryT-ryS)<.003&&Math.abs(ryV)<.02){ryS=ryT;ryV=0;}
     engine.group.rotation.y=ryS+(globeMixS>0?(globeSpin+globeDragY)*gmE:0);  /* direct, zero-lag: tracks the cursor 1:1 */
 
