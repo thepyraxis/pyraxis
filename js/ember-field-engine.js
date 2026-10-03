@@ -1177,7 +1177,10 @@ try{
       const d=SEEDS[j]*st;
       let l=(t-d)*rate;
       l=l<0?0:l>1?1:l;
-      const e=slow?l*l*l*(l*(l*6-15)+10):l*l*(3-2*l);
+      /* dwell easing (smootherstep on every flight): each formation holds
+         longer and the swarm travels faster between them, instead of the
+         symmetric smoothstep which splits time evenly. */
+      const e=l*l*l*(l*(l*6-15)+10);
       const j3=j*3;
       const s=Math.sin(Math.PI*e)*arc;
       const x=A[j3]+(B[j3]-A[j3])*e+DIRS[j3]*s;
