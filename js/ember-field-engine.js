@@ -82,7 +82,20 @@ function relayout(){
      whenever fonts/images/syslog lines landed in the first seconds, and
      the lerp back read as a sudden reload/refresh of the whole field.
      Keeping `cur` steady lets curP shift by the (correct, tiny) amount. */
+  var pr=range,pk=keyPos.slice(),pv=keyVal.slice();
   layout();
+  /* SETTLING-NOISE GUARD — layout() re-runs when fonts resolve, window load
+     fires, or a resize settles. Late resources shift section positions by a
+     few px, which shifts `range`/keyPos, which shifts curP, which TELEPORTS
+     the morph target: the swarm visibly snaps formation a few seconds in,
+     reading as the particle animation reloading itself. Real window resizes
+     move things by hundreds of px and always pass; settling noise (<60px or
+     <2%) is discarded so the mapping freezes once the engine is running. */
+  var dr=Math.abs(range-pr),dk=0,i;
+  for(i=0;i<keyPos.length&&i<pk.length;i++)dk=Math.max(dk,Math.abs(keyPos[i]-pk[i]));
+  if(keyPos.length===pk.length&&dr<Math.max(60,pr*.02)&&dk<60){
+    range=pr;keyPos=pk;keyVal=pv;
+  }
 }
 addEventListener('load',relayout);
 
