@@ -650,7 +650,7 @@ void main(){
     float limb=smoothstep(.32,.75,vFres);
     vec3 gcol=uGViolet*(.08+.34*land)*(.3+.7*vSeed*vSeed);
     gcol=mix(gcol,vec3(.85,.82,1.)*(.25+.5*land),core*vSeed*vSeed*.35);  /* city-light glints */
-    gcol+=uGViolet*pow(vFres,1.8)*.6;
+    gcol+=uGViolet*pow(vFres,1.8)*.45;
     gcol*=.97+.03*sin(uTime*.5);
     col=mix(col,min(gcol,vec3(1.)),uGlobe);
     float gate=(.38+.62*limb)*vBack;
@@ -687,9 +687,10 @@ const GLOBE_HOME_Y=-2.95;
 /* GLOBE_HOME_X — X tilt (radians) bringing India's latitude (~21.5°N, Nagpur) to the vertical centre
    of the disc. Positive = north pole leans toward camera. */
 const GLOBE_HOME_X=.375;
-/* GLOBE_SPIN_SPEED — idle rotation, radians/sec. .15 = one full turn in ~42s (real Earth direction, west to east).
-   India starts dead centre when the globe forms, then spins away and comes back each turn. */
-const GLOBE_SPIN_SPEED=.15;
+/* GLOBE_SPIN_SPEED — idle rotation, radians/sec. .05 = one full turn in ~2min (real Earth direction, west to east).
+   Slow on purpose: India starts dead centre when the globe forms and stays facing through a typical
+   finale dwell instead of spinning away within seconds. */
+const GLOBE_SPIN_SPEED=.05;
 const GLOBE_FORM_SPIN=1.8;   /* extra gentle spin (rad/s) while the particles gather into the globe; eases to 0 as it forms. 0 = off */
 /* SCROLL-BOUND ROTATION — rotation is a pure function of scroll progress (cumulative table below), never a
    time accumulator. Scrolling up retraces scrolling down exactly: no snap-back whip, no unwinding spin. */
