@@ -290,7 +290,12 @@ setTimeout(()=>{if(!PIXELS_OK)fieldLive=true;},2400);
    low-end mobile GPUs are fill-rate bound, and a fullscreen 20k-point
    field at DPR 2 is what turns scroll into slideshow. Desktop keeps all. */
 const COARSE=window.matchMedia&&matchMedia('(pointer: coarse)').matches;
-const N=COARSE?1400:(innerWidth<720?4000:8500);
+/* LITE PCs (window.__pxLite, set by the boot gate in index.html): the same
+   field, but ~1/3 the particles capped at DPR 1 with no fly-away dust.
+   Fill-rate and texture/shader memory — not vertex count — are what choke
+   old integrated GPUs, so this is where the savings come from. */
+const LITE=!!window.__pxLite;
+const N=COARSE?1400:(LITE?2600:(innerWidth<720?4000:8500));
 const isMobile=innerWidth<720;
 /* PHONES/TOUCH: same world, but far fewer px of screen and only 3000 embers —
    each one reads bigger and brighter (additive) than on desktop, and the
@@ -804,7 +809,7 @@ try{
      default so three.js can rebuild GL state on 'webglcontextrestored' and the swarm just resumes. */
   canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();},false);
   canvas.addEventListener('webglcontextrestored',()=>{lastGlO='';ryS=null;ryV=0;},false);
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1,COARSE?1:(innerWidth*innerHeight>1600000?1:1.25)));  /* big screens: fewer fragments for the additive point cloud */
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,(COARSE||LITE)?1:(innerWidth*innerHeight>1600000?1:1.25)));  /* big screens + all lite PCs: fewer fragments for the additive point cloud */
   renderer.setSize(innerWidth,innerHeight,false);
 
   const scene=new THREE.Scene();
@@ -814,7 +819,7 @@ try{
         All motion lives in the vertex shader (three slow, incommensurate
         currents at a unique phase per mote), so the CPU never touches it. —— */
   {
-    const M=1200,sp=new Float32Array(M*3),sd=new Float32Array(M),twk=new Float32Array(M);
+    const M=LITE?450:1200,sp=new Float32Array(M*3),sd=new Float32Array(M),twk=new Float32Array(M);
     for(let i=0;i<M;i++){
       const v=new THREE.Vector3(gauss(),gauss(),gauss()).normalize().multiplyScalar(55+Math.random()*55);
       sp[i*3]=v.x;sp[i*3+1]=v.y*.6;sp[i*3+2]=v.z;
@@ -1018,7 +1023,7 @@ try{
   /* —— FLY-AWAY DUST — hover the mark and tiny copies of its own embers
         (same colour) break off and blow away up-left on the wind, fading as
         they go. The mark itself is never deformed. Pooled, CPU-stepped. —— */
-  const FLY_N=COARSE?0:(isMobile?240:800);
+  const FLY_N=(COARSE||LITE)?0:(isMobile?240:800);
   let fly=null;
   if(FLY_N){
     const fPos=new Float32Array(FLY_N*3),fVel=new Float32Array(FLY_N*3),

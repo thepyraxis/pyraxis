@@ -8,6 +8,9 @@
   if(!box||!cv) return;
   var ctx=cv.getContext('2d'); if(!ctx) return;
   var REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* low-end devices decode/scale 50 webp frames: cap the backing store at 1x
+     (halves canvas memory vs DPR 2, visually identical in a ~400px circle). */
+  var LITEDPR=!!((navigator.deviceMemory&&navigator.deviceMemory<=4)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4));
   var COUNT=50, BASE='public/founder-sequence/frame-', cur=1, dragging=false;
   /* text reveal — mirrors FounderStory.tsx: IO threshold 0.3 toggles visibility, stagger via --d */
   var sec=document.getElementById('purpose');
@@ -39,7 +42,7 @@
   function draw(){
     var im=imgs[cur-1];
     if(!im||!im.complete||!im.naturalWidth) return;
-    var dpr=Math.min(window.devicePixelRatio||1,2), r=box.getBoundingClientRect();
+    var dpr=LITEDPR?1:Math.min(window.devicePixelRatio||1,2), r=box.getBoundingClientRect();
     var w=Math.max(2,Math.round(r.width*dpr)), h=Math.max(2,Math.round(r.height*dpr));
     if(cv.width!==w||cv.height!==h){ cv.width=w; cv.height=h; }
     var s=Math.max(cv.width/im.naturalWidth,cv.height/im.naturalHeight);

@@ -29,7 +29,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"></noscript>
-<link rel="preload" as="image" media="(min-width:900px)" href="public/img/earth-2048.jpg" fetchpriority="low">
+<!-- earth texture is preloaded from JS only for full-tier desktops (see boot
+     script below); lite/static devices never download it (~500KB saved). -->
 <link rel="stylesheet" href="css/main.css">
 <link rel="preload" as="script" media="(min-width:900px) and (pointer:fine)" href="public/vendor/three-r159.min.js">
 <link rel="preload" as="script" media="(min-width:900px) and (pointer:fine)" href="js/ember-field-engine.js">
@@ -770,9 +771,17 @@
 })();
 (function(){
 var engineStarted=false;
+/* LOW-END PC TIERS — a "normal low-end" desktop (<=4GB RAM, <=4 CPU threads,
+   or data-saver on) still gets the ember field, but in LITE mode: fewer
+   particles, DPR<=1, no fly-away dust (see ember-field-engine.js), and the
+   topo backdrop renders at half res / lower fps. Only genuinely tiny devices
+   (<=2GB/<=2 threads) or missing WebGL fall back to the static mark. Full-tier
+   desktops additionally preload the earth texture; lite/static never fetch it. */
+var lite=(navigator.deviceMemory&&navigator.deviceMemory<=4)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)||(navigator.connection&&(navigator.connection.saveData||/2g|slow-2g/.test(navigator.connection.effectiveType||'')));
 function startDesktop(){
   if(engineStarted) return; engineStarted=true;
   window.__topoMobile=false;
+  window.__pxLite=!!lite;
   var ok=false;
   /* RESIZE FIX: right after a device-toggle/resize the GPU process can refuse one context request.
      One refusal used to mean 'no WebGL' for the whole page -> no ember mark until manual reload.
@@ -787,6 +796,15 @@ function startDesktop(){
      'no-gl' turns on the static mark (css) so the symbol is always there. */
   if(!ok||weak){ document.documentElement.classList.add('no-gl'); if(window.topoStart) window.topoStart(); return; }
   document.documentElement.classList.add('has-gl');
+  if(!lite){
+    /* full tier only: hint the earth texture early (the engine lazy-loads it
+       anyway; lite devices skip this ~500KB download entirely). */
+    try{
+      var pl=document.createElement('link');
+      pl.rel='preload'; pl.as='image'; pl.href='public/img/earth-2048.jpg';
+      pl.fetchPriority='low'; document.head.appendChild(pl);
+    }catch(e){}
+  }
   /* LAG FIX: parsing 670KB three.js + building 8500 embers + compiling shaders used to land in the
      same frames as every section script. Wait until the browser is idle (max 900ms) so first paint
      and the section scripts finish first. */
