@@ -13,7 +13,11 @@ var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 var MOBILE=!!window.__topoMobile||(matchMedia('(pointer: coarse)').matches)||innerWidth<900;
 /* low-end phones: fewer pixels, fewer frames. The contour drift is ~0.02 units/sec, so 15-20fps
    is visually identical to 60fps while costing a third of the GPU work. */
-var LOW=!!((navigator.deviceMemory&&navigator.deviceMemory<=3)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4));
+/* low-end PCs (same thresholds as the boot gate's lite tier in index.html):
+   the contour drift is ~0.02 units/sec, so half-res + ~20fps on desktop is
+   visually identical while costing a fraction of the iGPU fill-rate. */
+var LITE=!!((navigator.deviceMemory&&navigator.deviceMemory<=4)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)||(navigator.connection&&(navigator.connection.saveData||/2g|slow-2g/.test(navigator.connection.effectiveType||''))));
+var LOW=LITE;
 var started=false, raf=0, heroOn=false;
 window.topoStart=function(){
   if(started) return; started=true;
@@ -24,7 +28,7 @@ window.topoStart=function(){
 };
 
 var gl=null;
-try{ gl=cv.getContext('webgl',{alpha:false,antialias:false,depth:false,stencil:false,powerPreference:MOBILE?'low-power':'default'}); }
+try{ gl=cv.getContext('webgl',{alpha:false,antialias:false,depth:false,stencil:false,powerPreference:(MOBILE||LITE)?'low-power':'default'}); }
 catch(e){ gl=null; }
 if(!gl) return;
 
@@ -201,7 +205,7 @@ function resize(){
   lastIW=innerWidth; lastIH=innerHeight;
   /* phones: render the (soft, low-frequency) field at a fraction of CSS px and let the compositor
      upscale it — ~3x fewer fragments, no visible loss at .28 opacity */
-  var dpr=MOBILE?(LOW?0.6:0.8):1;  /* desktop: was up to 1.5x — the simplex-noise shader is soft, 1x looks identical and costs ~55% less GPU */
+  var dpr=MOBILE?(LOW?0.6:0.8):(LITE?0.5:1);  /* desktop: was up to 1.5x — the simplex-noise shader is soft, 1x looks identical and costs ~55% less GPU; lite PCs go to 0.5x */
   var w=Math.round(innerWidth*dpr), h=Math.round(innerHeight*dpr);
   if(w===cv.width&&h===cv.height) return; /* same backing size: skip, don't wipe canvas to black for nothing */
   cv.width=w;
@@ -270,6 +274,7 @@ function frame(t){
     if(performance.now()-lastScroll<140) return;
     lastDraw=t;
   }
+  else if(LITE){ if(t-lastDraw<50) return; lastDraw=t; }  /* lite PCs: ~20fps cap — the contour drift is too slow to show it */
   else{ if(t-lastDraw<33) return; lastDraw=t; }  /* desktop: 30fps cap — the contour drift is too slow to show it */
   /* fully faded out by scroll: hold the last frame, skip GL work */
   if(!MOBILE&&started&&(window.__topoVis||0)<=0.005) return;
