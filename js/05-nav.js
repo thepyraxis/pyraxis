@@ -28,6 +28,23 @@
   }
 })();
 
+/* ---------- roll-hover links: duplicate link text into a sliding italic
+   accent line (pure CSS motion, see .roll rules). Plain-text anchors only;
+   runs synchronously so there is never an unstyled flash. No-JS keeps the
+   original links untouched. */
+(function(){
+  if(REDUCED) return;
+  $$('.nav-links a, .foot-links a').forEach(function(a){
+    if(a.querySelector('*')) return;   /* rich content: leave alone */
+    var t=a.textContent; if(!t.trim()) return;
+    a.textContent='';
+    var s1=document.createElement('span'); s1.className='roll-t'; s1.textContent=t;
+    var s2=document.createElement('span'); s2.className='roll-t roll-t2';
+    s2.setAttribute('aria-hidden','true'); s2.textContent=t;
+    a.classList.add('roll'); a.appendChild(s1); a.appendChild(s2);
+  });
+})();
+
 
 
 /* ============================================================

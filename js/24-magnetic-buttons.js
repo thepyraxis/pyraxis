@@ -24,7 +24,7 @@ BTNS.forEach(function(b){
   });
   b.addEventListener('pointerleave',function(){
     if(raf){cancelAnimationFrame(raf);raf=0;}
-    b.style.transition='transform .55s cubic-bezier(.22,1,.36,1)';
+    b.style.transition='transform .7s cubic-bezier(.34,1.45,.64,1)';  /* overshoot snap-back */
     b.style.transform='';
   });
 });
