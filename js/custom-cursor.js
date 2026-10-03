@@ -35,8 +35,12 @@ function queueResolve(){
   if(textPend||scrolling)return;
   var wait=Math.max(0,70-(performance.now()-lastResolve));
   textPend=true;
-  if(wait>0) setTimeout(function(){ requestAnimationFrame(function(){ lastResolve=performance.now(); resolveText(); }); },wait);
-  else requestAnimationFrame(function(){ lastResolve=performance.now(); resolveText(); });
+  /* re-derive the element state here (not just in mouseover) so a cursor
+     parked while the page moves under it snaps back to default/view/link
+     correctly instead of freezing on a stale state */
+  var run=function(){ lastResolve=performance.now(); elState=resolveEl(); resolveText(); };
+  if(wait>0) setTimeout(function(){ requestAnimationFrame(run); },wait);
+  else requestAnimationFrame(run);
 }
 function onScrollCursor(){
   scrolling=true; clearTimeout(scrollT);
@@ -52,10 +56,21 @@ addEventListener('mousedown',function(){document.body.classList.add('pressing');
 addEventListener('mouseup',function(){document.body.classList.remove('pressing');});
 document.addEventListener('mouseleave',function(){document.body.classList.remove('cur-on');});
 document.addEventListener('mouseenter',function(){if(seen)document.body.classList.add('cur-on');});
-/* element-level states (links, views) ride mouseover; TEXT uses a per-frame
-   glyph hit-test below — block boxes stretch past their glyphs, so closest()
-   alone showed the beam in empty space far from any letter (see hero) */
+/* element-level states (links, views) ride mouseover for immediacy; the
+   throttled resolve pass below re-derives them via elementFromPoint, so a
+   stale state self-corrects when the element under the cursor changes
+   WITHOUT the mouse moving (scroll-away, DOM shifts) — no mouseover fires
+   then, and the old elState used to block the reset to default forever. */
 var elState=null;
+function resolveEl(tg){
+  if(!tg) tg=document.elementFromPoint?document.elementFromPoint(MX,MY):null;
+  if(!tg||!tg.closest)return null;
+  var t=tg.closest('[data-cursor]');
+  if(t)return t.dataset.cursor||null;
+  if(tg.closest('.deploy-prev a'))return 'view';
+  if(tg.closest('a,button,select,[role="button"]'))return 'link';
+  return null;
+}
 function textAt(x,y){
   var r=null;
   try{
@@ -89,13 +104,11 @@ function textAt(x,y){
   return el.closest('p,h1,h2,h3,h4,h5,h6,li,blockquote,dd,dt');
 }
 document.addEventListener('mouseover',function(e){
-  var tg=e.target;
-  if(!tg||!tg.closest){elState=null;return;}
-  var t=tg.closest('[data-cursor]');
-  if(t){elState=t.dataset.cursor;setState(elState);return;}
-  if(tg.closest('.deploy-prev a')){elState='view';setState('view');return;}
-  if(tg.closest('a,button,select,[role="button"]')){elState='link';setState('link');return;}
-  elState=null;
+  var tg=(e.target&&e.target.closest)?e.target:null;
+  elState=resolveEl(tg);
+  if(elState)setState(elState);
+  /* falsy: leave the visual state alone — the throttled resolve pass will
+     drop it back to default/text on its next tick */
 });
 var dX=MX, dY=MY, rX=MX, rY=MY, pvx=MX, pvy=MY, stretch=0, last=0, lastMX=MX, lastMY=MY;
 function frame(now){
