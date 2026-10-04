@@ -748,11 +748,10 @@
      rotate, no document.write fallback. If the file is ever missing, the
      WebGL sections below degrade gracefully via their own guards. -->
 <script>
-/* Ember particle field runs on phones too — the engine scales itself down
-   for touch (900-1400 embers, DPR<=1, low-power GPU, non-interactive) with
-   an extra diet for small Android. Topo starts first (instant backdrop);
-   ember boots idle-deferred after first paint. Falls back to topo-only when
-   WebGL is missing, the device is tiny, or data-saver is on. */
+/* Ember particle field is desktop-only — phones get the light contour
+   (topo) field as the single background (non-interactive, throttled for
+   small Android). No WebGL / tiny devices still get topo; only a total
+   WebGL failure on desktop falls back to the static mark. */
 /* RESIZE FIX: phone-vs-desktop mode (ember/globe engine vs static mark + topo backdrop) is decided
    once at load. Crossing the 900px / touch breakpoint later (devtools device toggle, rotating a
    tablet, snapping a window) left the wrong mode running - no PYRAXIS mark until manual reload.
@@ -801,23 +800,6 @@ function loadEmber(){
     var s=document.createElement('script'); s.src=src; s.async=false; document.body.appendChild(s);
   });
 }
-/* MOBILE particle boot: topo is already up; bring the ember PYRAXIS mark in
-   once the browser is idle so first paint + section scripts finish first.
-   Tiny devices (<=2GB/<=2 threads), data-saver/2G, or no WebGL stay topo-only
-   — no 670KB three.js download, no second GL context. Non-interactive by
-   engine design (NO_PTR on coarse), so scroll stays smooth. */
-function startMobileEmber(){
-  if(engineStarted) return;
-  var tiny=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
-  var saver=(navigator.connection&&(navigator.connection.saveData||/2g|slow-2g/.test(navigator.connection.effectiveType||'')));
-  if(tiny||saver||!glOK()) return;
-  engineStarted=true;
-  window.__pxLite=!!lite;
-  document.documentElement.classList.add('has-gl');
-  var boot=loadEmber;
-  if('requestIdleCallback' in window) requestIdleCallback(function(){ boot(); },{timeout:2500});
-  else setTimeout(boot,1200);
-}
 function startDesktop(){
   if(engineStarted) return; engineStarted=true;
   window.__topoMobile=false;
@@ -853,15 +835,13 @@ function startDesktop(){
   },2000);
 }
 document.addEventListener('DOMContentLoaded',function(){
-  /* PHONES/TOUCH: topo contour starts idle (instant cheap backdrop, no static
-     mark); the particle ember PYRAXIS mark boots idle-deferred after it
-     (see startMobileEmber) — tiny / saver / no-WebGL devices stay topo-only. */
+  /* PHONES/TOUCH: no particle ember engine, no static PYRAXIS mark. The
+     light contour (topo) field is the only background — non-interactive
+     and throttled for small Android (see hero-topo-field.js). Starts idle
+     so first paint stays fast. */
   if((window.matchMedia&&matchMedia('(pointer: coarse)').matches)||innerWidth<900){
     window.__topoMobile=true;
-    var kick=function(){
-      if(window.topoStart) window.topoStart();
-      startMobileEmber();
-    };
+    var kick=function(){ if(window.topoStart) window.topoStart(); };
     if('requestIdleCallback' in window) requestIdleCallback(kick,{timeout:1200});
     else setTimeout(kick,600);
     return;
