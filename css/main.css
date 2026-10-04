@@ -68,7 +68,7 @@ body[data-cstate="text"] #cDot .d{width:2px;height:24px;margin:-12px 0 0 -1px;bo
 #gl.on{opacity:var(--gl-o,.8)}  /* JS sets --gl-o: lower on phones */
 #topo{position:fixed;inset:0;width:100%;height:100%;opacity:0;transition:opacity 1.4s ease;pointer-events:none;z-index:0}
 #topo.live{opacity:.45}
-@media(max-width:899px),(pointer:coarse){#topo.live{opacity:.5}}  /* phones: no ember field, so the contour field carries the background — desktop-level presence */
+@media(max-width:899px),(pointer:coarse){#topo.live{opacity:.5}}  /* touch fallback only — coarse-pointer phones hide #topo outright (see mobile hero presence block) */
 #hero>.wrap{position:relative;z-index:1}
 .vig{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 44%,transparent 55%,rgba(0,0,0,.55) 100%)}
 #main,footer{position:relative;z-index:2}
@@ -1247,29 +1247,23 @@ footer{border-top:1px solid var(--line);padding:72px 0 44px;background:linear-gr
 }
 
 /* ============ MOBILE HERO PRESENCE (<=899px / coarse) ============
-   No particle ember field on phones (GPU cost), so the hero gets three
-   compositor-only layers instead: a faint brand watermark, one slow
-   aurora drift, and a CTA sheen. Only transform/opacity animate —
-   no per-frame main-thread work. Desktop untouched. Off-screen pause is
-   automatic via .anim-off; scroll pause via html.is-scrolling below;
-   reduced-motion via the global kill-switch. */
+   No contour topo pattern on phones (removed) and no particle ember
+   field (GPU cost). The hero keeps a static faint brand watermark, a CTA
+   sheen and a gradient headline accent; the ambient glow is global now
+   (see sitewide ambient glow below), so it follows you down the page.
+   Desktop untouched here.
+   Off-screen pause is automatic via .anim-off; scroll pause via
+   html.is-scrolling below; reduced-motion via the global kill-switch. */
 @media(max-width:899px),(pointer:coarse){
   #hero{position:relative}
-  /* 1 · watermark mark, top-right bleed, barely-there */
+  /* contour pattern off on phones — clean backdrop, ambient glow carries the mood */
+  #topo{display:none!important}
+  /* 1 · watermark mark, top-right bleed, barely-there, static */
   .hero-mark{display:block!important;position:absolute;z-index:0;
     top:clamp(64px,11vh,118px);right:-30vw;width:min(92vw,430px);height:auto;
-    opacity:.13;pointer-events:none;animation:pxmark 14s ease-in-out infinite}
+    opacity:.13;pointer-events:none}
   .hero-mark svg{display:block;width:100%;height:auto}
-  @keyframes pxmark{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-12px,0)}}
-  /* 2 · aurora drift behind everything (soft radial washes, no blur filter) */
-  #hero::before{content:"";position:absolute;z-index:0;left:-30vw;right:-30vw;top:-12vh;bottom:0;
-    pointer-events:none;
-    background:
-      radial-gradient(42% 48% at 30% 32%,rgba(124,92,255,.20),transparent 70%),
-      radial-gradient(44% 50% at 72% 64%,rgba(0,168,132,.10),transparent 70%);
-    animation:pxaurora 18s ease-in-out infinite alternate}
-  @keyframes pxaurora{from{transform:translate3d(-3%,0,0) scale(1)}to{transform:translate3d(3%,-2%,0) scale(1.07)}}
-  /* 3 · primary CTA sheen + gradient headline accent */
+  /* 2 · primary CTA sheen + gradient headline accent */
   .hero-cta .btn-solid{position:relative;overflow:hidden}
   .hero-cta .btn-solid::after{content:"";position:absolute;inset:0;pointer-events:none;
     background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.38) 50%,transparent 58%);
@@ -1280,6 +1274,24 @@ footer{border-top:1px solid var(--line);padding:72px 0 44px;background:linear-gr
     #hero h1 em{background:linear-gradient(115deg,#d3c4ff 5%,var(--pu2) 55%,#7c5cff 95%);
       -webkit-background-clip:text;background-clip:text;color:transparent}
   }
+}
+
+/* ============ SITEWIDE AMBIENT GLOW (mobile + desktop) ============
+   One fixed purple wash that stays with you everywhere: scrolling down
+   or up, the glow is always there behind the content. Same layer as the
+   canvases (z-index:0, content sits above), pointer-transparent, and
+   compositor-only drift — no per-frame main-thread work. */
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(52% 58% at 30% 24%,rgba(124,102,224,.11),transparent 70%),
+    radial-gradient(46% 52% at 74% 76%,rgba(112,102,196,.08),transparent 70%);
+  animation:pxambient 24s ease-in-out infinite alternate}
+@keyframes pxambient{from{transform:translate3d(-2%,0,0) scale(1)}to{transform:translate3d(2%,-2%,0) scale(1.05)}}
+/* small bright screens wash the wash out — mobile gets a stronger pass */
+@media(max-width:899px),(pointer:coarse){
+  body::before{background:
+    radial-gradient(60% 52% at 50% 20%,rgba(124,102,224,.16),transparent 70%),
+    radial-gradient(56% 50% at 50% 82%,rgba(112,102,196,.11),transparent 70%)}
 }
 
 /* ---- mobile-first flow explainer: one customer, five touchpoints, one record ---- */
@@ -1396,7 +1408,7 @@ a.roll:focus-visible .roll-t{transform:translateY(-100%)}@media (hover:hover){a.
 /* motion pause toggle (WCAG 2.2.2) — ported from v1 */
 /* motion toggle retired — hard-hidden so no stale markup can ever show it */
 .motion-toggle{display:none!important}
-@media print{.sticky-cta,#gl,#topo,.vig,.hero-mark,#cDot,#cRing,.mnav{display:none!important}}
+@media print{.sticky-cta,#gl,#topo,.vig,.hero-mark,#cDot,#cRing,.mnav,body::before{display:none!important}}
 
 
 /* ============ SCROLL SMOOTHNESS ============
@@ -1415,8 +1427,7 @@ html.is-scrolling .rev-end.pulse,
 html.is-scrolling .vis-chip.key,
 html.is-scrolling .wa-btn:not(.used)::before,
 html.is-scrolling .rj-pulse,
-html.is-scrolling .hero-mark,
-html.is-scrolling #hero::before,
+html.is-scrolling body::before,
 html.is-scrolling .hero-cta .btn-solid::after,
 html.is-scrolling .ob.hot .ob-b::after{animation-play-state:paused!important}
 
