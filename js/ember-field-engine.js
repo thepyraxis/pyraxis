@@ -336,11 +336,13 @@ shapes.push(CORE.pos);
   }
   shapes.push(a);
 }
-/* 2 — coherence: fuzzy trefoil knot */
+/* 2 — coherence: fuzzy trefoil knot. Tight tube (fuzz ≈12% of knot scale,
+   matching the reference): particles sit densely on the curve so the knot
+   reads crisp instead of bloomed. Curve and scale untouched. */
 {
   const a=new Float32Array(N*3),S=2.75;
   for(let i=0;i<N;i++){
-    const t=(i/N)*TAU,th=.5+Math.random()*.55;
+    const t=(i/N)*TAU,th=.18+Math.random()*.3;
     a[i*3]=(Math.sin(t)+2*Math.sin(2*t))*S+gauss()*th;
     a[i*3+1]=(Math.cos(t)-2*Math.cos(2*t))*S+gauss()*th;
     a[i*3+2]=(-Math.sin(3*t))*S+gauss()*th;
