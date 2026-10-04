@@ -523,7 +523,7 @@ for(let i=0;i<N;i++){
   DIRS[i*3]=v.x;DIRS[i*3+1]=v.y;DIRS[i*3+2]=v.z;
 }
 for(let j=0;j<N;j++)GAL.GA[j*4]=GAL.GSZ[j]/SIZES[j];   /* px-size → multiplier on aSize */
-const ARCS=[2.6,2.8,2.0,2.6,0];   /* genesis flight is straight: ANY mid-flight offset that vanishes at landing reverses by construction (out and back) — that reversal WAS the jerk. No arc, no swirl, ever again here. */
+const ARCS=[2.6,2.8,0,2.6,0];   /* segment 2 (knot→disc) is straight like genesis: the scattered arc made the loop shatter instead of melting. Camera still rises to reveal the disc — that reveal is intentional. */
 const LAND=new Float32Array(N).fill(.7);  /* fallback ember-world glow */
 
 /* ================= shaders ================= */
