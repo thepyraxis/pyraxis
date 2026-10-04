@@ -839,6 +839,18 @@ document.addEventListener('DOMContentLoaded',function(){
      light contour (topo) field is the only background — non-interactive
      and throttled for small Android (see hero-topo-field.js). Starts idle
      so first paint stays fast. */
+  /* DIAG: expose the tier decision so a "works local, broken live" report can
+     be settled from the console (same PC + same window must give same values;
+     if innerWidth<900 or coarse is true here, the mobile/touch path is — by
+     design — topo-only with no ember particles and no mouse interaction). */
+  try{
+    window.__pxDbg={w:innerWidth,h:innerHeight,dpr:window.devicePixelRatio||1,
+      coarse:!!(window.matchMedia&&matchMedia('(pointer: coarse)').matches),
+      lite:!!lite,mem:navigator.deviceMemory||null,cpu:navigator.hardwareConcurrency||null,
+      saveData:!!(navigator.connection&&navigator.connection.saveData),
+      effType:(navigator.connection&&navigator.connection.effectiveType)||null};
+    if(window.console&&console.info) console.info('[px-tier]',JSON.stringify(window.__pxDbg));
+  }catch(e){}
   if((window.matchMedia&&matchMedia('(pointer: coarse)').matches)||innerWidth<900){
     window.__topoMobile=true;
     var kick=function(){ if(window.topoStart) window.topoStart(); };

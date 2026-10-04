@@ -363,6 +363,12 @@ const LITE=!!window.__pxLite;
    so scroll stays on the compositor thread. */
 const SMALL=COARSE&&((Math.min(screen.width||9999,innerWidth||9999)<=400)||(navigator.deviceMemory&&navigator.deviceMemory<=3)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4));
 const N=COARSE?(SMALL?900:1400):(LITE?2600:(innerWidth<720?4000:8500));
+/* DIAG: expose the particle budget + interaction gate for live-vs-local reports */
+try{window.__pxEngine={N:N,LITE:!!LITE,COARSE:!!COARSE,SMALL:!!SMALL,
+  noPtr:!!((window.matchMedia&&matchMedia('(pointer: coarse)').matches)||innerWidth<900),
+  w:innerWidth,h:innerHeight};
+  if(window.console&&console.info)console.info('[px-engine]',JSON.stringify(window.__pxEngine));
+}catch(e){}
 const isMobile=innerWidth<720;
 /* PHONES/TOUCH: same world, but far fewer px of screen and only 3000 embers —
    each one reads bigger and brighter (additive) than on desktop, and the
