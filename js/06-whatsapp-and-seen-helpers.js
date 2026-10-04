@@ -2,7 +2,7 @@
 function makeWA(opts){
   var body=opts.body, log=opts.log, clock=opts.clock, token=0, lastDir=null;
   var TICK='<svg class="ticks" viewBox="0 0 18 12" aria-hidden="true"><path pathLength="1" d="M2.5 6.4l3 3 7-8"/><path pathLength="1" d="M8 9.2l1.1 1.1 7.2-8.2"/></svg>';
-  function scroll(){ body.scrollTop=body.scrollHeight; }
+  function scroll(){ requestAnimationFrame(function(){ body.scrollTop=body.scrollHeight; }); }
   function life(m){
     var t=m.querySelector('.ticks');
     if(!t) return;
@@ -59,6 +59,7 @@ function makeWA(opts){
     var li=document.createElement('li');
     li.innerHTML='<svg viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7"/></svg><span>'+text+'</span>';
     log.appendChild(li);
+    holdMin(log);
     raf2(function(){ li.classList.add('in'); });
     return sleep(280);
   }
