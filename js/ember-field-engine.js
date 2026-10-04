@@ -519,7 +519,7 @@ for(let i=0;i<N;i++){
   DIRS[i*3]=v.x;DIRS[i*3+1]=v.y;DIRS[i*3+2]=v.z;
 }
 for(let j=0;j<N;j++)GAL.GA[j*4]=GAL.GSZ[j]/SIZES[j];   /* px-size → multiplier on aSize */
-const ARCS=[2.6,2.8,2.0,2.6,2.1];   /* genesis flight: arc WITHOUT swirl (Energy Study Nº 001 reference) — a fixed-direction spread reads as breathing; a reversing rotation read as wrong-way. Swirl stays deleted. */
+const ARCS=[2.6,2.8,2.0,2.6,0];   /* genesis flight is straight: ANY mid-flight offset that vanishes at landing reverses by construction (out and back) — that reversal WAS the jerk. No arc, no swirl, ever again here. */
 const LAND=new Float32Array(N).fill(.7);  /* fallback ember-world glow */
 
 /* ================= shaders ================= */
@@ -1181,9 +1181,10 @@ try{
     const i=clamp(Math.floor(p),0,4);
     const t=clamp(p-i,0,1);
     const A=shapes[i],B=shapes[i+1],arc=ARCS[i];
-    /* THE LAST FLIGHT — Energy Study Nº 001 timing: quintic ease, stagger .3,
-       rate 1.5, wide fixed-direction arcs, NO rotational component. Straight
-       converge proved too flat; the arc restores the curve. */
+    /* THE LAST FLIGHT — straight staggered converge (see ARCS note): every
+       particle flies one monotonic eased line to the globe, so direction can
+       never reverse mid-flight. Cinema comes from the cascade timing plus the
+       genesis surge, camera dolly and globe spin-up around it. */
     const slow=(i===4);
     const st=(slow?.3:.35)*(i===0?.5:1);
     const rate=slow?1.5:1.9;   /* slow: stagger+travel = exactly the segment, so the world is complete at its end */
@@ -1531,9 +1532,12 @@ function tick(now){
     }
     u.uTime.value=now/1000;
     u.uWobble.value=wob;
-    u.uSize.value=siz*(1+introGlow*.3)*SZ_MUL;
+    /* GENESIS SURGE — brightness swells as the world forms, then settles.
+       Pure intensity (no displacement), so it cannot disturb flight paths. */
+    const genGlow=reduced?0:Math.sin(Math.PI*sstep(clamp((curP-4.05)/.9,0,1)));
+    u.uSize.value=siz*(1+introGlow*.3+genGlow*.15)*SZ_MUL;
     const energy=Math.sin(Math.PI*f)*clamp(Math.abs(vel)*1.4,0,1);
-    u.uEnergy.value=Math.min(1.3,lerp(u.uEnergy.value,(reduced?energy*.4:energy)+introGlow,1-Math.exp(-dt*7)));
+    u.uEnergy.value=Math.min(1.5,lerp(u.uEnergy.value,(reduced?energy*.4:energy)+introGlow,1-Math.exp(-dt*7))+genGlow*.4);
     u.uColA.value.copy(CA[i]).lerp(CA[i+1],e);
     u.uColB.value.copy(CB[i]).lerp(CB[i+1],e);
 
