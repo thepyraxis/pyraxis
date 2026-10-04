@@ -18,6 +18,10 @@ var MOBILE=!!window.__topoMobile||(matchMedia('(pointer: coarse)').matches)||inn
    visually identical while costing a fraction of the iGPU fill-rate. */
 var LITE=!!((navigator.deviceMemory&&navigator.deviceMemory<=4)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)||(navigator.connection&&(navigator.connection.saveData||/2g|slow-2g/.test(navigator.connection.effectiveType||''))));
 var LOW=LITE;
+/* small Android: very narrow screens or <=3GB RAM / <=4 threads get the
+   ultra-lite path — lowest DPR + slowest frame rate. Drift is ~0.02 u/s,
+   so 12fps looks identical to 60fps at a fraction of the GPU cost. */
+var SMALL=MOBILE&&((Math.min(screen.width||9999,innerWidth||9999)<=400)||(navigator.deviceMemory&&navigator.deviceMemory<=3)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4));
 var started=false, raf=0, heroOn=false;
 window.topoStart=function(){
   if(started) return; started=true;
@@ -204,8 +208,8 @@ function resize(){
   if(lastIW>=0&&innerWidth===lastIW&&Math.abs(innerHeight-lastIH)<150) return;
   lastIW=innerWidth; lastIH=innerHeight;
   /* phones: render the (soft, low-frequency) field at a fraction of CSS px and let the compositor
-     upscale it — ~3x fewer fragments, no visible loss at .28 opacity */
-  var dpr=MOBILE?(LOW?0.6:0.8):(LITE?0.5:1);  /* desktop: was up to 1.5x — the simplex-noise shader is soft, 1x looks identical and costs ~55% less GPU; lite PCs go to 0.5x */
+     upscale it — ~4-5x fewer fragments, no visible loss. Non-interactive by design. */
+  var dpr=MOBILE?(SMALL?0.45:(LOW?0.55:0.65)):(LITE?0.5:1);  /* desktop: was up to 1.5x — the simplex-noise shader is soft, 1x looks identical and costs ~55% less GPU; lite PCs go to 0.5x */
   var w=Math.round(innerWidth*dpr), h=Math.round(innerHeight*dpr);
   if(w===cv.width&&h===cv.height) return; /* same backing size: skip, don't wipe canvas to black for nothing */
   cv.width=w;
@@ -216,8 +220,12 @@ function resize(){
 }
 addEventListener('resize',resize);
 
-/* PHONES/TOUCH: non-interactive — no lens follow, no click waves. */
-var NO_PTR=(window.matchMedia&&matchMedia('(pointer: coarse)').matches)||innerWidth<900;
+/* PHONES/TOUCH: strictly non-interactive — no lens follow, no click waves,
+   no touch listeners at all, so the compositor owns the scroll thread. */
+var NO_PTR=true;
+if(!MOBILE){
+  NO_PTR=(window.matchMedia&&matchMedia('(pointer: coarse)').matches)||innerWidth<900;
+}
 if(!NO_PTR){
 addEventListener('pointermove',function(e){
   var p=nrm(e); target.x=p.x; target.y=p.y;
@@ -261,17 +269,18 @@ if(glCanvas&&'MutationObserver' in window){
   }).observe(glCanvas,{attributes:true,attributeFilter:['class']});
 }
 
-var last=0, lastDraw=0, lastScroll=-1e9, FRAME_MS=LOW?66:50;
+var last=0, lastDraw=0, lastScroll=-1e9, FRAME_MS=MOBILE?80:(LOW?66:50);
 if(MOBILE) addEventListener('scroll',function(){ lastScroll=performance.now(); },{passive:true});
 function frame(t){
   raf=requestAnimationFrame(frame);
   if(!heroOn) return;
   if(glLost) return;  /* GPU context lost: wait for 'webglcontextrestored' */
-  /* phones: ~15-20fps, and hold the frame while the finger is scrolling so the GPU
-     serves the scroll compositor instead (drift is so slow the hold is invisible) */
+  /* phones: ~12fps, and hold the frame while the finger is scrolling (plus
+     momentum) so the GPU serves the scroll compositor instead — the drift
+     is so slow the hold is invisible */
   if(MOBILE){
     if(t-lastDraw<FRAME_MS) return;
-    if(performance.now()-lastScroll<140) return;
+    if(performance.now()-lastScroll<250) return;
     lastDraw=t;
   }
   else if(LITE){ if(t-lastDraw<50) return; lastDraw=t; }  /* lite PCs: ~20fps cap — the contour drift is too slow to show it */
