@@ -519,7 +519,7 @@ for(let i=0;i<N;i++){
   DIRS[i*3]=v.x;DIRS[i*3+1]=v.y;DIRS[i*3+2]=v.z;
 }
 for(let j=0;j<N;j++)GAL.GA[j*4]=GAL.GSZ[j]/SIZES[j];   /* px-size → multiplier on aSize */
-const ARCS=[2.6,2.8,2.0,2.6,0.8];   /* last flight keeps only a gentle bend: with a frozen departure, a big arc reads as scattering the wrong way before converging */
+const ARCS=[2.6,2.8,2.0,2.6,0];   /* genesis flight has NO arc: any out-and-back bump reads as scattering sideways before converging */
 const LAND=new Float32Array(N).fill(.7);  /* fallback ember-world glow */
 
 /* ================= shaders ================= */
@@ -1181,10 +1181,12 @@ try{
     const i=clamp(Math.floor(p),0,4);
     const t=clamp(p-i,0,1);
     const A=shapes[i],B=shapes[i+1],arc=ARCS[i];
-    /* THE LAST FLIGHT — its own timing: quintic ease (buttery endpoints),
-       longer staggered travel (.67 of the segment), and a swirl that winds
-       the disc onto the world — zero at BOTH segment ends, peak mid-flight,
-       so the boundary with the previous segment stays perfectly continuous. */
+    /* THE LAST FLIGHT — its own timing: quintic ease (buttery endpoints) and
+       longer staggered travel, but STRAIGHT paths: the old swirl/arc curved
+       every particle out and back (zero at both ends, peak mid-flight), so
+       the whole swarm visibly rotated one way and then reversed — the
+       mid-transition jerk. Converge reads clean; stagger + dolly + globe
+       spin carry the cinema. */
     const slow=(i===4);
     const st=(slow?.38:.35)*(i===0?.5:1);
     const rate=slow?1/(1-st):1.9;   /* slow: stagger+travel = exactly the segment, so the world is complete at its end */
@@ -1201,16 +1203,7 @@ try{
       const x=A[j3]+(B[j3]-A[j3])*e+DIRS[j3]*s;
       const y=A[j3+1]+(B[j3+1]-A[j3+1])*e+DIRS[j3+1]*s;
       const z=A[j3+2]+(B[j3+2]-A[j3+2])*e+DIRS[j3+2]*s;
-      if(slow){
-        /* gentle bend only: the old wide out-and-back swirl visibly veered
-           particles off-path then corrected them mid-flight */
-        const sw=0.8*e*(1-e),cw=Math.cos(sw),sn=Math.sin(sw);
-        baseArr[j3]=x*cw+z*sn;
-        baseArr[j3+1]=y;
-        baseArr[j3+2]=-x*sn+z*cw;   /* +y sense: same as disc spin, heading and globe spin */
-      }else{
-        baseArr[j3]=x;baseArr[j3+1]=y;baseArr[j3+2]=z;
-      }
+      baseArr[j3]=x;baseArr[j3+1]=y;baseArr[j3+2]=z;   /* straight converge (arc is 0 here); no swirl — see above */
     }
     return true;
   }
