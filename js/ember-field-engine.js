@@ -37,7 +37,7 @@ let vh=innerHeight,range=1;
    between Industries and the CTA. Sections that are hidden or missing are skipped. */
 const STAGE_KEYS=[['hero',0],['leak',.29],['system',.59],['builds',.94],['how',1.42],['qr',1.97],
   ['reviews',2.5],['retain',3.0],['deployments',3.38],['purpose',3.85],['intel',3.95],['industries',4.2],['cta',5]];
-let keyPos=[],keyVal=[];
+let keyPos=[],keyVal=[],keyName=[];
 var END_ANCHOR_SEL='#cta';  /* was #compounding, then #process (both hidden now) */
 function anchorScroll(){
   var a=document.querySelector(END_ANCHOR_SEL);
@@ -53,49 +53,98 @@ function layout(){
   var anchored=anchorScroll();
   /* guard: if anchor is above the fold or unmeasurable, fall back */
   range=Math.max(vh*2,Math.min(fallback,Math.max(1,anchored)));
-  keyPos=[];keyVal=[];
+  keyPos=[];keyVal=[];keyName=[];
   const sy=window.scrollY||0;
   for(let k=0;k<STAGE_KEYS.length;k++){
     const el=document.getElementById(STAGE_KEYS[k][0]);
     if(!el||!el.getClientRects().length)continue;      /* hidden (display:none) or absent */
     const r=el.getBoundingClientRect();
     let pos=k===0?0:(r.top+sy+r.height/2-vh/2);
+    pos-=(EARLY[STAGE_KEYS[k][0]]||0)*vh;
     pos=Math.max(0,Math.min(pos,fallback));
     if(keyPos.length&&pos<=keyPos[keyPos.length-1])pos=keyPos[keyPos.length-1]+1;
-    keyPos.push(pos);keyVal.push(STAGE_KEYS[k][1]);
+    keyPos.push(pos);keyVal.push(SNAP_VAL[STAGE_KEYS[k][0]]!==undefined?SNAP_VAL[STAGE_KEYS[k][0]]:STAGE_KEYS[k][1]);keyName.push(STAGE_KEYS[k][0]);
+  }
+  buildTangents();
+}
+/* mapP — monotone cubic (Fritsch–Carlson) through the section keys. The old piecewise-linear map changed
+   speed ABRUPTLY at every section boundary (sections differ in height, so the swarm lurched faster/slower
+   the instant a new section centred). A monotone cubic is C1: same keys, same ordering, never overshoots,
+   but the swarm's speed eases through each boundary. Tangents are rebuilt in layout(). */
+/* HOLD PLATEAUS — cinematic dwell. At each formation section the swarm HOLDS the finished shape (mark,
+   dispersal, knot, disc, globe) across a stretch of scroll while you read, and morphs only in the gaps
+   between sections. Without this every key was a single point, so the swarm was always half-morphed
+   behind the copy. SNAP_VAL pins the held keys to the exact formation (they used to sit at .94 / 1.97 /
+   3.0). Hold width = HOLD_BY fraction of the nearer gap, so plateaus never overlap and the ramps between
+   them stay at least ~40% of a gap. Ramps ease in/out (tangent 0 at both plateau ends). */
+const SNAP_VAL={qr:2,retain:3};   /* builds (dispersal) deliberately NOT pinned or held: it must keep flowing, not stop */
+const HOLD_BY={qr:.15,retain:.15,cta:.15};   /* hero hold removed: the mark starts dissolving the moment you scroll */
+/* EARLY — lead the first dissolve: these keys sit this fraction of a viewport height EARLIER in scroll, so the
+   mark → dispersal translation starts and finishes sooner, reading as intentional instead of late. */
+const EARLY={leak:.3,system:.18};
+let xs=[],vs=[],keyTan=[];
+function buildTangents(){
+  const n=keyPos.length;xs=[];vs=[];
+  for(let k=0;k<n;k++){
+    const w=HOLD_BY[keyName[k]]||0;
+    let h=0;
+    if(w){
+      const gp=k>0?keyPos[k]-keyPos[k-1]:Infinity,gn=k<n-1?keyPos[k+1]-keyPos[k]:Infinity;
+      const g=Math.min(gp,gn);h=g===Infinity?0:w*g;
+    }
+    const lo=(k===0||h<1)?keyPos[k]:keyPos[k]-h;
+    const hi=(k===n-1||h<1)?keyPos[k]:keyPos[k]+h;
+    xs.push(lo);vs.push(keyVal[k]);
+    if(hi-lo>=1){xs.push(hi);vs.push(keyVal[k]);}
+  }
+  const m=xs.length;keyTan=new Array(m).fill(0);
+  if(m<2)return;
+  const dl=[];
+  for(let k=0;k<m-1;k++)dl.push((vs[k+1]-vs[k])/(xs[k+1]-xs[k]));
+  keyTan[0]=dl[0];keyTan[m-1]=dl[m-2];
+  for(let k=1;k<m-1;k++)keyTan[k]=(dl[k-1]*dl[k]<=0)?0:(dl[k-1]+dl[k])/2;
+  for(let k=0;k<m-1;k++){
+    if(dl[k]===0){keyTan[k]=0;keyTan[k+1]=0;continue;}
+    const a=keyTan[k]/dl[k],b=keyTan[k+1]/dl[k],q=a*a+b*b;
+    if(q>9){const tt=3/Math.sqrt(q);keyTan[k]=tt*a*dl[k];keyTan[k+1]=tt*b*dl[k];}
   }
 }
 function mapP(c){
-  const n=keyPos.length;
+  const n=xs.length;
   if(n<2)return clamp(c/range,0,1)*5;                   /* fallback: old linear mapping */
-  if(c<=keyPos[0])return keyVal[0];
-  if(c>=keyPos[n-1])return keyVal[n-1];
-  let i=1;while(i<n-1&&c>keyPos[i])i++;
-  const t=(c-keyPos[i-1])/(keyPos[i]-keyPos[i-1]);
-  return keyVal[i-1]+(keyVal[i]-keyVal[i-1])*t;
+  if(c<=xs[0])return vs[0];
+  if(c>=xs[n-1])return vs[n-1];
+  let i=1;while(i<n-1&&c>xs[i])i++;
+  const h=xs[i]-xs[i-1],t=(c-xs[i-1])/h,t2=t*t,t3=t2*t;
+  return (2*t3-3*t2+1)*vs[i-1]+(t3-2*t2+t)*h*keyTan[i-1]+(-2*t3+3*t2)*vs[i]+(t3-t2)*h*keyTan[i];
 }
 layout();
+let keyTarget=null,lastPoll=0;
 function relayout(){
-  /* range-only update: NEVER touch `cur` here. `cur` is the smoothed
-     scroll follower (tick lerps it toward scrollY every frame) — the old
-     `cur=keep*range` teleported it away from the real scroll position
-     whenever fonts/images/syslog lines landed in the first seconds, and
-     the lerp back read as a sudden reload/refresh of the whole field.
-     Keeping `cur` steady lets curP shift by the (correct, tiny) amount. */
-  var pr=range,pk=keyPos.slice(),pv=keyVal.slice();
+  /* range-only update: NEVER touch `cur`. Late layout shifts (fonts, images, the review demo appending
+     chat/log lines) used to be either discarded (stage keys went stale, so Reviews/Retain drifted off
+     their stages) or applied instantly (the swarm snapped). Now the freshly measured keys become a
+     TARGET and tick() glides the live keys toward it (keyGlide): always current, never a teleport. */
+  var pk=keyPos.slice();
   layout();
-  /* SETTLING-NOISE GUARD — layout() re-runs when fonts resolve, window load
-     fires, or a resize settles. Late resources shift section positions by a
-     few px, which shifts `range`/keyPos, which shifts curP, which TELEPORTS
-     the morph target: the swarm visibly snaps formation a few seconds in,
-     reading as the particle animation reloading itself. Real window resizes
-     move things by hundreds of px and always pass; settling noise (<60px or
-     <2%) is discarded so the mapping freezes once the engine is running. */
-  var dr=Math.abs(range-pr),dk=0,i;
-  for(i=0;i<keyPos.length&&i<pk.length;i++)dk=Math.max(dk,Math.abs(keyPos[i]-pk[i]));
-  if(keyPos.length===pk.length&&dr<Math.max(60,pr*.02)&&dk<60){
-    range=pr;keyPos=pk;keyVal=pv;
+  if(keyPos.length===pk.length&&pk.length>1){
+    keyTarget=keyPos.slice();   /* measured positions */
+    keyPos=pk;                  /* keep the live ones; tick eases them across */
+    buildTangents();
+  }else keyTarget=null;         /* section set changed (shown/hidden): adopt the new layout at once */
+}
+/* keyGlide — ease live keys toward the measured target (~0.6s settle). Convex blend of two strictly
+   increasing sequences stays strictly increasing, so the map never folds. */
+function keyGlide(dt){
+  if(!keyTarget||keyTarget.length!==keyPos.length){keyTarget=null;return;}
+  var k=1-Math.exp(-dt*3.5),moving=false;
+  for(var i=0;i<keyPos.length;i++){
+    var d=keyTarget[i]-keyPos[i];
+    if(Math.abs(d)<.4)keyPos[i]=keyTarget[i];
+    else{keyPos[i]+=d*k;moving=true;}
   }
+  buildTangents();
+  if(!moving)keyTarget=null;
 }
 addEventListener('load',relayout);
 
@@ -243,6 +292,7 @@ function applyAccent(r,g,b){
 function refreshOpening(){
   const built=PIXELS_OK&&SAMPLES?buildMarkShape(SAMPLES):CORE;
   shapes[0]=built.pos;
+  if(delaysReady)buildDelay(0);
   if(accAttr){accAttr.array.set(built.acc);accAttr.needsUpdate=true;}
   if(engine){
     engine.morph(curP,true);            // rewrite the LOGICAL target buffer
@@ -523,6 +573,26 @@ for(let i=0;i<N;i++){
   DIRS[i*3]=v.x;DIRS[i*3+1]=v.y;DIRS[i*3+2]=v.z;
 }
 for(let j=0;j<N;j++)GAL.GA[j*4]=GAL.GSZ[j]/SIZES[j];   /* px-size → multiplier on aSize */
+/* WAVE STAGGER — per-flight launch order. Pure random stagger reads as a noisy cloud; here every flight
+   sweeps in a designed order (rank of a spatial key, blended 70/30 with the random seed so it stays
+   organic): mark → dispersal sweeps diagonally, dispersal → knot unspools by angle, knot → disc ripples
+   outward from the core, disc → galaxy the same, galaxy → globe fills pole to pole. Ranks are uniform
+   on [0,1) like SEEDS, so flight timing, completion and the straight monotonic paths are unchanged. */
+var DELAY=[null,null,null,null,null],delaysReady=false;
+function buildDelay(i){
+  const S=i===0?shapes[0]:shapes[i+1],key=new Float32Array(N);
+  for(let j=0;j<N;j++){
+    const x=S[j*3],y=S[j*3+1],z=S[j*3+2];
+    key[j]=i===0?(x*.8-y*.6):i===1?Math.atan2(z,x):i===4?y:Math.sqrt(x*x+z*z);
+  }
+  const idx=new Uint32Array(N);for(let j=0;j<N;j++)idx[j]=j;
+  const order=Array.prototype.slice.call(idx).sort((a,b)=>key[a]-key[b]);
+  const D=DELAY[i]&&DELAY[i].length===N?DELAY[i]:new Float32Array(N);
+  for(let r=0;r<N;r++){const j=order[r];D[j]=.5*(r/N)+.5*SEEDS[j];}
+  DELAY[i]=D;
+}
+function buildAllDelays(){for(let i=0;i<5;i++)buildDelay(i);delaysReady=true;}
+buildAllDelays();
 const ARCS=[2.6,2.8,0,2.6,0];   /* segment 2 (knot→disc) is straight like genesis: the scattered arc made the loop shatter instead of melting. Camera still rises to reveal the disc — that reveal is intentional. */
 const LAND=new Float32Array(N).fill(.7);  /* fallback ember-world glow */
 
@@ -669,7 +739,7 @@ void main(){
    v1 (soft, inertial, "cinematic") : SCROLL_FOLLOW=6, GLOBE_SMOOTH=.5,  GLOBE_MAXV=3
    v2 (tight, 1:1 tracking)         : SCROLL_FOLLOW=9, GLOBE_SMOOTH=.12, GLOBE_MAXV=8
    Higher SCROLL_FOLLOW = snappier. Higher GLOBE_SMOOTH = slower, softer globe condense. */
-const SCROLL_FOLLOW=6, GLOBE_SMOOTH=.3, GLOBE_MAXV=8;   /* ONE soft layer (SCROLL_FOLLOW) drives everything; the globe condense settles in ~300ms — dreamy, still critically damped so it never overshoots or lags behind fast scrolls */
+const SCROLL_FOLLOW=7, GLOBE_SMOOTH=.3, GLOBE_MAXV=8;   /* ONE soft layer (SCROLL_FOLLOW) drives everything; the globe condense settles in ~300ms — dreamy, still critically damped so it never overshoots or lags behind fast scrolls */
 
 /* ================= scroll keyframes ================= */
 const CAM=[
@@ -1189,28 +1259,28 @@ try{
     const slow=(i===4);
     const st=(slow?.3:.35)*(i===0?.5:1);
     const rate=slow?1.5:1.9;   /* slow: stagger+travel = exactly the segment, so the world is complete at its end */
+    /* KNOT REVOLVE — applied ONLY to the knot endpoint (shape 2) of the flight, using the held monotonic
+       angle. The old code rotated the whole blend while knotEnv>0 and dropped it to zero at curP 2.8, which
+       snapped every in-flight particle by knotTurn radians (the jerk between Reviews and Retain). Rotating
+       just the knot endpoint is continuous: particles leave/arrive on the rotated knot and the angle holds
+       when the spin envelope ends, so nothing ever un-rotates. */
+    const Dl=DELAY[i];
+    const kcs=Math.cos(knotTurn),ksn=Math.sin(knotTurn);
+    const rotA=(i===2&&knotTurn!==0),rotB=(i===1&&knotTurn!==0);
     for(let j=0;j<N;j++){
-      const d=SEEDS[j]*st;
+      const d=(Dl?Dl[j]:SEEDS[j])*st;
       let l=(t-d)*rate;
       l=l<0?0:l>1?1:l;
-      /* dwell easing (smootherstep on every flight): each formation holds
-         longer and the swarm travels faster between them, instead of the
-         symmetric smoothstep which splits time evenly. */
+      /* dwell easing (smootherstep on every flight) */
       const e=l*l*l*(l*(l*6-15)+10);
       const j3=j*3;
+      let ax=A[j3],ay=A[j3+1],az=A[j3+2],bx=B[j3],by=B[j3+1],bz=B[j3+2],tx;
+      if(rotA){tx=ax;ax=tx*kcs+az*ksn;az=-tx*ksn+az*kcs;}
+      if(rotB){tx=bx;bx=tx*kcs+bz*ksn;bz=-tx*ksn+bz*kcs;}
       const s=Math.sin(Math.PI*e)*arc;
-      const x=A[j3]+(B[j3]-A[j3])*e+DIRS[j3]*s;
-      const y=A[j3+1]+(B[j3+1]-A[j3+1])*e+DIRS[j3+1]*s;
-      const z=A[j3+2]+(B[j3+2]-A[j3+2])*e+DIRS[j3+2]*s;
-      baseArr[j3]=x;baseArr[j3+1]=y;baseArr[j3+2]=z;   /* straight converge (arc is 0 here); no swirl — see above */
-    }
-    /* knot revolve lives here (not on the group): rigid Y-rotation of the
-       blend by the monotonic angle. Skipped outside the envelope so no stale
-       rotation can ever leak into other stages. */
-    if(knotEnv>0&&knotTurn!==0){
-      const kcs=Math.cos(knotTurn),ksn=Math.sin(knotTurn);
-      for(let k=0;k<N;k++){const k3=k*3,kx=baseArr[k3],kz=baseArr[k3+2];
-        baseArr[k3]=kx*kcs+kz*ksn;baseArr[k3+2]=-kx*ksn+kz*kcs;}
+      baseArr[j3]=ax+(bx-ax)*e+DIRS[j3]*s;
+      baseArr[j3+1]=ay+(by-ay)*e+DIRS[j3+1]*s;
+      baseArr[j3+2]=az+(bz-az)*e+DIRS[j3+2]*s;
     }
     return true;
   }
@@ -1296,6 +1366,7 @@ function buildGenesisFromEarth(img){
     }
   }
   shapes[5]=pos;
+  if(delaysReady)buildDelay(4);
   if(landAttr){
     if(curP>3.2&&engine&&!introFrom){
       /* THE TEXTURE ARRIVED MID-STORY — snapshot what is on screen and
@@ -1418,6 +1489,8 @@ function perfGuard(dt){
 
 /* ================= main loop ================= */
 let cur=window.scrollY||0,lastFrameP=0,lastNow=performance.now(),flyAcc=0;
+let lastTopoO='',curPS=null,curPV=0,lastTgt=cur,scrollMoveT=0;
+const P_SMOOTH=.1,P_MAXV=3.6;   /* stage follower: settle time (s) and max speed (stages/s) */
 function tick(now){
   requestAnimationFrame(tick);
   if(document.hidden||document.documentElement.classList.contains('motion-off'))return;  /* background tab / paused: skip work */
@@ -1430,7 +1503,21 @@ function tick(now){
      slow-fast-slow (hang) inside a single wheel tick. */
   cur=coarse||reduced?tgt:cur+(tgt-cur)*(1-Math.exp(-dt*SCROLL_FOLLOW));
   if(Math.abs(tgt-cur)<.5)cur=tgt;
-  curP=mapP(cur);
+  /* layout upkeep: re-measure ~every 1.5s while scroll is idle, then glide the stage keys (see keyGlide) */
+  if(Math.abs(tgt-lastTgt)>.5){lastTgt=tgt;scrollMoveT=now;}
+  if(now-lastPoll>1500&&now-scrollMoveT>250){lastPoll=now;relayout();}
+  keyGlide(dt);
+  /* STAGE FOLLOWER — critically damped spring with a speed cap (P_MAXV stages/s). Normal scrolling is
+     far below the cap so it just tracks; an anchor-link jump or hard flick used to blast through knot →
+     disc → galaxy → globe in ~0.4s (a flash). Now long jumps become a fast but readable fly-through that
+     eases in and out, never a hard clamp. */
+  const rawP=mapP(cur);
+  if(coarse||reduced||curPS===null){curPS=rawP;curPV=0;}
+  else{
+    const r=smoothDamp(curPS,rawP,curPV,P_SMOOTH,P_MAXV,dt);curPS=r[0];curPV=r[1];
+    if(Math.abs(rawP-curPS)<.0004&&Math.abs(curPV)<.002){curPS=rawP;curPV=0;}
+  }
+  curP=curPS;
   const vel=(curP-lastFrameP)/dt;lastFrameP=curP;
   /* full rate always while visible: the 60→30fps step-down read as lag
      whenever the pointer rested — smoothness beats the battery saving */
@@ -1449,7 +1536,7 @@ function tick(now){
        stop on exit, frozen between visits. Forced morph keeps it turning. */
     knotEnv=reduced?0:sstep(clamp((curP-1.2)/.6,0,1))*(1-sstep(clamp((curP-2.2)/.6,0,1)));
     if(knotEnv>0)knotTurn+=dt*KNOT_SPIN*knotEnv;
-    const dirty=engine.morph(curP,galOn||knotEnv>0);
+    const dirty=engine.morph(curP,galOn||knotEnv>0);  /* knotTurn only changes while knotEnv>0, so no extra force needed */
 
     /* CINEMATIC INTRO: embers → the PYRAXIS mark */
     if(introFrom&&introT<1){
@@ -1543,9 +1630,19 @@ function tick(now){
     /* GENESIS SURGE — brightness swells as the world forms, then settles.
        Pure intensity (no displacement), so it cannot disturb flight paths. */
     const genGlow=reduced?0:Math.sin(Math.PI*sstep(clamp((curP-4.05)/.9,0,1)));
-    u.uSize.value=siz*(1+introGlow*.3+genGlow*.15)*SZ_MUL;
+    /* ARRIVAL PULSE — a swell that rises as the swarm converges on knot / disc / galaxy and settles at lock
+       (0 exactly at each integer stage), so every formation gets a beat like the genesis surge. Pure
+       function of curP: scrubs forward and back, never a timer. */
+    let arr=0;
+    if(!reduced){
+      for(let sIdx=2;sIdx<=4;sIdx++){
+        const q=clamp((curP-(sIdx-.4))/.4,0,1);
+        if(q>0&&q<1)arr=Math.max(arr,Math.sin(Math.PI*sstep(q)));
+      }
+    }
+    u.uSize.value=siz*(1+introGlow*.3+genGlow*.15+arr*.06)*SZ_MUL;
     const energy=Math.sin(Math.PI*f)*clamp(Math.abs(vel)*1.4,0,1);
-    u.uEnergy.value=Math.min(1.5,lerp(u.uEnergy.value,(reduced?energy*.4:energy)+introGlow,1-Math.exp(-dt*7))+genGlow*.4);
+    u.uEnergy.value=Math.min(1.5,lerp(u.uEnergy.value,(reduced?energy*.4:energy)+introGlow+arr*.25,1-Math.exp(-dt*7))+genGlow*.4);
     u.uColA.value.copy(CA[i]).lerp(CA[i+1],e);
     u.uColB.value.copy(CB[i]).lerp(CB[i+1],e);
 
@@ -1583,7 +1680,8 @@ function tick(now){
            is seamless. */
         const tf=1-sstep(clamp((curP-0.25)/0.45,0,1));
         window.__topoVis=tf;
-        topoCv.style.opacity=(0.45*tf).toFixed(3);
+        const to=(0.45*tf).toFixed(3);
+        if(to!==lastTopoO){lastTopoO=to;topoCv.style.opacity=to;}
       }else{ window.__topoVis=1; }
     }
     if(texReady)texFade=Math.min(1,texFade+dt/0.9);   /* map melts onto the glass */
