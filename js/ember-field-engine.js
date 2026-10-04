@@ -336,20 +336,11 @@ shapes.push(CORE.pos);
   }
   shapes.push(a);
 }
-/* 2 — coherence: fuzzy trefoil knot.
-   ~30% of the swarm stays ambient scatter: the bare knot is a thin tube that,
-   viewed edge-on (e.g. behind the QR section), reads as a broken field with
-   a hard "gap" edge instead of an intentional formation. The fill keeps every
-   region alive from every angle; the knot still reads through it. */
+/* 2 — coherence: fuzzy trefoil knot */
 {
   const a=new Float32Array(N*3),S=2.75;
   for(let i=0;i<N;i++){
-    if(Math.random()<.3){
-      const s=9;
-      a[i*3]=gauss()*s;a[i*3+1]=gauss()*s*.7;a[i*3+2]=gauss()*s;
-      continue;
-    }
-    const t=(i/N)*TAU,th=1.1+Math.random()*1.3;
+    const t=(i/N)*TAU,th=.5+Math.random()*.55;
     a[i*3]=(Math.sin(t)+2*Math.sin(2*t))*S+gauss()*th;
     a[i*3+1]=(Math.cos(t)-2*Math.cos(2*t))*S+gauss()*th;
     a[i*3+2]=(-Math.sin(3*t))*S+gauss()*th;
