@@ -170,9 +170,8 @@ html.js .mnav.open a:nth-child(8){transition-delay:.35s}
     inset 0 -2px 3px rgba(0,0,0,.6),
     0 1px 0 2px #3d3e47,0 2px 0 2px #25262c,0 3px 0 2px #15151a,
     0 10px 14px -4px rgba(0,0,0,.75),
-    0 34px 44px -18px rgba(0,0,0,.85),
-    0 70px 90px -34px rgba(0,0,0,.9),
-    0 0 90px -30px rgba(124,92,255,.22)}
+    0 40px 56px -22px rgba(0,0,0,.85),
+    0 0 56px -26px rgba(124,92,255,.2)}
 #hero .device{box-shadow:
     0 0 0 1px rgba(255,255,255,.2),0 0 0 2px rgba(0,0,0,.85),
     inset 0 0 0 1px rgba(255,255,255,.26),inset 0 0 0 2.5px rgba(0,0,0,.55),
@@ -361,7 +360,7 @@ html.js .mnav.open a:nth-child(8){transition-delay:.35s}
   *{animation-duration:.001s!important;animation-iteration-count:1!important}
 }
 /* ============ hero ============ */
-#hero{border-top:0;padding-top:clamp(154px,19vh,206px);padding-bottom:clamp(56px,8vh,88px);overflow:clip}
+#hero{border-top:0;padding-top:clamp(176px,21vh,230px);padding-bottom:clamp(56px,8vh,88px);overflow:clip}
 #hero .hero-mark,#hero .model,#hero h1,#hero .hero-promise,#hero .kicker,#hero .lede,#hero .hero-cta{-webkit-user-select:none;user-select:none} /* background clicks/drags feed the particle field — copy must never highlight; links + buttons stay clickable */
 #hero .wrap{position:relative;z-index:1}
 .hero-pool{display:none!important}
@@ -1152,7 +1151,7 @@ footer{border-top:1px solid var(--line);padding:72px 0 44px;background:linear-gr
   .nav{border-bottom:1px solid var(--m-hair)}
 
   /* hero */
-  #hero{padding-top:104px;padding-bottom:56px}
+  #hero{padding-top:116px;padding-bottom:56px}
   #hero h1{font-size:clamp(3.1rem,15vw,3.9rem);line-height:.98;letter-spacing:-.025em}
   .hero-promise{font:400 1rem/1.6 var(--sans);color:var(--soft);max-width:31ch;margin:22px 0 0;letter-spacing:0}
   .hero-promise em{font-style:normal;color:inherit}
@@ -1469,3 +1468,37 @@ html.is-scrolling .ob.hot .ob-b::after{animation-play-state:paused!important}
   .hero-cta{align-items:stretch}
   .hero-cta .btn{justify-content:center}
 }
+
+/* ============ build-your-system modal ============ */
+.modal{position:fixed;inset:0;z-index:2000;display:grid;place-items:center;padding:22px}
+.modal-back{position:absolute;inset:0;background:rgba(6,6,9,.72);backdrop-filter:blur(8px)}
+.modal-card{position:relative;width:min(480px,100%);max-height:calc(100vh - 44px);max-height:calc(100dvh - 44px);overflow-y:auto;background:#101015;border:1px solid var(--line2);border-radius:6px;padding:34px 40px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.modal-x{position:absolute;top:12px;right:12px;width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--line2);border-radius:4px;color:var(--mut)}
+.modal-x:hover{color:var(--ink)}
+.modal-x svg{width:15px;height:15px}
+.m-kick{display:flex;align-items:center;gap:12px;font:400 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+.m-kick i{width:26px;height:1px;background:var(--pu)}
+.modal-card h3{font:500 clamp(1.6rem,4.5vw,2.05rem)/1.2 var(--serif);color:var(--ink);margin:18px 0 10px}
+.m-lede{font-size:15px;line-height:1.6;color:var(--mut);margin-bottom:22px}
+#leadForm label{display:block;margin-top:18px;font:400 10.5px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--mut2)}
+#leadForm input,#leadForm select{display:block;width:100%;margin-top:10px;padding:13px 14px;min-height:46px;background:#18181d;border:1px solid var(--line2);border-radius:4px;color:var(--ink);font:400 15px/1.3 var(--sans);letter-spacing:0;text-transform:none}
+#leadForm input::placeholder{color:#6f6a80}
+#leadForm input:focus,#leadForm select:focus{outline:none;border-color:var(--pu2);box-shadow:0 0 0 3px rgba(124,92,255,.2)}
+#leadForm .bad{border-color:#e0707f}
+.f-err{margin-top:14px;font-size:13px;color:#f19aa6}
+.modal .btn-wide{width:100%;justify-content:center;margin-top:24px;padding:18px 26px;background:var(--pu);color:#0a0a10;border-color:var(--pu);box-shadow:none}
+@media (hover:hover){.modal .btn-wide:hover{background:var(--pu2);border-color:var(--pu2);transform:none}}
+@media(max-width:520px){.modal-card{padding:28px 22px 30px}}
+html.finecur .modal,html.finecur .modal *{cursor:auto!important}
+html.finecur .modal input{cursor:text!important}
+html.finecur .modal button,html.finecur .modal a,html.finecur .modal select{cursor:pointer!important}
+html.finecur:has(.modal:not([hidden])) #cDot,html.finecur:has(.modal:not([hidden])) #cRing{display:none!important}
+.f-opt{margin-left:6px;color:#6f6a80;letter-spacing:.12em}
+.f-hint{margin-top:22px;font-size:13.5px;line-height:1.5;color:var(--mut)}
+.f-hint + label{margin-top:12px}
+.f-warn{display:block;margin-top:8px;font:400 13px/1.4 var(--sans);letter-spacing:0;text-transform:none;color:#f19aa6}
+
+/* PERF: phone mockups. Isolate the screen + chat list so each new bubble / scrollTop write
+   only lays out inside the phone, not the whole page (the WebGL field is running behind it). */
+.wa{contain:layout paint style}
+.wa-body{contain:layout style}
