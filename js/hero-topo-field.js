@@ -13,10 +13,13 @@ var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 var MOBILE=!!window.__topoMobile||(matchMedia('(pointer: coarse)').matches)||innerWidth<900;
 /* low-end phones: fewer pixels, fewer frames. The contour drift is ~0.02 units/sec, so 15-20fps
    is visually identical to 60fps while costing a third of the GPU work. */
-/* low-end PCs (same thresholds as the boot gate's lite tier in index.html):
+/* low-end PCs (same signals as the boot gate's lite tier in index.html):
    the contour drift is ~0.02 units/sec, so half-res + ~20fps on desktop is
-   visually identical while costing a fraction of the iGPU fill-rate. */
-var LITE=!!((navigator.deviceMemory&&navigator.deviceMemory<=4)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)||(navigator.connection&&(navigator.connection.saveData||/2g|slow-2g/.test(navigator.connection.effectiveType||''))));
+   visually identical while costing a fraction of the iGPU fill-rate.
+   NOTE: RAM/CPU are deliberately NOT used — privacy browsers (Brave) spoof
+   them downward and put the same PC in LITE in one browser and FULL in
+   another. Only explicit save-data / slow-network signals gate it. */
+var LITE=!!(navigator.connection&&(navigator.connection.saveData||/2g|slow-2g/.test(navigator.connection.effectiveType||'')));
 var LOW=LITE;
 /* small Android: very narrow screens or <=3GB RAM / <=4 threads get the
    ultra-lite path — lowest DPR + slowest frame rate. Drift is ~0.02 u/s,
