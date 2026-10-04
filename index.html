@@ -113,7 +113,7 @@
       <a href="#purpose">Purpose</a>
     </nav>
     <div class="nav-cta">
-      <a class="btn btn-solid btn-sm nav-go" href="https://wa.me/919837104413?text=Hi%20PYRAXIS%21%20I%27d%20like%20to%20build%20my%20system.%0A%0ABusiness%20type%3A%20%0AFix%20first%3A%20%0AName%3A%20" target="_blank" rel="noopener noreferrer">Build your system</a>
+      <a class="btn btn-solid btn-sm nav-go" href="https://wa.me/919837104413?text=Hi%20PYRAXIS%21%20I%27d%20like%20to%20build%20my%20system.%0A%0ABusiness%20type%3A%20%0AFix%20first%3A%20%0AName%3A%20" target="_blank" rel="noopener noreferrer" data-open-modal>Build your system</a>
       <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mnav">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9h18M3 15h18"/></svg>
       </button>
@@ -128,7 +128,7 @@
   <a href="#reviews">Reviews</a>
   <a href="#industries">Industries</a>
   <a href="#purpose">Purpose</a>
-  <a class="btn btn-solid" href="https://wa.me/919837104413?text=Hi%20PYRAXIS%21%20I%27d%20like%20to%20build%20my%20system.%0A%0ABusiness%20type%3A%20%0AFix%20first%3A%20%0AName%3A%20" target="_blank" rel="noopener noreferrer">Build your system</a>
+  <a class="btn btn-solid" href="https://wa.me/919837104413?text=Hi%20PYRAXIS%21%20I%27d%20like%20to%20build%20my%20system.%0A%0ABusiness%20type%3A%20%0AFix%20first%3A%20%0AName%3A%20" target="_blank" rel="noopener noreferrer" data-open-modal>Build your system</a>
 </div>
 
 <main id="main" class="journey">
@@ -145,7 +145,7 @@
           <h1>Every customer,<br><em>remembered.</em></h1>
           <p class="hero-promise">Capture enquiries, manage bookings and automate follow-ups. One connected system that helps local businesses turn more customers into repeat buyers.</p>
           <div class="hero-cta">
-            <a class="btn btn-solid btn-hero" href="https://wa.me/919837104413?text=Hi%20PYRAXIS%21%20I%27d%20like%20to%20build%20my%20system.%0A%0ABusiness%20type%3A%20%0AFix%20first%3A%20%0AName%3A%20" target="_blank" rel="noopener noreferrer"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Build your system</a>
+            <a class="btn btn-solid btn-hero" href="https://wa.me/919837104413?text=Hi%20PYRAXIS!%20I'm%20interested%20in%20a%20customer%20system%20for%20my%20business.%20Can%20you%20tell%20me%20more%3F" target="_blank" rel="noopener noreferrer"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>WhatsApp us</a>
             <a class="btn btn-ghost" href="#how"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>See a live demo</a>
           </div>
           <noscript><p class="hero-note">PYRAXIS builds one connected customer system for local businesses: enquiries, bookings, follow-ups and reviews in one record. <a href="https://wa.me/919837104413?text=Hi%20PYRAXIS%21%20I%27d%20like%20to%20build%20my%20system.%0A%0ABusiness%20type%3A%20%0AFix%20first%3A%20%0AName%3A%20">Message us on WhatsApp</a> or email <a href="mailto:thepyraxis@gmail.com">thepyraxis@gmail.com</a>.</p></noscript>
@@ -722,6 +722,33 @@
 </div>
 <div id="cRing" aria-hidden="true"><div class="r"><span class="r-label" id="rLabel"></span></div></div>
 <div id="cDot" aria-hidden="true"><div class="d"></div></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" hidden>
+  <div class="modal-back" data-close-modal></div>
+  <div class="modal-card">
+    <button class="modal-x" data-close-modal type="button" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </button>
+    <p class="m-kick"><i></i>Pyraxis</p>
+    <h3 id="mTitle">Build your growth system.</h3>
+    <p class="m-lede">Tell us about your business — we'll map the system around it and show it to you, running.</p>
+    <form id="leadForm" novalidate>
+      <label>Your name<input type="text" name="name" autocomplete="name" maxlength="80" autocapitalize="words"></label>
+      <label>Business type
+        <select name="type">
+          <option>Restaurant</option><option>Salon</option><option>Clinic</option><option>Gym</option><option>Hotel</option>
+          <option>Car service</option><option>Home services</option><option>Consultant / coach</option><option>E-commerce</option><option>Other</option>
+        </select>
+      </label>
+      <label>What do you want help with? <span class="f-opt">optional</span><input type="text" name="need" placeholder="e.g. more bookings, missed messages, more reviews" maxlength="140"></label>
+      <p class="f-hint">How should we reach you? Add a WhatsApp number or an email. One is enough.</p>
+      <label>WhatsApp number<input type="tel" name="phone" autocomplete="tel" placeholder="+91 98765 43210" maxlength="24"><span class="f-warn" id="phoneErr" role="alert" hidden></span></label>
+      <label>Email<input type="email" name="email" autocomplete="email" placeholder="you@company.com" maxlength="120"><span class="f-warn" id="emailErr" role="alert" hidden></span></label>
+      <p class="f-err" id="fErr" role="alert" hidden></p>
+      <button class="btn btn-solid btn-wide" type="submit">Request my system</button>
+    </form>
+  </div>
+</div>
+
 <script defer src="js/mobile-resize-noise-fix.js"></script>
 <script defer src="js/pause-offscreen-animations.js"></script>
 <script defer src="js/01-strict-and-dom-helpers.js"></script>
@@ -741,6 +768,7 @@
 <script defer src="js/16-qr-demo.js"></script>
 <script defer src="js/17-counters.js"></script>
 <script defer src="js/18-industries.js"></script>
+<script defer src="js/21-modal-and-lead-form.js"></script>
 <script defer src="js/22-footer-year.js"></script>
 <script defer src="js/23-sticky-cta-and-motion.js"></script>
 <script defer src="js/hero-topo-field.js"></script>
