@@ -298,9 +298,11 @@ html.js .mnav.open a:nth-child(8){transition-delay:.35s}
 .wa-btn{width:100%;text-align:center;padding:9px 6px;color:#53bdeb;font:600 13px var(--sans);letter-spacing:.02em;
   position:relative;overflow:hidden;transition:transform .15s,background .25s}
 .wa-btn:active{transform:scale(.985)}
-.wa-btn:not(.used){animation:wbtn 1.8s infinite}
-@keyframes wbtn{50%{background:rgba(83,189,235,.12)}}
-.wa-btn.used{background:rgba(83,189,235,.14);animation:none}
+/* pulse on a pseudo-element's OPACITY (compositor) — animating `background` repainted the phone every frame */
+.wa-btn:not(.used)::before{content:"";position:absolute;inset:0;background:rgba(83,189,235,.12);opacity:0;pointer-events:none;animation:wbtn 1.8s infinite}
+@keyframes wbtn{50%{opacity:1}}
+.wa-btn.used{background:rgba(83,189,235,.14)}
+.wa-btn.used::before{display:none}
 .wa-btn:focus-visible{outline:2px solid #53bdeb;outline-offset:2px}
 /* tap ripple */
 .wa-ripple{position:absolute;left:0;top:0;width:14px;height:14px;border-radius:50%;pointer-events:none;
@@ -1364,7 +1366,7 @@ html.is-scrolling .rt-flow,
 html.is-scrolling .scanline,
 html.is-scrolling .rev-end.pulse,
 html.is-scrolling .vis-chip.key,
-html.is-scrolling .wa-btn:not(.used),
+html.is-scrolling .wa-btn:not(.used)::before,
 html.is-scrolling .rj-pulse,
 html.is-scrolling .ob.hot .ob-b::after{animation-play-state:paused!important}
 
