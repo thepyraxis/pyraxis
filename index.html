@@ -776,13 +776,17 @@
 })();
 (function(){
 var engineStarted=false;
-/* LOW-END PC TIERS — a "normal low-end" desktop (<=4GB RAM, <=4 CPU threads,
-   or data-saver on) still gets the ember field, but in LITE mode: fewer
-   particles, DPR<=1, no fly-away dust (see ember-field-engine.js), and the
-   topo backdrop renders at half res / lower fps. Only genuinely tiny devices
-   (<=2GB/<=2 threads) or missing WebGL fall back to the static mark. Full-tier
-   desktops additionally preload the earth texture; lite/static never fetch it. */
-var lite=(navigator.deviceMemory&&navigator.deviceMemory<=4)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)||(navigator.connection&&(navigator.connection.saveData||/2g|slow-2g/.test(navigator.connection.effectiveType||'')));
+/* LOW-END PC TIERS — data-saver / slow-network desktops get the ember field
+   in LITE mode: fewer particles, DPR<=1, no fly-away dust (see
+   ember-field-engine.js), and the topo backdrop renders at half res / lower
+   fps. Missing WebGL falls back to the static mark. Full-tier desktops
+   additionally preload the earth texture; lite/static never fetch it.
+   NOTE: deviceMemory/hardwareConcurrency are deliberately NOT used here —
+   privacy browsers (Brave) spoof them downward, which put the SAME pc in
+   LITE in one browser and FULL in another (2600 vs 8500 particles). Only
+   explicit user/network signals gate the tier, so every browser on the
+   same machine renders the same field. */
+var lite=(navigator.connection&&(navigator.connection.saveData||/2g|slow-2g/.test(navigator.connection.effectiveType||'')));
 function glOK(){
   /* right after a device-toggle/resize the GPU process can refuse one context
      request — ask up to 3 times and release the probe context. */
