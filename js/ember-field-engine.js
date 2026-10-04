@@ -519,7 +519,7 @@ for(let i=0;i<N;i++){
   DIRS[i*3]=v.x;DIRS[i*3+1]=v.y;DIRS[i*3+2]=v.z;
 }
 for(let j=0;j<N;j++)GAL.GA[j*4]=GAL.GSZ[j]/SIZES[j];   /* px-size → multiplier on aSize */
-const ARCS=[2.6,2.8,2.0,2.6,1.4];
+const ARCS=[2.6,2.8,2.0,2.6,0.8];   /* last flight keeps only a gentle bend: with a frozen departure, a big arc reads as scattering the wrong way before converging */
 const LAND=new Float32Array(N).fill(.7);  /* fallback ember-world glow */
 
 /* ================= shaders ================= */
@@ -1202,7 +1202,9 @@ try{
       const y=A[j3+1]+(B[j3+1]-A[j3+1])*e+DIRS[j3+1]*s;
       const z=A[j3+2]+(B[j3+2]-A[j3+2])*e+DIRS[j3+2]*s;
       if(slow){
-        const sw=1.5*e*(1-e),cw=Math.cos(sw),sn=Math.sin(sw);
+        /* gentle bend only: the old wide out-and-back swirl visibly veered
+           particles off-path then corrected them mid-flight */
+        const sw=0.8*e*(1-e),cw=Math.cos(sw),sn=Math.sin(sw);
         baseArr[j3]=x*cw+z*sn;
         baseArr[j3+1]=y;
         baseArr[j3+2]=-x*sn+z*cw;   /* +y sense: same as disc spin, heading and globe spin */
@@ -1437,9 +1439,12 @@ function tick(now){
     const u=engine.uniforms;
 
     /* GALAXY — while it is (or is about to be) on screen the disc turns
-       differentially: re-project shapes[4] and force a morph each frame */
-    const galOn=!reduced&&curP>3&&curP<5;
-    if(galOn)galaxyStep(dt,1-sstep(clamp((curP-4.5)/.5,0,1)));   /* spin eases out, never freezes mid-flight */
+       differentially: re-project shapes[4] and force a morph each frame.
+       FROZEN once the genesis flight begins (curP>=4): a rotating departure
+       anchor drags in-flight particles sideways mid-flight (wrong way, then
+       correct) — the origin must hold still while they fly to the fixed globe. */
+    const galOn=!reduced&&curP>3&&curP<4;
+    if(galOn)galaxyStep(dt,1);   /* full differential turn while the disc is the formation; frozen the moment the genesis flight begins (see galOn) */
     const dirty=engine.morph(curP,galOn);
 
     /* CINEMATIC INTRO: embers → the PYRAXIS mark */
