@@ -358,7 +358,11 @@ const COARSE=window.matchMedia&&matchMedia('(pointer: coarse)').matches;
    Fill-rate and texture/shader memory — not vertex count — are what choke
    old integrated GPUs, so this is where the savings come from. */
 const LITE=!!window.__pxLite;
-const N=COARSE?1400:(LITE?2600:(innerWidth<720?4000:8500));
+/* SMALL Android (narrow screen or <=3GB RAM / <=4 threads): ultra-lite path —
+   fewer embers, fewer dust motes, sub-1 DPR. Non-interactive (NO_PTR below),
+   so scroll stays on the compositor thread. */
+const SMALL=COARSE&&((Math.min(screen.width||9999,innerWidth||9999)<=400)||(navigator.deviceMemory&&navigator.deviceMemory<=3)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4));
+const N=COARSE?(SMALL?900:1400):(LITE?2600:(innerWidth<720?4000:8500));
 const isMobile=innerWidth<720;
 /* PHONES/TOUCH: same world, but far fewer px of screen and only 3000 embers —
    each one reads bigger and brighter (additive) than on desktop, and the
@@ -901,14 +905,14 @@ addEventListener('pointercancel',endDrag,{passive:true});
 
 /* ================= three.js setup ================= */
 try{
-  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:false,powerPreference:'high-performance'});
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:false,powerPreference:COARSE?'low-power':'high-performance'});
   renderer.setClearColor(0x000000,0);  /* transparent: the topo field behind stays visible */
   /* GPU CONTEXT LOSS — without preventDefault the browser never restores the context: the field freezes or
      goes blank and only a manual refresh brings it back (reads as 'it reloaded by itself'). Cancel the
      default so three.js can rebuild GL state on 'webglcontextrestored' and the swarm just resumes. */
   canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();},false);
   canvas.addEventListener('webglcontextrestored',()=>{lastGlO='';ryS=null;ryV=0;},false);
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1,(COARSE||LITE)?1:(innerWidth*innerHeight>1600000?1:1.25)));  /* big screens + all lite PCs: fewer fragments for the additive point cloud */
+  renderer.setPixelRatio(SMALL?0.75:Math.min(devicePixelRatio||1,(COARSE||LITE)?1:(innerWidth*innerHeight>1600000?1:1.25)));  /* big screens + all lite PCs: fewer fragments for the additive point cloud; small Android goes sub-1 */
   renderer.setSize(innerWidth,innerHeight,false);
 
   const scene=new THREE.Scene();
@@ -918,7 +922,7 @@ try{
         All motion lives in the vertex shader (three slow, incommensurate
         currents at a unique phase per mote), so the CPU never touches it. —— */
   {
-    const M=LITE?450:1200,sp=new Float32Array(M*3),sd=new Float32Array(M),twk=new Float32Array(M);
+    const M=(LITE||COARSE)?(SMALL?250:450):1200,sp=new Float32Array(M*3),sd=new Float32Array(M),twk=new Float32Array(M);
     for(let i=0;i<M;i++){
       const v=new THREE.Vector3(gauss(),gauss(),gauss()).normalize().multiplyScalar(55+Math.random()*55);
       sp[i*3]=v.x;sp[i*3+1]=v.y*.6;sp[i*3+2]=v.z;

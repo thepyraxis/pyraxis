@@ -583,7 +583,7 @@
             <p>Restaurant Website &amp; Digital Ordering</p>
           </div>
           <div class="deploy-prev">
-            <img src="public/projects/eateria.webp" alt="Preview of the Eateria website" loading="lazy" width="1200" height="500">
+            <img src="public/projects/eateria.webp" srcset="public/projects/eateria-600.webp 600w, public/projects/eateria-900.webp 900w, public/projects/eateria.webp 1200w" sizes="(max-width:700px) 92vw, 600px" alt="Preview of the Eateria website" loading="lazy" width="1200" height="500">
             <a href="https://thepyraxis.github.io/eateria" target="_blank" rel="noopener noreferrer" aria-label="View live website: Eateria"></a>
           </div>
           <div class="deploy-stat">
@@ -601,7 +601,7 @@
             <p>AI Automation &amp; Lead Engagement</p>
           </div>
           <div class="deploy-prev">
-            <img src="public/projects/servicepro.webp" alt="Preview of the ServicePro AI Agent" loading="lazy" width="1200" height="500">
+            <img src="public/projects/servicepro.webp" srcset="public/projects/servicepro-600.webp 600w, public/projects/servicepro-900.webp 900w, public/projects/servicepro.webp 1200w" sizes="(max-width:700px) 92vw, 600px" alt="Preview of the ServicePro AI Agent" loading="lazy" width="1200" height="500">
           </div>
           <div class="deploy-stat">
             <a href="https://wa.me/919837104413?text=Hi!%20I%27d%20like%20to%20see%20the%20case%20study%20for%20ServicePro%20AI%20Agent." target="_blank" rel="noopener noreferrer">Request full case study <span class="arr" aria-hidden="true">→</span></a>
@@ -618,7 +618,7 @@
             <p>Booking System &amp; Automation</p>
           </div>
           <div class="deploy-prev">
-            <img src="public/projects/stayvista.webp" alt="Preview of the StayVista Retreats booking system" loading="lazy" width="1200" height="500">
+            <img src="public/projects/stayvista.webp" srcset="public/projects/stayvista-600.webp 600w, public/projects/stayvista-900.webp 900w, public/projects/stayvista.webp 1200w" sizes="(max-width:700px) 92vw, 600px" alt="Preview of the StayVista Retreats booking system" loading="lazy" width="1200" height="500">
           </div>
           <div class="deploy-stat">
             <a href="https://wa.me/919837104413?text=Hi!%20I%27d%20like%20to%20see%20the%20case%20study%20for%20StayVista%20Retreats." target="_blank" rel="noopener noreferrer">Request full case study <span class="arr" aria-hidden="true">→</span></a>
@@ -748,9 +748,11 @@
      rotate, no document.write fallback. If the file is ever missing, the
      WebGL sections below degrade gracefully via their own guards. -->
 <script>
-/* Ember field (WebGL) now runs on phones too — the engine already scales itself down for touch
-   (fewer embers, lower DPR, dimmer). Falls back to the topo field + static mark only when WebGL is
-   missing or the device is very low-end. Three.js + engine load after the deferred scripts. */
+/* Ember particle field runs on phones too — the engine scales itself down
+   for touch (900-1400 embers, DPR<=1, low-power GPU, non-interactive) with
+   an extra diet for small Android. Topo starts first (instant backdrop);
+   ember boots idle-deferred after first paint. Falls back to topo-only when
+   WebGL is missing, the device is tiny, or data-saver is on. */
 /* RESIZE FIX: phone-vs-desktop mode (ember/globe engine vs static mark + topo backdrop) is decided
    once at load. Crossing the 900px / touch breakpoint later (devtools device toggle, rotating a
    tablet, snapping a window) left the wrong mode running - no PYRAXIS mark until manual reload.
@@ -782,19 +784,45 @@ var engineStarted=false;
    (<=2GB/<=2 threads) or missing WebGL fall back to the static mark. Full-tier
    desktops additionally preload the earth texture; lite/static never fetch it. */
 var lite=(navigator.deviceMemory&&navigator.deviceMemory<=4)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)||(navigator.connection&&(navigator.connection.saveData||/2g|slow-2g/.test(navigator.connection.effectiveType||'')));
+function glOK(){
+  /* right after a device-toggle/resize the GPU process can refuse one context
+     request — ask up to 3 times and release the probe context. */
+  for(var tr=0; tr<3; tr++){
+    try{ var c=document.createElement('canvas'); var g=c.getContext('webgl')||c.getContext('experimental-webgl');
+      if(window.WebGLRenderingContext&&g){
+        if(g.getExtension){ var lc=g.getExtension('WEBGL_lose_context'); if(lc) lc.loseContext(); }
+        return true;
+      } }catch(e){}
+  }
+  return false;
+}
+function loadEmber(){
+  ['public/vendor/three-r159.min.js','js/ember-field-engine.js'].forEach(function(src){
+    var s=document.createElement('script'); s.src=src; s.async=false; document.body.appendChild(s);
+  });
+}
+/* MOBILE particle boot: topo is already up; bring the ember PYRAXIS mark in
+   once the browser is idle so first paint + section scripts finish first.
+   Tiny devices (<=2GB/<=2 threads), data-saver/2G, or no WebGL stay topo-only
+   — no 670KB three.js download, no second GL context. Non-interactive by
+   engine design (NO_PTR on coarse), so scroll stays smooth. */
+function startMobileEmber(){
+  if(engineStarted) return;
+  var tiny=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
+  var saver=(navigator.connection&&(navigator.connection.saveData||/2g|slow-2g/.test(navigator.connection.effectiveType||'')));
+  if(tiny||saver||!glOK()) return;
+  engineStarted=true;
+  window.__pxLite=!!lite;
+  document.documentElement.classList.add('has-gl');
+  var boot=loadEmber;
+  if('requestIdleCallback' in window) requestIdleCallback(function(){ boot(); },{timeout:2500});
+  else setTimeout(boot,1200);
+}
 function startDesktop(){
   if(engineStarted) return; engineStarted=true;
   window.__topoMobile=false;
   window.__pxLite=!!lite;
-  var ok=false;
-  /* RESIZE FIX: right after a device-toggle/resize the GPU process can refuse one context request.
-     One refusal used to mean 'no WebGL' for the whole page -> no ember mark until manual reload.
-     Ask up to 3 times, and release the probe context. */
-  for(var tr=0; tr<3&&!ok; tr++){
-    try{ var c=document.createElement('canvas'); var g=c.getContext('webgl')||c.getContext('experimental-webgl');
-      ok=!!(window.WebGLRenderingContext&&g);
-      if(g&&g.getExtension){ var lc=g.getExtension('WEBGL_lose_context'); if(lc) lc.loseContext(); } }catch(e){}
-  }
+  var ok=glOK();
   var weak=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
   /* No engine on a desktop (weak GPU, no WebGL) used to leave the hero with NO PYRAXIS mark at all.
      'no-gl' turns on the static mark (css) so the symbol is always there. */
@@ -812,11 +840,7 @@ function startDesktop(){
   /* LAG FIX: parsing 670KB three.js + building 8500 embers + compiling shaders used to land in the
      same frames as every section script. Wait until the browser is idle (max 900ms) so first paint
      and the section scripts finish first. */
-  var boot=function(){
-    ['public/vendor/three-r159.min.js','js/ember-field-engine.js'].forEach(function(src){
-      var s=document.createElement('script'); s.src=src; s.async=false; document.body.appendChild(s);
-    });
-  };
+  var boot=loadEmber;
   /* FAST START: scripts are preloaded in <head> (download overlaps HTML/CSS), so boot right after first
      paint. Headline reveal runs on the compositor (transform), so engine parse does not jerk it. */
   requestAnimationFrame(function(){ requestAnimationFrame(boot); });
@@ -829,11 +853,17 @@ function startDesktop(){
   },2000);
 }
 document.addEventListener('DOMContentLoaded',function(){
-  /* PHONES/TOUCH: no ember/globe engine, no scroll-driven morph. The contour (topo) field
-     becomes the fixed, always-on site background; the PYRAXIS mark is a static hero backdrop. */
+  /* PHONES/TOUCH: topo contour starts idle (instant cheap backdrop, no static
+     mark); the particle ember PYRAXIS mark boots idle-deferred after it
+     (see startMobileEmber) — tiny / saver / no-WebGL devices stay topo-only. */
   if((window.matchMedia&&matchMedia('(pointer: coarse)').matches)||innerWidth<900){
     window.__topoMobile=true;
-    if(window.topoStart) window.topoStart();
+    var kick=function(){
+      if(window.topoStart) window.topoStart();
+      startMobileEmber();
+    };
+    if('requestIdleCallback' in window) requestIdleCallback(kick,{timeout:1200});
+    else setTimeout(kick,600);
     return;
   }
   startDesktop();
