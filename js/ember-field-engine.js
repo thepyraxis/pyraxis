@@ -1553,6 +1553,12 @@ function tick(now){
           glass fades in beneath the arriving embers (bodyFade) →
           atmosphere ring breathes on last (atmFade). —— */
     globeMix=sstep(clamp((curP-4.05)/.8,0,1));
+    /* HEADING HOME EARLY — the world must face India when it forms. Blending
+       rot→home only during the flight whipped the forming globe up to ~65°
+       sideways mid-transition (wrong way, then correct). Pre-turning across
+       late galaxy instead, where everything already turns: the heading arrives
+       aligned, so formation itself is slew-free. */
+    const homeGate=sstep(clamp((curP-3.4)/1.1,0,1));
     /* tight follow (not the old 0.5s inertia): the gates must track the
        geometry 1:1 or the world visibly re-phases a step behind after fast
        scrolls. Still critically damped, just with a ~120ms settle. */
@@ -1634,9 +1640,10 @@ function tick(now){
     const rotScroll=lerp(ROTC[i],ROTC[i+1],e)*(reduced?.4:1);
     /* ambient drift only AFTER the hero — the PYRAXIS mark must hold dead still once scroll stops */
     let rot=rotScroll+(reduced?0:Math.sin(now*.00007)*.05*(1-heroGate));
+    /* pre-turned: full home by curP 4.5, arrival slew-free */
+    rot+=(GLOBE_HOME_EFF-rot)*homeGate;
     let ryT=rot;
     if(globeMixS>0){
-      rot+=(GLOBE_HOME_EFF-rot)*gmE;
       /* idle spin never stops (even mid-drag) — drag and fling simply ADD to it, like a real turned globe */
       if(!reduced){
         const fm=1-gmE;   /* 1 while the swarm is still gathering -> 0 once the world is formed */
