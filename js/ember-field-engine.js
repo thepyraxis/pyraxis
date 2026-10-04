@@ -665,7 +665,7 @@ void main(){
    v1 (soft, inertial, "cinematic") : SCROLL_FOLLOW=6, GLOBE_SMOOTH=.5,  GLOBE_MAXV=3
    v2 (tight, 1:1 tracking)         : SCROLL_FOLLOW=9, GLOBE_SMOOTH=.12, GLOBE_MAXV=8
    Higher SCROLL_FOLLOW = snappier. Higher GLOBE_SMOOTH = slower, softer globe condense. */
-const SCROLL_FOLLOW=6, GLOBE_SMOOTH=.12, GLOBE_MAXV=8;   /* ONE soft layer (SCROLL_FOLLOW) drives everything; gates/heading stay tight so globe+galaxy never lag the particles */
+const SCROLL_FOLLOW=6, GLOBE_SMOOTH=.3, GLOBE_MAXV=8;   /* ONE soft layer (SCROLL_FOLLOW) drives everything; the globe condense settles in ~300ms — dreamy, still critically damped so it never overshoots or lags behind fast scrolls */
 
 /* ================= scroll keyframes ================= */
 const CAM=[
@@ -1186,7 +1186,7 @@ try{
        the disc onto the world — zero at BOTH segment ends, peak mid-flight,
        so the boundary with the previous segment stays perfectly continuous. */
     const slow=(i===4);
-    const st=(slow?.28:.35)*(i===0?.5:1);
+    const st=(slow?.38:.35)*(i===0?.5:1);
     const rate=slow?1/(1-st):1.9;   /* slow: stagger+travel = exactly the segment, so the world is complete at its end */
     for(let j=0;j<N;j++){
       const d=SEEDS[j]*st;
@@ -1202,7 +1202,7 @@ try{
       const y=A[j3+1]+(B[j3+1]-A[j3+1])*e+DIRS[j3+1]*s;
       const z=A[j3+2]+(B[j3+2]-A[j3+2])*e+DIRS[j3+2]*s;
       if(slow){
-        const sw=1.2*e*(1-e),cw=Math.cos(sw),sn=Math.sin(sw);
+        const sw=1.5*e*(1-e),cw=Math.cos(sw),sn=Math.sin(sw);
         baseArr[j3]=x*cw+z*sn;
         baseArr[j3+1]=y;
         baseArr[j3+2]=-x*sn+z*cw;   /* +y sense: same as disc spin, heading and globe spin */
@@ -1574,8 +1574,8 @@ function tick(now){
       }else{ window.__topoVis=1; }
     }
     if(texReady)texFade=Math.min(1,texFade+dt/0.9);   /* map melts onto the glass */
-    const bodyFade=sstep(clamp((globeMixS-.42)/.58,0,1));
-    const atmFade=sstep(clamp((globeMixS-.68)/.32,0,1));
+    const bodyFade=sstep(clamp((globeMixS-.5)/.5,0,1));
+    const atmFade=sstep(clamp((globeMixS-.74)/.26,0,1));
     if(engine.globeBody){
       const gb=engine.globeBody,ga=engine.globeAtm;
       gb.visible=bodyFade>.005;
@@ -1695,7 +1695,7 @@ function tick(now){
         engine.camera.position.x+=Math.sin(now/1000*.1)*.15*gmE;
         engine.camera.position.y+=Math.cos(now/1000*.08)*.1*gmE;
       }
-      engine.camera.position.z-=gmE*2.2;
+      engine.camera.position.z-=gmE*2.8;
     }
     lookV.set(lerp(cp[1][0],cn[1][0],e),lerp(cp[1][1],cn[1][1],e),lerp(cp[1][2],cn[1][2],e));
     engine.camera.lookAt(lookV);
