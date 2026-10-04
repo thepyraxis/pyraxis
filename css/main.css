@@ -362,7 +362,7 @@ html.js .mnav.open a:nth-child(8){transition-delay:.35s}
 }
 /* ============ hero ============ */
 #hero{border-top:0;padding-top:clamp(154px,19vh,206px);padding-bottom:clamp(56px,8vh,88px);overflow:clip}
-#hero .hero-mark,#hero .model{-webkit-user-select:none;user-select:none} /* decorative layers stay locked; copy + CTAs remain selectable */
+#hero .hero-mark,#hero .model,#hero h1,#hero .hero-promise,#hero .kicker,#hero .lede{-webkit-user-select:none;user-select:none} /* background clicks/drags feed the particle field — copy must never highlight; links + buttons stay clickable */
 #hero .wrap{position:relative;z-index:1}
 .hero-pool{display:none!important}
 .hero-grid{display:grid;gap:clamp(40px,5vw,72px);position:relative;align-items:end;max-width:880px}
