@@ -519,7 +519,7 @@ for(let i=0;i<N;i++){
   DIRS[i*3]=v.x;DIRS[i*3+1]=v.y;DIRS[i*3+2]=v.z;
 }
 for(let j=0;j<N;j++)GAL.GA[j*4]=GAL.GSZ[j]/SIZES[j];   /* px-size → multiplier on aSize */
-const ARCS=[2.6,2.8,2.0,2.6,0];   /* genesis flight has NO arc: any out-and-back bump reads as scattering sideways before converging */
+const ARCS=[2.6,2.8,2.0,2.6,2.1];   /* genesis flight: arc WITHOUT swirl (Energy Study Nº 001 reference) — a fixed-direction spread reads as breathing; a reversing rotation read as wrong-way. Swirl stays deleted. */
 const LAND=new Float32Array(N).fill(.7);  /* fallback ember-world glow */
 
 /* ================= shaders ================= */
@@ -1181,15 +1181,12 @@ try{
     const i=clamp(Math.floor(p),0,4);
     const t=clamp(p-i,0,1);
     const A=shapes[i],B=shapes[i+1],arc=ARCS[i];
-    /* THE LAST FLIGHT — its own timing: quintic ease (buttery endpoints) and
-       longer staggered travel, but STRAIGHT paths: the old swirl/arc curved
-       every particle out and back (zero at both ends, peak mid-flight), so
-       the whole swarm visibly rotated one way and then reversed — the
-       mid-transition jerk. Converge reads clean; stagger + dolly + globe
-       spin carry the cinema. */
+    /* THE LAST FLIGHT — Energy Study Nº 001 timing: quintic ease, stagger .3,
+       rate 1.5, wide fixed-direction arcs, NO rotational component. Straight
+       converge proved too flat; the arc restores the curve. */
     const slow=(i===4);
-    const st=(slow?.38:.35)*(i===0?.5:1);
-    const rate=slow?1/(1-st):1.9;   /* slow: stagger+travel = exactly the segment, so the world is complete at its end */
+    const st=(slow?.3:.35)*(i===0?.5:1);
+    const rate=slow?1.5:1.9;   /* slow: stagger+travel = exactly the segment, so the world is complete at its end */
     for(let j=0;j<N;j++){
       const d=SEEDS[j]*st;
       let l=(t-d)*rate;
