@@ -8,10 +8,16 @@
   if(!box||!cv) return;
   var ctx=cv.getContext('2d'); if(!ctx) return;
   var REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  /* low-end devices decode/scale 50 webp frames: cap the backing store at 1x
-     (halves canvas memory vs DPR 2, visually identical in a ~400px circle). */
-  var LITEDPR=!!((navigator.deviceMemory&&navigator.deviceMemory<=4)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4));
+  /* backing store always tracks the real screen (up to 2x): a 1x canvas on a
+     2-3x phone display is upscaled by the compositor and reads blurry. A 2D
+     circle canvas costs ~1MB — the 50 decoded frames are the real memory,
+     and those already load lazily below. */
   var COUNT=50, BASE='public/founder-sequence/frame-', cur=1, dragging=false;
+  /* retina phones (2-3x screens) out-resolve the 960px frames, so they get
+     the 1440px @2x set; 1x screens keep the lighter set. Decided once —
+     DPR doesn't change without a zoom that reloads layout anyway. */
+  var HI=(window.devicePixelRatio||1)>1.5;
+  function frameSrc(idx){ return BASE+String(idx).padStart(3,'0')+(HI?'@2x':'')+'.webp'; }
   /* text reveal — mirrors FounderStory.tsx: IO threshold 0.3 toggles visibility, stagger via --d */
   var sec=document.getElementById('purpose');
   if(sec){
@@ -31,7 +37,7 @@
     if(framesLoaded) return; framesLoaded=true;
     imgs.forEach(function(im,idx){
       try{ im.fetchPriority='low'; }catch(_){}
-      im.src=BASE+String(idx+1).padStart(3,'0')+'.webp';
+      im.src=frameSrc(idx+1);
       if(im.complete&&im.naturalWidth) return;
       im.addEventListener('load',function(){
         if(idx+1===cur||!first){ first=true; draw(); }
@@ -42,7 +48,7 @@
   function draw(){
     var im=imgs[cur-1];
     if(!im||!im.complete||!im.naturalWidth) return;
-    var dpr=LITEDPR?1:Math.min(window.devicePixelRatio||1,2), r=box.getBoundingClientRect();
+    var dpr=Math.min(window.devicePixelRatio||1,2), r=box.getBoundingClientRect();
     var w=Math.max(2,Math.round(r.width*dpr)), h=Math.max(2,Math.round(r.height*dpr));
     if(cv.width!==w||cv.height!==h){ cv.width=w; cv.height=h; }
     var s=Math.max(cv.width/im.naturalWidth,cv.height/im.naturalHeight);
