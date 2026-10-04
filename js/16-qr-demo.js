@@ -23,6 +23,8 @@
     var li=document.createElement('li');
     li.innerHTML='<svg viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7"/></svg><span>'+text+'</span>';
     log.appendChild(li);
+    while(log.children.length>3) log.removeChild(log.firstChild);   /* bounded: never grows past the reserved 3 rows */
+    holdMin(log);
     raf2(function(){ li.classList.add('in'); });
   }
   var OPTS=[
@@ -74,7 +76,7 @@
     item.classList.add('sel');
     var done=$('#qDone'); if(!done) return;
     cur.d.forEach(function(line,i){
-      setTimeout(function(){ whenOn(function(){
+      setTimeout(function(){ whenCalm(function(){
         var div=document.createElement('div');
         div.innerHTML='<svg class="ic"><use href="#i-check"/></svg><span>'+line+'</span>';
         done.appendChild(div);
@@ -92,12 +94,17 @@
       t=t.parentNode;
     }
   });
+  (function(){
+    var tags=Object.keys(FLOWS).map(function(k){ return FLOWS[k].tag; }).concat('QR SCANNED · TABLE 12')
+      .sort(function(a,b){ return b.length-a.length; });
+    reserveLog(log,[tags.slice(0,3)]);
+  })();
   function start(){
     if(started) return; started=true;
     if(tent) tent.classList.add('live');
     if(REDUCED){ vWelcome(); pushLog('QR SCANNED · TABLE 12'); return; }
     vScan();
-    setTimeout(function(){ whenOn(function(){ vWelcome(); pushLog('QR SCANNED · TABLE 12'); }); },1600);
+    setTimeout(function(){ whenCalm(function(){ vWelcome(); pushLog('QR SCANNED · TABLE 12'); }); },1600);
   }
   if('IntersectionObserver' in window){
     var io=new IntersectionObserver(function(es){

@@ -33,12 +33,13 @@
     var li=document.createElement('li');
     li.innerHTML='<svg viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7"/></svg><span>'+text+'</span>';
     logEl.appendChild(li);
+    holdMin(logEl);
     raf2(function(){ li.classList.add('in'); });
   }
-  function vis(html){ visEl.innerHTML=html; }
-  function titleSet(t){ if(titleEl) titleEl.textContent=t; }
+  function vis(html){ visEl.innerHTML=html; holdMin(visEl); }
+  function titleSet(t){ if(titleEl){ titleEl.textContent=t; holdMin(titleEl); } }
 
-  function scroll(){ body.scrollTop=body.scrollHeight; }
+  function scroll(){ requestAnimationFrame(function(){ body.scrollTop=body.scrollHeight; }); }
   function addMsg(dir,html,time){
     var m=document.createElement('div');
     m.className='wa-msg '+dir+(dir===lastDir?' cont':'');
@@ -168,7 +169,7 @@
     if(typer) clearInterval(typer);
     var i=0;
     typer=setInterval(function(){
-      if(motionOff()) return;
+      if(motionOff()||pxScrolling) return;
       i++; el.textContent=text.slice(0,i);
       if(i>=text.length){
         clearInterval(typer); typer=null;
@@ -215,7 +216,7 @@
       var when=t;
       if(REDUCED){ curT=when; fn(); return; }
       if(when<=skipFrom){ curT=when; fn(); return; }
-      timeouts.push({id:setTimeout(function(){ whenOn(function(){ curT=when; fn(); }); },when),when:when});
+      timeouts.push({id:setTimeout(function(){ whenCalm(function(){ curT=when; fn(); }); },when),when:when});
     }
     function done(){
       var other = which==='five' ? endTwo : endFive;
@@ -300,6 +301,36 @@
     at(500, function(){ logAdd('NEXT VISIT · RATED FIVE STARS'); });
     at(400, done);
   }
+
+  /* ---- reserve final heights: log rows, caption, visual — nothing below may move while the demo plays ---- */
+  var LOGS=[
+    ['DINNER ENDED · TABLE 12 · SAT 21:14','FEEDBACK REQUEST SENT · WHATSAPP','RATING RECEIVED · 5 / 5','REVIEW LINK OPENED · GOOGLE','REVIEW POSTED · PUBLIC','PUBLIC REVIEWS THIS MONTH · 34'],
+    ['DINNER ENDED · TABLE 12 · SAT 21:14','FEEDBACK REQUEST SENT · WHATSAPP','RATING RECEIVED · 2 / 5','PRIVATE FEEDBACK RECEIVED · OWNER ONLY','REVIEW LINK OFFERED · SAME FOR EVERY CUSTOMER','ISSUE ASSIGNED · FLOOR MANAGER','RESOLVED · WITHIN 2 HOURS','WIN-BACK SENT · 20% CODE · TRACKED','REBOOKED · SATURDAY 19:30','NEXT VISIT · RATED FIVE STARS']
+  ];
+  var TITLES=['Dinner ends. The ask goes out — by itself.','One tap — that\u2019s the whole survey.','The public path lights up — it always was open.','One tap later — a public, genuine review.','Proof that brings the next customer.','Not every night is a five.','The public path stays open — and a private one opens.','The owner gets it — while it still matters.','Then — a second chance.'];
+  function reserveAll(){
+    reserveLog(logEl,LOGS);
+    if(titleEl){
+      var keep=titleEl.textContent, mx=0;
+      titleEl.style.minHeight='0';
+      TITLES.forEach(function(t){ titleEl.textContent=t; mx=Math.max(mx,titleEl.offsetHeight); });
+      titleEl.textContent=keep; titleEl.style.minHeight=mx+'px';
+    }
+    var snap=visEl.innerHTML, vm=260;
+    visEl.style.minHeight='0';
+    [function(){return askVis();},function(){return bigStarsVis();},function(){return routeVis('pub');},function(){return routeVis('priv');},
+     function(){return googleVis();},function(){return loopVis('five');},function(){return loopVis('two');},function(){return ownerVis();}
+    ].forEach(function(g){
+      visEl.innerHTML=g();
+      var gt=visEl.querySelector('#gTw'); if(gt) gt.textContent=GREVIEW;   /* typed text: measure the finished state */
+      vm=Math.max(vm,visEl.offsetHeight);
+    });
+    visEl.innerHTML=snap; visEl.style.minHeight=vm+'px';
+  }
+  reserveAll();
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(reserveAll);
+  var _rt=0;
+  addEventListener('resize',function(){ clearTimeout(_rt); _rt=setTimeout(reserveAll,260); });
 
   if(endFive) endFive.addEventListener('click', function(){ play('five'); });
   if(endTwo) endTwo.addEventListener('click', function(){ play('two'); });

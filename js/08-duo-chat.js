@@ -9,6 +9,8 @@
     '<span class="ok"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>BOOKED</span>'+
     '<p class="sub">Reminder at 08:00 · follow-up after the visit</p></div>';
   var picked={slot:'10:30'};
+  /* reserve the log's final height (3 rows) so the section below never jumps as rows appear */
+  reserveLog($('#duoLog'),[['LEAD CAPTURED · WHATSAPP','APPOINTMENT BOOKED · TOMORROW 16:00','REMINDER SCHEDULED · 08:00']]);
   var chat=makeWA({
     body: body,
     log: $('#duoLog'),
