@@ -23,8 +23,12 @@ var LOW=LITE;
    so 12fps looks identical to 60fps at a fraction of the GPU cost. */
 var SMALL=MOBILE&&((Math.min(screen.width||9999,innerWidth||9999)<=400)||(navigator.deviceMemory&&navigator.deviceMemory<=3)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4));
 var started=false, raf=0, heroOn=false;
+/* touch phones: the contour pattern is hidden by CSS (#topo{display:none}),
+   so never start the render loop there — no hidden GPU work on battery. */
+var TOPO_OFF=matchMedia('(pointer: coarse)').matches;
 window.topoStart=function(){
   if(started) return; started=true;
+  if(TOPO_OFF) return;
   window.__topoOn=true; window.__topoOnT=performance.now();
   cv.classList.add('live');
   if(RM){ render(0,mouse.x,mouse.y); return; }
