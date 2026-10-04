@@ -698,6 +698,10 @@ const GLOBE_FORM_SPIN=1.8;   /* extra gentle spin (rad/s) while the particles ga
    instead of easing to a stop. The differential detail (galaxyStep) still
    settles as before; this only carries the whole-disc motion. */
 const GAL_RIGID=.06;
+/* KNOT_SPIN — the coherence knot revolves (rad/s). Rigid group rotation, so
+   the knot's shape is never modified — it only turns, a full 360° per ~80s,
+   while it is the on-screen formation. */
+const KNOT_SPIN=.08;
 /* SCROLL-BOUND ROTATION — rotation is a pure function of scroll progress (cumulative table below), never a
    time accumulator. Scrolling up retraces scrolling down exactly: no snap-back whip, no unwinding spin. */
 const ROT_K=9,ROTC=[0];
@@ -705,6 +709,7 @@ for(let k=0;k<ROT.length-1;k++)ROTC.push(ROTC[k]+(ROT[k]+ROT[k+1])*.5*ROT_K);
 const GLOBE_HOME_EFF=GLOBE_HOME_Y+TAU*Math.round((ROTC[4]-GLOBE_HOME_Y)/TAU);  /* fixed short-way target, never flips */
 let ryS=null,ryV=0;  /* rendered heading + its velocity (critically damped, see smoothDamp) */
 let galRigid=0;  /* rigid galaxy turntable angle (see GAL_RIGID) */
+let knotTurn=0;  /* rigid knot turntable angle (see KNOT_SPIN) */
 /* smoothDamp — critically damped spring toward a target. Unlike a fixed angular-speed cap, it ALWAYS
    settles in a fixed time no matter how far it has to travel and never overshoots, so a fast scroll-up
    can't leave the mark creeping round in slow motion after the scroll has stopped. Returns [value,velocity]. */
@@ -1518,6 +1523,10 @@ function tick(now){
     const galGate=sstep(clamp((curP-3.25)/.75,0,1))*(1-sstep(clamp((curP-4)/.7,0,1)));
     u.uGal.value=galGate;
     if(!reduced&&galGate>.01)galRigid+=dt*GAL_RIGID;   /* rigid turntable: runs whenever the galaxy is visible, gated to zero with it so re-entry never pops */
+    /* knot turntable gate: full while coherence is the formation (curP≈2),
+       zero everywhere else — neighboring stages and the globe never feel it */
+    const knotGate=sstep(clamp((curP-1.3)/.5,0,1))*(1-sstep(clamp((curP-2.3)/.5,0,1)));
+    if(!reduced&&knotGate>.01)knotTurn+=dt*KNOT_SPIN;
     engine.galGroup.visible=galGate>.01;
     if(engine.galGroup.visible){
       for(const f of engine.galFx)f.mat.opacity=f.base*galGate;
@@ -1647,7 +1656,7 @@ function tick(now){
     if(ryS===null)ryS=ryT;
     {const r=smoothDamp(ryS,ryT,ryV,globeDragging?.12:.14,8,dt);ryS=r[0];ryV=r[1];}
     if(Math.abs(ryT-ryS)<.003&&Math.abs(ryV)<.02){ryS=ryT;ryV=0;}
-    engine.group.rotation.y=ryS+(globeMixS>0?(globeSpin+globeDragY)*gmE:0)+galRigid*galGate*(1-gmE);  /* direct, zero-lag: tracks the cursor 1:1; the rigid term fades exactly as the globe takes over, so the world's heading is never disturbed */
+    engine.group.rotation.y=ryS+(globeMixS>0?(globeSpin+globeDragY)*gmE:0)+galRigid*galGate*(1-gmE)+knotTurn*knotGate;  /* direct, zero-lag: tracks the cursor 1:1; the rigid terms fade exactly as their stages leave, so headings and the world are never disturbed */
 
     /* DUST LAYER — the room breathes around the world */
     if(dust){
