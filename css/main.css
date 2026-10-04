@@ -1246,6 +1246,42 @@ footer{border-top:1px solid var(--line);padding:72px 0 44px;background:linear-gr
   .wa-body,.q-app{overflow:hidden!important;overscroll-behavior:auto!important}
 }
 
+/* ============ MOBILE HERO PRESENCE (<=899px / coarse) ============
+   No particle ember field on phones (GPU cost), so the hero gets three
+   compositor-only layers instead: a faint brand watermark, one slow
+   aurora drift, and a CTA sheen. Only transform/opacity animate —
+   no per-frame main-thread work. Desktop untouched. Off-screen pause is
+   automatic via .anim-off; scroll pause via html.is-scrolling below;
+   reduced-motion via the global kill-switch. */
+@media(max-width:899px),(pointer:coarse){
+  #hero{position:relative}
+  /* 1 · watermark mark, top-right bleed, barely-there */
+  .hero-mark{display:block!important;position:absolute;z-index:0;
+    top:clamp(64px,11vh,118px);right:-30vw;width:min(92vw,430px);height:auto;
+    opacity:.13;pointer-events:none;animation:pxmark 14s ease-in-out infinite}
+  .hero-mark svg{display:block;width:100%;height:auto}
+  @keyframes pxmark{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-12px,0)}}
+  /* 2 · aurora drift behind everything (soft radial washes, no blur filter) */
+  #hero::before{content:"";position:absolute;z-index:0;left:-30vw;right:-30vw;top:-12vh;bottom:0;
+    pointer-events:none;
+    background:
+      radial-gradient(42% 48% at 30% 32%,rgba(124,92,255,.20),transparent 70%),
+      radial-gradient(44% 50% at 72% 64%,rgba(0,168,132,.10),transparent 70%);
+    animation:pxaurora 18s ease-in-out infinite alternate}
+  @keyframes pxaurora{from{transform:translate3d(-3%,0,0) scale(1)}to{transform:translate3d(3%,-2%,0) scale(1.07)}}
+  /* 3 · primary CTA sheen + gradient headline accent */
+  .hero-cta .btn-solid{position:relative;overflow:hidden}
+  .hero-cta .btn-solid::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.38) 50%,transparent 58%);
+    transform:translateX(-130%) skewX(-12deg);
+    animation:pxsheen 5.5s ease-in-out infinite}
+  @keyframes pxsheen{0%,58%{transform:translateX(-130%) skewX(-12deg)}92%,100%{transform:translateX(130%) skewX(-12deg)}}
+  @supports((-webkit-background-clip:text) or (background-clip:text)){
+    #hero h1 em{background:linear-gradient(115deg,#d3c4ff 5%,var(--pu2) 55%,#7c5cff 95%);
+      -webkit-background-clip:text;background-clip:text;color:transparent}
+  }
+}
+
 /* ---- mobile-first flow explainer: one customer, five touchpoints, one record ---- */
 .flow-m{display:none}
 @media(max-width:899px){
@@ -1379,6 +1415,9 @@ html.is-scrolling .rev-end.pulse,
 html.is-scrolling .vis-chip.key,
 html.is-scrolling .wa-btn:not(.used)::before,
 html.is-scrolling .rj-pulse,
+html.is-scrolling .hero-mark,
+html.is-scrolling #hero::before,
+html.is-scrolling .hero-cta .btn-solid::after,
 html.is-scrolling .ob.hot .ob-b::after{animation-play-state:paused!important}
 
 @media(prefers-reduced-motion:reduce){.js [data-reveal].rv-prep:not(.in){will-change:auto}}
