@@ -1234,15 +1234,16 @@ footer{border-top:1px solid var(--line);padding:72px 0 44px;background:linear-gr
   #gl{display:none!important}
   /* contour field: purely decorative — never intercept touches/scroll */
   #topo{pointer-events:none!important;touch-action:auto}
-  /* mockups: interactive but scroll-safe — the phone itself takes taps,
-     inner chat panes never capture vertical swipes, so the page never
-     gets stuck inside a phone. Programmatic auto-scroll (scrollTop) still
-     works under overflow:hidden; only the user's swipe is handed to page. */
-  .device{pointer-events:auto!important;touch-action:pan-y}
-  .d-scr,.wa,.wa-body,.q-app,.q-view{touch-action:pan-y}
-  .wa-body,.q-app{overflow-y:hidden!important;overscroll-behavior:auto}
-  .wa-body .wa-btn,.q-app .q-opt,.q-app .q-item,.q-app .q-back{pointer-events:auto;touch-action:manipulation}
-  .q-app .q-opt,.q-app .q-item{cursor:pointer}
+  /* mockups: click-through but tappable — the phone frame itself never
+     intercepts touches, so vertical swipes always scroll the PAGE.
+     Only real controls (buttons/links) opt back in, so options stay
+     clickable. Inner panes never form a nested scroller on touch, and
+     scroll chaining to the page is forced back on (a later desktop
+     `overscroll-behavior:contain` rule would otherwise keep trapping it). */
+  .device{pointer-events:none!important;touch-action:pan-y!important}
+  .device *{touch-action:pan-y!important}
+  .device button,.device a{pointer-events:auto!important;cursor:pointer}
+  .wa-body,.q-app{overflow:hidden!important;overscroll-behavior:auto!important}
 }
 
 /* ---- mobile-first flow explainer: one customer, five touchpoints, one record ---- */
