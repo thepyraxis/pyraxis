@@ -1283,15 +1283,19 @@ footer{border-top:1px solid var(--line);padding:72px 0 44px;background:linear-gr
    compositor-only drift — no per-frame main-thread work. */
 body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(52% 58% at 30% 24%,rgba(124,102,224,.11),transparent 70%),
-    radial-gradient(46% 52% at 74% 76%,rgba(112,102,196,.08),transparent 70%);
+    radial-gradient(52% 58% at 30% 24%,rgba(124,102,224,.08),transparent 70%),
+    radial-gradient(46% 52% at 74% 76%,rgba(112,102,196,.06),transparent 70%);
   animation:pxambient 24s ease-in-out infinite alternate}
 @keyframes pxambient{from{transform:translate3d(-2%,0,0) scale(1)}to{transform:translate3d(2%,-2%,0) scale(1.05)}}
+/* desktop stays true dark — no ambient glow Wash */
+@media(min-width:900px) and (pointer:fine){
+  body::before{display:none}
+}
 /* small bright screens wash the wash out — mobile gets a stronger pass */
 @media(max-width:899px),(pointer:coarse){
   body::before{background:
-    radial-gradient(60% 52% at 50% 20%,rgba(124,102,224,.16),transparent 70%),
-    radial-gradient(56% 50% at 50% 82%,rgba(112,102,196,.11),transparent 70%)}
+    radial-gradient(72% 56% at 20% 14%,rgba(124,102,224,.13),transparent 72%),
+    radial-gradient(62% 52% at 86% 90%,rgba(112,102,196,.09),transparent 72%)}
 }
 
 /* ---- mobile-first flow explainer: one customer, five touchpoints, one record ---- */
