@@ -1221,9 +1221,9 @@ footer{border-top:1px solid var(--line);padding:72px 0 44px;background:linear-gr
 }
 
 /* mobile hero: no static PYRAXIS image, no particle ember field (#gl) —
-   light contour field (#topo) only. Phone mockups (.device) are strictly
-   non-interactive so page scroll never gets trapped inside them: touches
-   pass through to the page while the demos keep auto-playing underneath. */
+   light contour field (#topo) only. Phone mockups (.device) stay tappable,
+   but their inner chat areas never trap page scroll: vertical swipes always
+   go to the page while taps on buttons still work. */
 @media(max-width:899px),(pointer:coarse){
   .hero-grid{position:relative}
   .hero-grid>div:not(.hero-mark){position:relative;z-index:1}
@@ -1234,11 +1234,15 @@ footer{border-top:1px solid var(--line);padding:72px 0 44px;background:linear-gr
   #gl{display:none!important}
   /* contour field: purely decorative — never intercept touches/scroll */
   #topo{pointer-events:none!important;touch-action:auto}
-  /* mockups: non-interactive — inner chat scroll areas can't capture
-     vertical swipes, so the page never gets stuck inside a phone */
-  .device{pointer-events:none!important}
-  /* tap-driven QR demo is desktop-only; mobile shows the auto-play */
-  .q-hint{display:none!important}
+  /* mockups: interactive but scroll-safe — the phone itself takes taps,
+     inner chat panes never capture vertical swipes, so the page never
+     gets stuck inside a phone. Programmatic auto-scroll (scrollTop) still
+     works under overflow:hidden; only the user's swipe is handed to page. */
+  .device{pointer-events:auto!important;touch-action:pan-y}
+  .d-scr,.wa,.wa-body,.q-app,.q-view{touch-action:pan-y}
+  .wa-body,.q-app{overflow-y:hidden!important;overscroll-behavior:auto}
+  .wa-body .wa-btn,.q-app .q-opt,.q-app .q-item,.q-app .q-back{pointer-events:auto;touch-action:manipulation}
+  .q-app .q-opt,.q-app .q-item{cursor:pointer}
 }
 
 /* ---- mobile-first flow explainer: one customer, five touchpoints, one record ---- */

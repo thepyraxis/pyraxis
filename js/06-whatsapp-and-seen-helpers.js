@@ -107,10 +107,8 @@ function makeWA(opts){
         choose(t);
       }
       /* auto-demo fallback: if the visitor never taps, the first slot is
-         picked for them so the confirmation always plays (faster on touch,
-         where mockups are non-interactive and taps never come) */
-      var coarseTouch=(window.matchMedia&&matchMedia('(pointer: coarse)').matches);
-      auto=setTimeout(function(){ choose(btns[0]); },coarseTouch?2500:6500);
+         picked for them so the confirmation always plays */
+      auto=setTimeout(function(){ choose(btns[0]); },6500);
       waitCancel=function(){ if(auto) clearTimeout(auto); body.removeEventListener('click',onTap); };
       body.addEventListener('click',onTap);
     });
