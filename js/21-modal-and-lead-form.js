@@ -5,7 +5,7 @@
    No backend/key needed; CSP-safe. */
 (function(){
   var modal=$('#modal'), form=$('#leadForm'), err=$('#fErr'); if(!modal||!form) return;
-  var WA='919837104413', lastFocus=null;
+  var WA='919837104413', lastFocus=null, src='site';
   var done=$('#mDone'), doneT=$('#mDoneT'), waLink=$('#mWa'), mailLink=$('#mMail');
   function showForm(){ if(done.hidden) return; form.reset(); done.hidden=true; form.hidden=false; $('#mTitle').hidden=false; $('.m-lede',modal).hidden=false; modal.setAttribute('aria-labelledby','mTitle'); }
   var bg=[$('#main'),$('footer'),$('#nav')];
@@ -23,7 +23,7 @@
     if(lastFocus&&document.contains(lastFocus)&&lastFocus.focus) lastFocus.focus();
   }
   $$('[data-open-modal]').forEach(function(b){
-    b.addEventListener('click',function(e){ e.preventDefault(); open(); });
+    b.addEventListener('click',function(e){ e.preventDefault(); src=b.getAttribute('data-src')||'site'; open(); });
   });
   modal.addEventListener('click',function(e){
     var t=e.target;
@@ -67,7 +67,7 @@
       'Name: '+name.value.trim(),
       'Business type: '+form.elements.type.value,
       'Want help with: '+(form.elements.need.value.trim()||'—'),
-      contact].join('\n');
+      contact,'','(sent from: '+src+')'].join('\n');
     var url='https://wa.me/'+WA+'?text='+encodeURIComponent(text);
     /* show the confirmation first, keep the typed data until the next open */
     waLink.href=url;

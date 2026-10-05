@@ -79,7 +79,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .kicker{font:600 11px var(--sans);letter-spacing:.18em;color:var(--pu2);text-transform:uppercase;display:flex;align-items:center;gap:12px;text-shadow:0 1px 3px rgba(0,0,0,.9),0 1px 12px rgba(0,0,0,.7)}
 .kicker::before{content:attr(data-n);font:500 11px var(--mono);letter-spacing:.08em;color:var(--mut2);text-shadow:0 1px 3px rgba(0,0,0,.9),0 1px 12px rgba(0,0,0,.7)}
 .kicker::after{content:"";width:40px;height:1px;background:var(--line2);flex:none}
-.kicker.center{justify-content:flex-start}.kicker.center::after{content:"";width:40px;height:1px;background:var(--line2);flex:none}
+.kicker.center,.kicker.start{justify-content:flex-start}.kicker.center::after,.kicker.start::after{content:"";width:40px;height:1px;background:var(--line2);flex:none}
 h1{font:400 clamp(3.2rem,8vw,6.8rem)/.95 var(--serif);letter-spacing:-.02em;color:var(--ink);margin:26px 0 20px;text-wrap:balance}
 h1 em{font-style:italic;font-weight:400;color:var(--pu2)}
 /* hero h1 is always visible; only a short transform rise on load (no hidden state, no LCP delay) */
@@ -1097,18 +1097,13 @@ html.js .mnav.open a:nth-child(8){transition-delay:.35s}
 .cta-sub{margin:16px 0 0;color:var(--soft);font-size:1.02rem;max-width:44ch;text-shadow:0 1px 3px rgba(0,0,0,.85),0 2px 18px rgba(0,0,0,.55)}
 .cta-loop{display:inline-flex;align-items:center;gap:9px;margin-top:40px;font:500 11px var(--mono);letter-spacing:.18em;color:var(--mut2);text-shadow:0 1px 3px rgba(0,0,0,.9),0 1px 12px rgba(0,0,0,.7)}
 .cta-loop svg{width:14px;height:14px}@media (hover:hover){.cta-loop:hover{color:var(--ink)}}
-footer{border-top:1px solid var(--line);padding:72px 0 44px;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,0) 40%)}
-.foot-in{display:grid;gap:34px}
-@media(min-width:860px){
-  .foot-in{grid-template-columns:1fr minmax(0,460px);align-items:start}
-  .foot-links{justify-self:end;text-align:right;justify-content:flex-end}
-  .foot-contact{grid-column:1/-1}
-  .foot-meta{grid-column:1/-1}
-}
+footer{border-top:1px solid var(--line);padding:28px 0 20px;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,0) 40%)}
+.foot-in{display:grid;gap:16px}
+/* desktop footer grid lives in the single source block at the end of file */
 .foot-brand{display:flex;align-items:center;gap:12px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.9)) drop-shadow(0 1px 12px rgba(0,0,0,.7))}
 .foot-brand svg{width:22px;height:22px}
 .foot-brand strong{font:700 13px var(--sans);letter-spacing:.34em;color:var(--ink)}
-.foot-tag{font:italic 400 1.05rem var(--serif);color:var(--soft);margin-top:12px;text-shadow:0 1px 3px rgba(0,0,0,.85),0 2px 18px rgba(0,0,0,.55)}
+.foot-tag{font:italic 400 .95rem var(--serif);color:var(--soft);margin-top:6px;text-shadow:0 1px 3px rgba(0,0,0,.85),0 2px 18px rgba(0,0,0,.55)}
 .foot-links{display:flex;flex-wrap:wrap;gap:10px 26px}
 .foot-links a{font:500 11px var(--mono);letter-spacing:.2em;color:var(--mut);text-transform:uppercase;text-shadow:0 1px 3px rgba(0,0,0,.9),0 1px 10px rgba(0,0,0,.7)}@media (hover:hover){.foot-links a:hover{color:var(--ink)}}
 .foot-contact a{font-size:14px}
@@ -1211,6 +1206,12 @@ footer{border-top:1px solid var(--line);padding:72px 0 44px;background:linear-gr
   .why-item{border-top-color:var(--m-hair)}
 }
 
+/* single CTA token: tablet band (641-899px) joins the paper-white system used
+   on phones (<=640) and desktop (>=900); base purple remains only as a
+   no-media-query fallback, never rendered */
+@media(min-width:641px) and (max-width:899px){
+  .btn-solid{background:var(--m-paper,#f2efe9);color:#000000;border-color:var(--m-paper,#f2efe9);box-shadow:none}
+}
 /* mobile flow map: clustered chips + straight spine */
 @media(max-width:899px){
   .flow-cols{gap:52px}
@@ -1391,10 +1392,9 @@ html.motion-off #gl,html.motion-off #topo{visibility:hidden}
 .hero-note a{color:var(--ink);text-decoration:underline}
 @media(max-width:599px){.hero-cta .btn-solid{background:var(--m-paper);color:#000;border-color:var(--m-paper);border-radius:4px;padding:18px 26px;min-width:190px;justify-content:center;font-size:12.5px;letter-spacing:.06em;text-transform:none;font-weight:600}}
 /* footer contact row */
-.foot-contact{display:flex;flex-wrap:wrap;align-items:center;gap:10px 26px}
-.foot-contact a{font:500 13px var(--sans);color:var(--soft);padding:10px 0;min-height:44px;display:inline-flex;align-items:center}
+.foot-contact{display:flex;flex-wrap:wrap;align-items:center;gap:4px 26px}
+.foot-contact a{font:500 13px var(--sans);color:var(--soft);padding:4px 0;min-height:0;display:inline-flex;align-items:center}
 .foot-contact a:focus-visible{color:var(--ink)}@media (hover:hover){.foot-contact a:hover{color:var(--ink)}}
-@media(min-width:860px){.foot-contact{grid-column:1/-1}}
 /* roll-hover links: text rolls up into an italic accent duplicate (splitter in 05-nav.js) */
 .nav-links a.roll,.foot-links a.roll{position:relative;display:inline-block;overflow:hidden;vertical-align:top}
 .nav-links a.roll::after{display:none}  /* the roll carries the feedback; underline would double it */
@@ -1451,6 +1451,7 @@ html.is-scrolling .ob.hot .ob-b::after{animation-play-state:paused!important}
   .deploy-stat a,.ind-see,.purpose-link,.cta-loop{min-height:44px;display:inline-flex;align-items:center}
   /* footer links: the hover 'roll' is a mouse effect — on touch use plain tall links */
   .foot-links{gap:0 26px}
+  .foot-links a{padding:15px 0}
   .foot-links a.roll{padding:15px 0}
   .foot-links .roll-t2{display:none}
   a.roll:focus-visible .roll-t{transform:none}
@@ -1482,7 +1483,7 @@ html.is-scrolling .ob.hot .ob-b::after{animation-play-state:paused!important}
 .modal-card h3{font:500 clamp(1.6rem,4.5vw,2.05rem)/1.2 var(--serif);color:var(--ink);margin:18px 0 10px}
 .m-lede{font-size:15px;line-height:1.6;color:var(--mut);margin-bottom:22px}
 #leadForm label{display:block;margin-top:18px;font:400 10.5px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--mut2)}
-#leadForm input,#leadForm select{display:block;width:100%;margin-top:10px;padding:13px 14px;min-height:46px;background:#18181d;border:1px solid var(--line2);border-radius:4px;color:var(--ink);font:400 15px/1.3 var(--sans);letter-spacing:0;text-transform:none}
+#leadForm input,#leadForm select{display:block;width:100%;margin-top:10px;padding:13px 14px;min-height:46px;background:#18181d;border:1px solid var(--line2);border-radius:4px;color:var(--ink);font:400 16px/1.3 var(--sans);letter-spacing:0;text-transform:none}
 #leadForm input::placeholder{color:#908aa3}
 #leadForm input:focus,#leadForm select:focus{outline:none;border-color:var(--pu2);box-shadow:0 0 0 3px rgba(124,92,255,.2)}
 #leadForm .bad{border-color:#e0707f}
@@ -1514,14 +1515,18 @@ html.finecur:has(.modal:not([hidden])) #cDot,html.finecur:has(.modal:not([hidden
 @media (hover:hover){.foot-legal a:hover{color:var(--ink)}}
 .foot-legal a:focus-visible{color:var(--ink)}
 @media(min-width:860px){
-  footer{padding:56px 0 28px}
-  .foot-in{grid-template-columns:auto 1fr;column-gap:48px;row-gap:20px;align-items:center}
-  .foot-links{justify-self:end;flex-wrap:wrap;gap:8px 22px}
+  footer{padding:24px 0 16px}
+  .foot-in{grid-template-columns:1fr auto;column-gap:48px;row-gap:10px;align-items:end}
+  /* optical baseline alignment: 11px mono caps sit ~4px high next to 13px sans contact text — compositor-only nudge, no layout impact */
+  .foot-links{grid-column:2;grid-row:2;justify-self:end;align-self:end;flex-wrap:wrap;gap:4px 22px;padding-bottom:0;transform:translateY(4px)}
   .foot-links a{letter-spacing:.16em}
+  .foot-contact{grid-column:1;grid-row:2;align-self:end}
   .foot-contact a{min-height:0;padding:2px 0}
-  .foot-bottom{grid-column:1/-1;margin-top:8px;padding-top:6px;border-top:1px solid var(--line)}
+  .foot-bottom{grid-column:1/-1;margin-top:2px;padding-top:10px;border-top:1px solid var(--line)}
   .foot-legal a{padding:6px 0}
 }
 @media(max-width:859px){
-  .foot-in{gap:22px}
+  footer{padding:24px 0 18px}
+  .foot-in{gap:12px}
+  .foot-contact a{min-height:44px;padding:10px 0}
 }

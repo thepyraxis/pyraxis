@@ -8,7 +8,9 @@ var fine=window.matchMedia&&matchMedia('(pointer: fine)').matches;
 if(!fine||innerWidth<900) return; /* no custom cursor on phones / narrow (mobile emulation) */
 var cDot=document.getElementById('cDot'), cRing=document.getElementById('cRing'), rLabel=document.getElementById('rLabel');
 if(!cDot||!cRing||!rLabel) return;
-document.documentElement.classList.add('finecur');
+/* native pointer is hidden only AFTER a real mouse move proves the custom one is alive,
+   and is restored if any script error fires */
+addEventListener('error',function(){ document.documentElement.classList.remove('finecur'); document.body.classList.remove('cur-on'); });
 var rEl=cRing.firstElementChild;
 var MX=innerWidth/2, MY=innerHeight/2, cstate='default', seen=false;
 var LABELS={view:'View'};
@@ -48,7 +50,7 @@ function onScrollCursor(){
 }
 addEventListener('mousemove',function(e){
   MX=e.clientX; MY=e.clientY;
-  if(!seen){seen=true;document.body.classList.add('cur-on');}
+  if(!seen){seen=true;document.documentElement.classList.add('finecur');document.body.classList.add('cur-on');}
   queueResolve();
 },{passive:true});
 addEventListener('scroll',onScrollCursor,{passive:true});

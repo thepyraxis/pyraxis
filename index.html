@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#000000">
-<script>document.documentElement.classList.add('js');</script>
+<script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.__rv)document.documentElement.classList.add('reveal-fail');},5000);</script>
 <title>PYRAXIS — Every customer, remembered.</title>
 <meta name="description" content="Pyraxis builds one connected system for local businesses — website, booking, follow-up and reviews around a single customer record.">
 <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
@@ -109,14 +109,14 @@
     <nav class="nav-links" aria-label="Primary">
       <a href="#builds">What it builds</a>
       <a href="#how">How it works</a>
-      <a href="#qr">QR demo</a>
+      <a href="#qr">Try QR demo</a>
+      <a href="#reviews">Try review demo</a>
       <a href="#deployments">Our work</a>
-      <a href="#reviews">Review demo</a>
-      <a href="#industries">Industries</a>
       <a href="#purpose">Why us</a>
+      <a href="#industries">Industries</a>
     </nav>
     <div class="nav-cta">
-      <a class="btn btn-solid btn-sm nav-go" href="https://wa.me/919837104413?text=Hi%20PYRAXIS!%20I'm%20interested%20in%20a%20customer%20system%20for%20my%20business.%20Can%20you%20tell%20me%20more%3F" target="_blank" rel="noopener noreferrer" data-open-modal>Get a demo</a>
+      <a class="btn btn-solid btn-sm nav-go" href="https://wa.me/919837104413?text=Hi%20PYRAXIS!%20I'm%20interested%20in%20a%20customer%20system%20for%20my%20business.%20Can%20you%20tell%20me%20more%3F" target="_blank" rel="noopener noreferrer" data-open-modal data-src="nav">Get a demo</a>
       <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mnav">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9h18M3 15h18"/></svg>
       </button>
@@ -126,12 +126,12 @@
 <div class="mnav" id="mnav">
   <a href="#builds">What it builds</a>
   <a href="#how">How it works</a>
-  <a href="#qr">QR demo</a>
+  <a href="#qr">Try QR demo</a>
+  <a href="#reviews">Try review demo</a>
   <a href="#deployments">Our work</a>
-  <a href="#reviews">Review demo</a>
-  <a href="#industries">Industries</a>
   <a href="#purpose">Why us</a>
-  <a class="btn btn-solid" href="https://wa.me/919837104413?text=Hi%20PYRAXIS!%20I'm%20interested%20in%20a%20customer%20system%20for%20my%20business.%20Can%20you%20tell%20me%20more%3F" target="_blank" rel="noopener noreferrer" data-open-modal>Get a demo</a>
+  <a href="#industries">Industries</a>
+  <a class="btn btn-solid" href="https://wa.me/919837104413?text=Hi%20PYRAXIS!%20I'm%20interested%20in%20a%20customer%20system%20for%20my%20business.%20Can%20you%20tell%20me%20more%3F" target="_blank" rel="noopener noreferrer" data-open-modal data-src="menu">Get a demo</a>
 </div>
 
 <main id="main" class="journey">
@@ -149,9 +149,9 @@
           <p class="hero-promise">Capture enquiries, manage bookings and automate follow-ups. One connected system that helps local businesses turn more customers into repeat buyers.</p>
           <div class="hero-cta">
             <a class="btn btn-solid btn-hero" href="https://wa.me/919837104413?text=Hi%20PYRAXIS!%20I'm%20interested%20in%20a%20customer%20system%20for%20my%20business.%20Can%20you%20tell%20me%20more%3F" target="_blank" rel="noopener noreferrer"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>WhatsApp us</a>
-            <a class="btn btn-ghost" href="#how"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>See a live demo</a>
+            <a class="btn btn-ghost" href="#how"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg><span>See a live demo</span></a>
           </div>
-          <noscript><p class="hero-note">PYRAXIS builds one connected customer system for local businesses: enquiries, bookings, follow-ups and reviews in one record. <a href="https://wa.me/919837104413?text=Hi%20PYRAXIS!%20I'm%20interested%20in%20a%20customer%20system%20for%20my%20business.%20Can%20you%20tell%20me%20more%3F">Message us on WhatsApp</a> or email <a href="mailto:thepyraxis@gmail.com">thepyraxis@gmail.com</a>.</p></noscript>
+          <noscript><p class="hero-note">PYRAXIS builds one connected customer system for local businesses: enquiries, bookings, follow-ups and reviews in one place. <a href="https://wa.me/919837104413?text=Hi%20PYRAXIS!%20I'm%20interested%20in%20a%20customer%20system%20for%20my%20business.%20Can%20you%20tell%20me%20more%3F">Message us on WhatsApp</a> or email <a href="mailto:thepyraxis@gmail.com">thepyraxis@gmail.com</a>.</p></noscript>
         </div>
       </div>
 
@@ -160,9 +160,9 @@
         <span class="mp" role="listitem"><svg class="ic"><use href="#i-chat"/></svg><b>Capture</b><small>Via WhatsApp</small></span><span class="ma" aria-hidden="true">→</span>
         <span class="mp" role="listitem"><svg class="ic"><use href="#i-cal"/></svg><b>Book</b><small>Manage reservations</small></span><span class="ma" aria-hidden="true">→</span>
         <span class="mp" role="listitem"><svg class="ic"><use href="#i-heart"/></svg><b>Serve</b><small>Delight your customers</small></span><span class="ma" aria-hidden="true">→</span>
-        <span class="mp" role="listitem"><svg class="ic"><use href="#i-receipt"/></svg><b>Note</b><small>Keep customer details</small></span><span class="ma" aria-hidden="true">→</span>
+        <span class="mp" role="listitem"><svg class="ic"><use href="#i-receipt"/></svg><b>Remember</b><small>Keep customer details</small></span><span class="ma" aria-hidden="true">→</span>
         <span class="mp" role="listitem"><svg class="ic"><use href="#i-loop"/></svg><b>Keep</b><small>Automate follow-ups</small></span><span class="ma" aria-hidden="true">→</span>
-        <span class="mp" role="listitem"><svg class="ic"><use href="#i-chart"/></svg><b>Refer</b><small>Turn customers into reviews</small></span><span class="ma" aria-hidden="true">→</span>
+        <span class="mp" role="listitem"><svg class="ic"><use href="#i-share"/></svg><b>Refer</b><small>Friends bring friends</small></span><span class="ma" aria-hidden="true">→</span>
         <span class="mp key" role="listitem"><svg class="ic"><use href="#i-star"/></svg><b>Repeat</b><small>Grow sustainably</small></span>
       </div>
     </div>
@@ -215,8 +215,8 @@
     <div class="wrap">
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="03">What it is</p>
-        <h2 class="h2" id="system-h">Seven tools. <em>One record.</em></h2>
-        <p class="lede">Every enquiry, booking and payment connected to one customer record. Know where customers came from, what they booked and when to follow up.</p>
+        <h2 class="h2" id="system-h">Your customers, <em>in one place.</em></h2>
+        <p class="lede">Every enquiry, booking and payment connected to one customer history. Know where customers came from, what they booked and when to follow up.</p>
       </header>
 
       <div class="merge" id="merge" data-reveal>
@@ -234,7 +234,7 @@
               <li style="--i:5"><span class="mc-src"><svg class="ic"><use href="#i-star"/></svg>Reviews</span><span class="mc-val">RATED <span class="mc-stars">★★★★★</span> · PUBLIC</span></li>
               <li style="--i:6"><span class="mc-src"><svg class="ic"><use href="#i-share"/></svg>Referrals</span><span class="mc-val">BROUGHT 2 FRIENDS</span></li>
             </ol>
-            <div class="mc-ft"><svg class="ic"><use href="#i-loop"/></svg>SEVEN TOOLS · ONE RECORD</div>
+            <div class="mc-ft"><svg class="ic"><use href="#i-loop"/></svg>SEVEN SOURCES · ONE VIEW</div>
           </div>
         </div>
         <p class="merge-cap">Illustrative example</p>
@@ -249,7 +249,7 @@
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="04">What gets built</p>
         <h2 class="h2" id="builds-h">Eight capabilities. One system.</h2>
-        <p class="lede">Each capability is installed as part of a single record — not as isolated software.</p>
+        <p class="lede">Each capability is installed as part of one system — not as isolated software.</p>
       </header>
 
       <div class="bus" id="bus" data-reveal>
@@ -289,6 +289,7 @@
       <header class="sec-head" data-reveal>
         <p class="kicker" data-n="05">How it works</p>
         <h2 class="h2" id="how-h">Tuesday night, 23:31.</h2>
+        <p class="lede">A customer messages after hours. Left: silence. Right: instant reply.</p>
       </header>
 
       <div class="jflow" id="jflow" hidden data-reveal aria-label="The complete system flow">
@@ -689,8 +690,8 @@
     <div class="wrap">
       <p class="kicker center" data-n="11">Begin</p>
       <h2 class="cta-h" id="cta-h">Turn first visits<br>into repeat business.</h2>
-      <p class="cta-mach">Website, booking, follow-up and reviews — together in <em>one record.</em></p>
-      <a class="btn btn-solid btn-lg" href="https://wa.me/919837104413?text=Hi%20PYRAXIS!%20I'm%20interested%20in%20a%20customer%20system%20for%20my%20business.%20Can%20you%20tell%20me%20more%3F" target="_blank" rel="noopener noreferrer" data-open-modal>Get a demo
+      <p class="cta-mach">Website, booking, follow-up and reviews — together in <em>one place.</em></p>
+      <a class="btn btn-solid btn-lg" href="https://wa.me/919837104413?text=Hi%20PYRAXIS!%20I'm%20interested%20in%20a%20customer%20system%20for%20my%20business.%20Can%20you%20tell%20me%20more%3F" target="_blank" rel="noopener noreferrer" data-open-modal data-src="final-cta">Get a demo
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
       </a>
       <p class="cta-sub">Tell us about your business. We will map it, build it, and show it running.</p>
@@ -708,8 +709,8 @@
         <p class="foot-tag">One connected system for local businesses.</p>
     </div>
     <nav class="foot-links" aria-label="Sections">
-      <a href="#builds">What it builds</a><a href="#how">How it works</a><a href="#qr">QR demo</a>
-      <a href="#deployments">Our work</a><a href="#reviews">Review demo</a><a href="#industries">Industries</a><a href="#purpose">Why us</a>
+      <a href="#builds">What it builds</a><a href="#how">How it works</a><a href="#qr">Try QR demo</a>
+      <a href="#reviews">Try review demo</a><a href="#deployments">Our work</a><a href="#purpose">Why us</a><a href="#industries">Industries</a>
       
     </nav>
     <div class="foot-contact">
@@ -717,7 +718,7 @@
       <a href="tel:+919837104413">+91 98371 04413</a>
     </div>
     <div class="foot-bottom">
-      <p class="foot-meta">© <span id="yr">2026</span> PYRAXIS — ONE CONNECTED SYSTEM</p>
+      <p class="foot-meta">© <span id="yr">2026</span> PYRAXIS · BUILT BY AMAN DEEP SHARMA</p>
       <nav class="foot-legal" aria-label="Legal"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></nav>
     </div>
   </div>
@@ -725,7 +726,7 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="sticky-cta" id="stickyCta" aria-label="Quick actions">
-  <a class="btn btn-solid" href="https://wa.me/919837104413?text=Hi%20PYRAXIS!%20I'm%20interested%20in%20a%20customer%20system%20for%20my%20business.%20Can%20you%20tell%20me%20more%3F" target="_blank" rel="noopener noreferrer" data-open-modal>Get a demo</a>
+  <a class="btn btn-solid" href="https://wa.me/919837104413?text=Hi%20PYRAXIS!%20I'm%20interested%20in%20a%20customer%20system%20for%20my%20business.%20Can%20you%20tell%20me%20more%3F" target="_blank" rel="noopener noreferrer" data-open-modal data-src="sticky">Get a demo</a>
 </div>
 <div id="cRing" aria-hidden="true"><div class="r"><span class="r-label" id="rLabel"></span></div></div>
 <div id="cDot" aria-hidden="true"><div class="d"></div></div>

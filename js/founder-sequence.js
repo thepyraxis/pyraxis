@@ -15,13 +15,13 @@
      2-3x phone display is upscaled by the compositor and reads blurry. A 2D
      circle canvas costs ~1MB — the 50 decoded frames are the real memory,
      and those already load lazily below. */
-  var COUNT=50, BASE='public/founder-sequence/frame-', cur=1, dragging=false;
+  var COUNT=40, BASE='public/founder-sequence/frame-', cur=1, dragging=false;
   /* The 1x frames are 960px wide — for a 280-340px circle that is already
      ~3x oversampling, so the 1440px @2x set is only worth it on desktop
      retina. Phones always take the 1x set (~1.3MB total instead of ~2.1MB). */
   var HI=!IS_MOBILE&&(window.devicePixelRatio||1)>1.5;
   function frameSrc(idx){ return BASE+String(idx).padStart(3,'0')+(HI?'@2x':'')+'.webp'; }
-  /* Mobile loads every 2nd frame (~26 of 50) — halves requests + bytes, and
+  /* Mobile loads every 2nd frame (~21 of 40) — halves requests + bytes, and
      neighbouring frames are near-identical so the scrub still looks smooth.
      draw() snaps to the nearest LOADED frame at/below cur. */
   function shouldLoad(idx){ return !IS_MOBILE||(idx%2===1)||idx===COUNT; }
@@ -124,9 +124,9 @@
      the old section mapping advanced the frames while the circle was still
      below the fold (or already gone) because phones have little scroll
      room — the scrub started before you saw it and finished after. Now
-     p=0 when the canvas top hits 92% vh (just entering) and p=1 when its
-     bottom reaches 38% vh (upper-middle, still on screen), so the full
-     1→50 plays while the portrait is visible. */
+      p=0 when the canvas top hits 92% vh (just entering) and p=1 when its
+      bottom reaches 38% vh (upper-middle, still on screen), so the full
+      1→40 plays while the portrait is visible. */
   function onScroll(){
     if(dragging) return;
     var vh=innerHeight||1, p;
