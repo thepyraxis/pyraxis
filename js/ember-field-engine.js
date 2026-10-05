@@ -1464,7 +1464,7 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(relayout);
    and never oscillates back up, so it can't fight the scroll-smoothing
    above. Silent tab-crash/reload under memory+GPU pressure is exactly
    what this exists to prevent. */
-let perfTier=0,perfBadT=0,perfWarmT=0;
+let perfTier=0,perfBadT=0,perfWarmT=0,perfFrames=0,perfT0=0;
 function perfGuard(dt){
   /* SEAMLESS DOWNGRADE ONLY: trim the drawn point count (65%, then 40%) on
      sustained slow frames. setDrawRange never reallocates the buffer, so no
@@ -1509,6 +1509,11 @@ function tick(now){
   lastRenderT=now;
   const dt=clamp((now-lastNow)/1000,.001,.05);lastNow=now;
   perfGuard(dt);
+  try{
+    perfFrames++;
+    if(!perfT0)perfT0=now;
+    if(now-perfT0>=2000){ window.__pxPerf={fps:Math.round(perfFrames*1000/(now-perfT0)),tier:perfTier}; perfFrames=0; perfT0=now; }
+  }catch(e){}
 
   const tgt=window.scrollY||0;
   /* single smoothing layer: fast follow so one scroll = one move.
