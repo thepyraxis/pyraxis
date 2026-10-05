@@ -180,7 +180,7 @@ const CDN_PREV=LOCAL_PORTRAIT;
 /* The genesis world holds the REFERENCE violet — it does NOT follow the
    mark's purple, which can drift pink. One place, one truth. */
   const GLOBE_VIOLET=0x7b61ff;
-  const GLOBE_GLASS=0.66;   /* the world's glass opacity — one knob, see body shader */
+  const GLOBE_GLASS=0.56;   /* trial dim -15%: revert to 0.66 to undo */
 
 let SAMPLES=null,PIXELS_OK=false,fieldLive=false;
 let accAttr=null,landAttr=null,engine=null,dust=null;
@@ -374,7 +374,7 @@ const isMobile=innerWidth<720;
    hero mark sits right behind the copy. Dim + shrink so mobile matches PC. */
 const DIM=isMobile||COARSE;
 const GL_BASE=DIM?.62:.8;     /* canvas opacity outside the globe */
-const GL_GLOBE=DIM?.74:.92;   /* canvas opacity once the world is formed */
+const GL_GLOBE=DIM?.64:.80;   /* trial dim -15%: revert to DIM?.74:.92 to undo */
 const SZ_MUL=DIM?.76:1;        /* ember sprite size */
 const DUST_MUL=DIM?.65:1;     /* background star brightness */
 function gauss(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(TAU*v);}
@@ -1666,7 +1666,7 @@ function tick(now){
     }
     u.uSize.value=siz*(1+introGlow*.3+genGlow*.15+arr*.06)*SZ_MUL;
     const energy=Math.sin(Math.PI*f)*clamp(Math.abs(vel)*1.4,0,1);
-    u.uEnergy.value=Math.min(1.5,lerp(u.uEnergy.value,(reduced?energy*.4:energy)+introGlow+arr*.25,1-Math.exp(-dt*7))+genGlow*.4);
+    u.uEnergy.value=Math.min(1.25,lerp(u.uEnergy.value,(reduced?energy*.4:energy)+introGlow+arr*.25,1-Math.exp(-dt*7))+genGlow*.4); /* trial dim: revert 1.25→1.5 to undo */
     u.uColA.value.copy(CA[i]).lerp(CA[i+1],e);
     u.uColB.value.copy(CB[i]).lerp(CB[i+1],e);
 

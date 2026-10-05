@@ -56,6 +56,17 @@ function loadEmber(){
 }
 function startDesktop(){
   if(engineStarted) return; engineStarted=true;
+  /* Reduced-motion desktops asked for stillness: skip the 1.1MB ember+earth
+     download entirely and show the static mark + topo like weak-GPU PCs.
+     Everyone else is untouched. */
+  try{
+    if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches){
+      window.__topoMobile=false;
+      document.documentElement.classList.add('no-gl');
+      if(window.topoStart) window.topoStart();
+      return;
+    }
+  }catch(e){}
   window.__topoMobile=false;
   window.__pxLite=!!lite;
   var ok=glOK();

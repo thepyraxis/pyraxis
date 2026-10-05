@@ -1,5 +1,6 @@
 'use strict';
 (function(){
+  window.__rv=1; /* tells head failsafe that reveal logic booted */
   var items=$$('[data-reveal]');
   if(REDUCED || !('IntersectionObserver' in window)){
     items.forEach(function(i){ i.classList.add('in'); }); return;
@@ -31,6 +32,13 @@
     es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('rv-prep'); pre.unobserve(e.target); } });
   },{rootMargin:'0px 0px 700px 0px'});
   items.forEach(function(i){ io.observe(i); pre.observe(i); });
+  /* failsafe: if observers never fire, reveal anything already near the viewport */
+  setTimeout(function(){
+    items.forEach(function(el){
+      if(el.classList.contains('in')) return;
+      if(el.getBoundingClientRect().top<innerHeight+220) el.classList.add('in');
+    });
+  },3000);
 })();
 
 /* ---------- scroll-scrubbed purpose illumination ----------
