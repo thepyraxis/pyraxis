@@ -1466,33 +1466,22 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(relayout);
    what this exists to prevent. */
 let perfTier=0,perfBadT=0,perfWarmT=0;
 function perfGuard(dt){
-  /* DISABLED: the downgrade below cut the drawn point count (60%, then 35%)
-     ~1s and ~3s in on any slower GPU, and could resize the buffer. The swarm
-     visibly thinned/blinked out of nowhere = read as the animation
-     auto-reloading. Point count is already reduced up-front for touch/small
-     screens (N above), so no runtime downgrade is needed. */
-  return;
+  /* SEAMLESS DOWNGRADE ONLY: trim the drawn point count (65%, then 40%) on
+     sustained slow frames. setDrawRange never reallocates the buffer, so no
+     blink is possible. Pixel ratio / buffer size are NEVER touched here —
+     the old version did both ~1s in and the canvas wipe read as a reload.
+     One-way, no oscillation. Fast machines never trip it (warmup + sustained
+     thresholds); weak desktops that got FULL tier shed fill-rate instead of
+     lagging forever. */
   perfWarmT+=dt;
-  if(perfWarmT<0.8||!engine||!engine.points||perfTier>=2)return;
-  if(dt>1/40)perfBadT+=dt; else perfBadT=Math.max(0,perfBadT-dt*2);
-  if(perfBadT>.5){
+  if(perfWarmT<2.5||!engine||!engine.points||perfTier>=2)return;
+  if(dt>1/28)perfBadT+=dt; else perfBadT=Math.max(0,perfBadT-dt*1.5);
+  if(perfBadT>1.5){
     perfTier++;perfBadT=0;
-    const range=perfTier===1?Math.floor(N*.6):Math.floor(N*.35);
-    engine.points.geometry.setDrawRange(0,range);
-    /* NEVER raise the pixel ratio while downgrading. Touch devices boot at
-       PR 1; the old tier-1 line forced min(dpr,1.5) = 1.5 on them, i.e.
-       2.25x the pixels on a device already running slow, and every
-       setPixelRatio/setSize resizes the drawing buffer, which wipes the
-       canvas (the hero visibly blinked ~10s in, then again at tier 2 —
-       read as the page reloading). Only touch the buffer when the ratio
-       really changes. */
-    const curPR=engine.renderer.getPixelRatio();
-    const want=perfTier===1?Math.min(curPR,1.25):1;
-    if(Math.abs(want-curPR)>.01){
-      engine.renderer.setPixelRatio(want);
-      engine.renderer.setSize(innerWidth,innerHeight,false);
-      engine.updateScale();
-    }
+    try{
+      var range=perfTier===1?Math.floor(N*.65):Math.floor(N*.40);
+      engine.points.geometry.setDrawRange(0,range);
+    }catch(e){}
   }
 }
 
