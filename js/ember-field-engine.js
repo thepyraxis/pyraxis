@@ -367,7 +367,6 @@ const N=COARSE?(SMALL?900:1400):(LITE?2600:(innerWidth<720?4000:8500));
 try{window.__pxEngine={N:N,LITE:!!LITE,COARSE:!!COARSE,SMALL:!!SMALL,
   noPtr:!!((window.matchMedia&&matchMedia('(pointer: coarse)').matches)||innerWidth<900),
   w:innerWidth,h:innerHeight};
-  if(window.console&&console.info)console.info('[px-engine]',JSON.stringify(window.__pxEngine));
 }catch(e){}
 const isMobile=innerWidth<720;
 /* PHONES/TOUCH: same world, but far fewer px of screen and only 3000 embers —
@@ -1501,9 +1500,24 @@ function perfGuard(dt){
 let cur=window.scrollY||0,lastFrameP=0,lastNow=performance.now(),flyAcc=0;
 let lastTopoO='',curPS=null,curPV=0,lastTgt=cur,scrollMoveT=0;
 const P_SMOOTH=.1,P_MAXV=3.6;   /* stage follower: settle time (s) and max speed (stages/s) */
+/* PHONE MOCKUPS ON SCREEN: the chat demos paint + lay out while this canvas redraws full-screen behind them,
+   and on integrated GPUs that contention shows up as scroll hang. The dust behind the phones is sparse and
+   slow, so while any .device is visible (and the intro is done) redraw at ~30fps; full rate everywhere else. */
+let demoOn=0,lastRenderT=0;
+(function(){
+  if(!('IntersectionObserver' in window))return;
+  const seen=new Set();
+  const io=new IntersectionObserver(function(es){
+    es.forEach(function(e){if(e.isIntersecting)seen.add(e.target);else seen.delete(e.target);});
+    demoOn=seen.size?1:0;
+  });
+  document.querySelectorAll('.device').forEach(function(d){io.observe(d);});
+})();
 function tick(now){
   requestAnimationFrame(tick);
   if(document.hidden||document.documentElement.classList.contains('motion-off'))return;  /* background tab / paused: skip work */
+  if(demoOn&&!introFrom&&now-lastRenderT<28)return;
+  lastRenderT=now;
   const dt=clamp((now-lastNow)/1000,.001,.05);lastNow=now;
   perfGuard(dt);
 
@@ -1515,7 +1529,7 @@ function tick(now){
   if(Math.abs(tgt-cur)<.5)cur=tgt;
   /* layout upkeep: re-measure ~every 1.5s while scroll is idle, then glide the stage keys (see keyGlide) */
   if(Math.abs(tgt-lastTgt)>.5){lastTgt=tgt;scrollMoveT=now;}
-  if(now-lastPoll>1500&&now-scrollMoveT>250){lastPoll=now;relayout();}
+  if(now-lastPoll>(demoOn?5000:1500)&&now-scrollMoveT>250){lastPoll=now;relayout();}  /* re-measure forces layout: back off while a chat demo is animating */
   keyGlide(dt);
   /* STAGE FOLLOWER — critically damped spring with a speed cap (P_MAXV stages/s). Normal scrolling is
      far below the cap so it just tracks; an anchor-link jump or hard flick used to blast through knot →
