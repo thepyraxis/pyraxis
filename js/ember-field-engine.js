@@ -1505,7 +1505,12 @@ let demoOn=0,lastRenderT=0;
 function tick(now){
   requestAnimationFrame(tick);
   if(document.hidden||document.documentElement.classList.contains('motion-off'))return;  /* background tab / paused: skip work */
-  if(demoOn&&!introFrom&&now-lastRenderT<28)return;
+  /* demo throttle is tier-aware: weak devices hold ~35fps past phone mockups
+     to avoid paint contention; full-tier desktops keep full rate so scrolling
+     past the demos stays silky (the old blanket 28ms stepped the whole canvas
+     down on strong GPUs too). */
+  var demoThrottle=(LITE||COARSE)?28:0;
+  if(demoOn&&!introFrom&&demoThrottle&&now-lastRenderT<demoThrottle)return;
   lastRenderT=now;
   const dt=clamp((now-lastNow)/1000,.001,.05);lastNow=now;
   perfGuard(dt);
