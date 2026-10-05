@@ -1,18 +1,25 @@
 'use strict';
-/* "Build your system" modal. Validates, then opens WhatsApp with the details prefilled
-   (visitor presses send there). No backend/key needed; CSP-safe. */
+/* "Get a demo" modal. Validates, then opens WhatsApp with the details prefilled
+   (visitor presses send there). The modal stays open on a confirmation panel with a
+   tap-to-open link + email/phone fallback, so a blocked popup never loses the lead.
+   No backend/key needed; CSP-safe. */
 (function(){
   var modal=$('#modal'), form=$('#leadForm'), err=$('#fErr'); if(!modal||!form) return;
   var WA='919837104413', lastFocus=null;
+  var done=$('#mDone'), doneT=$('#mDoneT'), waLink=$('#mWa'), mailLink=$('#mMail');
+  function showForm(){ if(done.hidden) return; form.reset(); done.hidden=true; form.hidden=false; $('#mTitle').hidden=false; $('.m-lede',modal).hidden=false; modal.setAttribute('aria-labelledby','mTitle'); }
+  var bg=[$('#main'),$('footer'),$('#nav')];
+  function lock(on){ bg.forEach(function(el){ if(el) el.inert=on; }); }
   function open(){
     lastFocus=document.activeElement;
     var m=$('#mnav'); if(m&&m.classList.contains('open')){ m.classList.remove('open'); }
+    showForm();
     err.hidden=true; $$('.f-warn',form).forEach(function(n){ n.hidden=true; }); $$('.bad',form).forEach(function(i){ i.classList.remove('bad'); });
-    modal.hidden=false; document.body.style.overflow='hidden';
+    modal.hidden=false; lock(true); document.body.style.overflow='hidden';
     setTimeout(function(){ form.elements.name.focus(); },60);
   }
   function close(){
-    modal.hidden=true; document.body.style.overflow='';
+    modal.hidden=true; lock(false); document.body.style.overflow='';
     if(lastFocus&&document.contains(lastFocus)&&lastFocus.focus) lastFocus.focus();
   }
   $$('[data-open-modal]').forEach(function(b){
@@ -61,8 +68,14 @@
       'Business type: '+form.elements.type.value,
       'Want help with: '+(form.elements.need.value.trim()||'—'),
       contact].join('\n');
-    window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(text),'_blank','noopener,noreferrer');
-    form.reset(); close();
+    var url='https://wa.me/'+WA+'?text='+encodeURIComponent(text);
+    /* show the confirmation first, keep the typed data until the next open */
+    waLink.href=url;
+    mailLink.href='mailto:thepyraxis@gmail.com?subject='+encodeURIComponent('Demo request')+'&body='+encodeURIComponent(text);
+    form.hidden=true; $('#mTitle').hidden=true; $('.m-lede',modal).hidden=true;
+    done.hidden=false; modal.setAttribute('aria-labelledby','mDoneT');
+    doneT.focus();
+    window.open(url,'_blank','noopener,noreferrer');
   });
   form.addEventListener('input',function(e){
     var t=e.target; if(t.classList) t.classList.remove('bad');

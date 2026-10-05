@@ -14,14 +14,15 @@ npx serve .
 
 - `index.html` — page markup
 - `css/main.css` — all styles
-- `js/` — numbered section scripts plus WebGL/canvas engines (Three.js self-hosted in `public/vendor/`; fonts via Google Fonts CDN)
+- `js/` — numbered section scripts plus WebGL/canvas engines (Three.js self-hosted in `public/vendor/`; fonts self-hosted in `public/fonts/`)
 - `privacy.html`, `terms.html` — legal pages
 - `public/` — wordmark, favicon, images, founder frames
+- `404.html`, `site.webmanifest` — error page and install metadata
 - `sitemap.xml`, `robots.txt` — SEO
 
 ## Leads
 
-No form. Every "Build your system" button opens WhatsApp (`919837104413`) with a prefilled message (business type, fix first, name). Email shown in footer: thepyraxis@gmail.com.
+Every "Get a demo" button (nav, hero, final CTA, sticky bar) opens a short modal form. Submit shows a confirmation panel and opens WhatsApp (`919837104413`) with the details prefilled; the panel keeps a tap-to-open link plus email and phone fallback. Case-study links go straight to WhatsApp. Email and phone are in the footer.
 
 ## Deploy
 

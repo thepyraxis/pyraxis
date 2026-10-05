@@ -543,7 +543,8 @@ html.js .mnav.open a:nth-child(8){transition-delay:.35s}
 .duo-lab.good::before{content:"";width:7px;height:7px;background:var(--pu);border-radius:50%;box-shadow:0 0 8px rgba(124,92,255,.6);flex:none}
 .duo-cap{margin-top:18px;font:italic 400 1.05rem var(--serif)}
 .duo-cap.bad{color:var(--mut)}.duo-cap.good{color:var(--pu2)}
-.phone--dead .wa{filter:grayscale(.32) opacity(1)}
+/* was filter:grayscale(.32) on the whole screen: a filtered layer re-rasterises every time a bubble animates inside it. A flat alpha veil gives the same muted look for free. */
+.phone--dead .wa::after{content:"";position:absolute;inset:0;z-index:30;pointer-events:none;background:rgba(58,66,72,.2)}
 .ph-replay{margin-top:18px;display:flex;opacity:0;pointer-events:none;transition:opacity .5s}
 .ph-replay.show{opacity:1;pointer-events:auto}
 .ph-replay span{font:500 11px var(--mono);letter-spacing:.26em;color:var(--mut);display:inline-flex;align-items:center;gap:9px;text-transform:uppercase}
@@ -1482,7 +1483,7 @@ html.is-scrolling .ob.hot .ob-b::after{animation-play-state:paused!important}
 .m-lede{font-size:15px;line-height:1.6;color:var(--mut);margin-bottom:22px}
 #leadForm label{display:block;margin-top:18px;font:400 10.5px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--mut2)}
 #leadForm input,#leadForm select{display:block;width:100%;margin-top:10px;padding:13px 14px;min-height:46px;background:#18181d;border:1px solid var(--line2);border-radius:4px;color:var(--ink);font:400 15px/1.3 var(--sans);letter-spacing:0;text-transform:none}
-#leadForm input::placeholder{color:#6f6a80}
+#leadForm input::placeholder{color:#908aa3}
 #leadForm input:focus,#leadForm select:focus{outline:none;border-color:var(--pu2);box-shadow:0 0 0 3px rgba(124,92,255,.2)}
 #leadForm .bad{border-color:#e0707f}
 .f-err{margin-top:14px;font-size:13px;color:#f19aa6}
@@ -1493,7 +1494,7 @@ html.finecur .modal,html.finecur .modal *{cursor:auto!important}
 html.finecur .modal input{cursor:text!important}
 html.finecur .modal button,html.finecur .modal a,html.finecur .modal select{cursor:pointer!important}
 html.finecur:has(.modal:not([hidden])) #cDot,html.finecur:has(.modal:not([hidden])) #cRing{display:none!important}
-.f-opt{margin-left:6px;color:#6f6a80;letter-spacing:.12em}
+.f-opt{margin-left:6px;color:#908aa3;letter-spacing:.12em}
 .f-hint{margin-top:22px;font-size:13.5px;line-height:1.5;color:var(--mut)}
 .f-hint + label{margin-top:12px}
 .f-warn{display:block;margin-top:8px;font:400 13px/1.4 var(--sans);letter-spacing:0;text-transform:none;color:#f19aa6}
@@ -1502,3 +1503,25 @@ html.finecur:has(.modal:not([hidden])) #cDot,html.finecur:has(.modal:not([hidden
    only lays out inside the phone, not the whole page (the WebGL field is running behind it). */
 .wa{contain:layout paint style}
 .wa-body{contain:layout style}
+
+.f-note{margin-top:18px;font-size:12.5px;line-height:1.5;color:var(--mut)}
+.f-note a{color:var(--pu2);text-decoration:underline;text-underline-offset:3px}
+
+/* footer: tighter vertical rhythm + premium layout (section links on one line, legal links on the bottom bar) */
+.foot-bottom{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 24px}
+.foot-legal{display:flex;gap:0 26px}
+.foot-legal a{font:500 11px var(--mono);letter-spacing:.2em;color:var(--mut);text-transform:uppercase;padding:12px 0;text-shadow:0 1px 3px rgba(0,0,0,.9),0 1px 10px rgba(0,0,0,.7)}
+@media (hover:hover){.foot-legal a:hover{color:var(--ink)}}
+.foot-legal a:focus-visible{color:var(--ink)}
+@media(min-width:860px){
+  footer{padding:56px 0 28px}
+  .foot-in{grid-template-columns:auto 1fr;column-gap:48px;row-gap:20px;align-items:center}
+  .foot-links{justify-self:end;flex-wrap:wrap;gap:8px 22px}
+  .foot-links a{letter-spacing:.16em}
+  .foot-contact a{min-height:0;padding:2px 0}
+  .foot-bottom{grid-column:1/-1;margin-top:8px;padding-top:6px;border-top:1px solid var(--line)}
+  .foot-legal a{padding:6px 0}
+}
+@media(max-width:859px){
+  .foot-in{gap:22px}
+}

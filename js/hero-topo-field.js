@@ -148,7 +148,6 @@ function sh(type,src){
   var s=gl.createShader(type);
   gl.shaderSource(s,src);gl.compileShader(s);
   if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){
-    if(window.console)console.warn('[topo shader]',gl.getShaderInfoLog(s));
     return null;
   }
   return s;
@@ -167,7 +166,6 @@ function initTopoProgram(){
   pr=gl.createProgram();
   gl.attachShader(pr,v);gl.attachShader(pr,f);gl.linkProgram(pr);
   if(!gl.getProgramParameter(pr,gl.LINK_STATUS)){
-    if(window.console)console.warn('[topo link]',gl.getProgramInfoLog(pr));
     return false;
   }
   gl.useProgram(pr);
