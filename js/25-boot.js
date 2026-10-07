@@ -81,7 +81,7 @@ function startDesktop(){
     try{
       var pl=document.createElement('link');
       pl.rel='preload'; pl.as='image'; pl.href='public/img/earth-2048.jpg';
-      pl.fetchPriority='low'; document.head.appendChild(pl);
+      pl.crossOrigin='anonymous'; pl.fetchPriority='low'; document.head.appendChild(pl);
     }catch(e){}
   }
   /* LAG FIX: parsing 670KB three.js + building 8500 embers + compiling shaders used to land in the

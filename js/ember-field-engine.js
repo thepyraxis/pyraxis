@@ -1488,7 +1488,12 @@ function perfGuard(dt){
 /* ================= main loop ================= */
 let cur=window.scrollY||0,lastFrameP=0,lastNow=performance.now(),flyAcc=0;
 let lastTopoO='',curPS=null,curPV=0,lastTgt=cur,scrollMoveT=0;
-const P_SMOOTH=.1,P_MAXV=3.6;   /* stage follower: settle time (s) and max speed (stages/s) */
+const P_SMOOTH=.1,P_MAXV=3.6;
+/* GLOBE_P_MAXV — speed limit (stages/s) for the stage follower ONLY inside the galaxy→globe zone (curP ~3.5..5.1).
+   A hard flick used to cross that whole transition in ~.3s and it looked broken; with this cap it always plays
+   at a calm pace however fast you scroll. Normal slow scrolling (~.5 stages/s) is untouched. Eased at the zone
+   edges. Set equal to P_MAXV to disable. */
+const GLOBE_P_MAXV=.55;   /* stage follower: settle time (s) and max speed (stages/s) */
 /* PHONE MOCKUPS ON SCREEN: the chat demos paint + lay out while this canvas redraws full-screen behind them,
    and on integrated GPUs that contention shows up as scroll hang. The dust behind the phones is sparse and
    slow, so while any .device is visible (and the intro is done) redraw at ~30fps; full rate everywhere else. */
@@ -1537,7 +1542,8 @@ function tick(now){
   const rawP=mapP(cur);
   if(coarse||reduced||curPS===null){curPS=rawP;curPV=0;}
   else{
-    const r=smoothDamp(curPS,rawP,curPV,P_SMOOTH,P_MAXV,dt);curPS=r[0];curPV=r[1];
+    const zw=sstep(clamp((curPS-3.5)/.35,0,1))*(1-sstep(clamp((curPS-4.95)/.15,0,1)));
+    const r=smoothDamp(curPS,rawP,curPV,P_SMOOTH,lerp(P_MAXV,GLOBE_P_MAXV,zw),dt);curPS=r[0];curPV=r[1];
     if(Math.abs(rawP-curPS)<.0004&&Math.abs(curPV)<.002){curPS=rawP;curPV=0;}
   }
   curP=curPS;
