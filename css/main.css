@@ -1530,3 +1530,43 @@ html.finecur:has(.modal:not([hidden])) #cDot,html.finecur:has(.modal:not([hidden
   .foot-in{gap:12px}
   .foot-contact a{min-height:44px;padding:10px 0}
 }
+
+
+/* ==========================================================================
+   HERO v2 — premium composition (kicker · headline · lede · pill CTAs)
+   ========================================================================== */
+#hero .hero-kicker{margin:0 0 6px}
+#hero .hero-lede,#hero .hero-kicker{-webkit-user-select:none;user-select:none}
+.hero-lede{font:400 clamp(1rem,1.25vw,1.2rem)/1.6 var(--sans);color:var(--soft);max-width:34ch;margin:0;letter-spacing:0;text-wrap:pretty;
+  text-shadow:0 1px 3px rgba(0,0,0,.85),0 2px 22px rgba(0,0,0,.6)}
+.hero-cta{margin-top:40px}
+
+@media(min-width:900px){
+  /* pill CTAs + nav button */
+  .btn-hero,.hero-cta .btn,.nav-go{border-radius:999px}
+  .btn-hero{padding:0 30px;min-height:58px}
+  .hero-cta .btn-ghost{padding:0 30px;min-height:58px;background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.16)}
+  .hero-cta .btn-ghost span{font-size:14px}
+  .nav-go{padding:14px 28px;font-weight:600;font-size:13px}
+  .hero-cta .btn-solid{font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:12.5px}
+  .nav{border-bottom-color:rgba(255,255,255,.08);background:linear-gradient(#000,rgba(0,0,0,.55))}
+  .nav-links{gap:clamp(22px,2.6vw,40px)}
+  .nav-links a{font-size:14px;color:var(--ink)}
+  /* headline scale + lede measure */
+  #hero h1{font-size:clamp(4.6rem,7.2vw,7rem);line-height:.96;margin:18px 0 26px}
+  #hero h1 em{background:linear-gradient(110deg,#c9b8ff 0%,var(--pu2) 45%,#8a6bff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.06em}
+  .hero-lede{max-width:44ch;font-size:clamp(1.05rem,1.15vw,1.2rem)}
+  /* journey strip: hairline base, tighter and more even */
+  .model{border-top-color:rgba(255,255,255,.07);padding-top:22px}
+  .ma{color:#5a5470}
+}
+@media(min-width:900px) and (pointer:fine){
+  .model{margin-top:clamp(120px,15vh,170px)}
+}
+@media(max-width:899px){
+  .hero-lede{margin-top:18px;max-width:31ch}
+  #hero .hero-kicker{margin-bottom:0}
+}
+@media(max-width:599px){
+  .hero-cta .btn{border-radius:999px}
+}

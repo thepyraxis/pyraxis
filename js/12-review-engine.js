@@ -327,8 +327,16 @@
     });
     visEl.innerHTML=snap; visEl.style.minHeight=vm+'px';
   }
-  reserveAll();
-  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(reserveAll);
+  /* PERF: reserveAll() swaps innerHTML + reads offsetHeight ~10x (forced synchronous layout). It used to run
+     inline at load and again on fonts.ready — right in the first-paint window. Now: once, when the browser is
+     idle, after fonts are ready. The demo sits far down the page, so heights are reserved long before it plays. */
+  var _ra=0;
+  function scheduleReserve(){
+    if(_ra) return; _ra=1;
+    var run=function(){ _ra=0; reserveAll(); };
+    if('requestIdleCallback' in window) requestIdleCallback(run,{timeout:2500}); else setTimeout(run,600);
+  }
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(scheduleReserve); else scheduleReserve();
   var _rt=0;
   addEventListener('resize',function(){ clearTimeout(_rt); _rt=setTimeout(reserveAll,260); });
 
