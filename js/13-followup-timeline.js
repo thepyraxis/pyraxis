@@ -1,11 +1,1 @@
-'use strict';
-(function(){
-  var d=$('#dtx'); if(!d) return;
-  if(REDUCED || !('IntersectionObserver' in window)){ d.classList.add('play'); return; }
-  var io=new IntersectionObserver(function(es){
-    es.forEach(function(e){ if(e.isIntersecting){ d.classList.add('play'); io.disconnect(); } });
-  },{threshold:.05,rootMargin:'0px 0px -5% 0px'});
-  io.observe(d);
-})();
-
-/* ---------- 02 · chain heals ---------- */
+"use strict";(function(){var n=$("#dtx");if(n){if(REDUCED||!("IntersectionObserver"in window)){n.classList.add("play");return}var r=new IntersectionObserver(function(t){t.forEach(function(e){e.isIntersecting&&(n.classList.add("play"),r.disconnect())})},{threshold:.05,rootMargin:"0px 0px -5% 0px"});r.observe(n)}})();

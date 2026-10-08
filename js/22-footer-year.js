@@ -1,4 +1,1 @@
-'use strict';
-(function(){
-  var yr=$('#yr'); if(yr) yr.textContent=new Date().getFullYear();
-})();
+"use strict";(function(){var t=$("#yr");t&&(t.textContent=new Date().getFullYear())})();
