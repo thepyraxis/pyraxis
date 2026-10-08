@@ -1590,3 +1590,40 @@ html.finecur:has(.modal:not([hidden])) #cDot,html.finecur:has(.modal:not([hidden
   .device.rev-phone{zoom:.62}
   #qrGrid .device{zoom:.7}
 }
+
+
+/* ============ phone mockups: no wheel/scroll capture + click arrows ============
+   Chat/app panes can't be scrolled by wheel or touch, and (not being scroll containers)
+   they never trap the page. Programmatic scroll (auto-follow, arrow buttons) still works. */
+.wa-body,.q-app{overflow:hidden!important;overscroll-behavior:auto!important}
+.d-nav{position:absolute;right:-50px;top:52%;transform:translateY(-50%);z-index:60;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.d-nav[hidden]{display:none}
+.d-nav button{pointer-events:auto;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;padding:0;cursor:pointer;
+  background:rgba(12,10,24,.88);border:1.5px solid #8b6bff;color:#fff;
+  box-shadow:none;-webkit-tap-highlight-color:transparent;
+  transition:background .2s,opacity .2s}
+.d-nav button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.d-nav button:disabled{opacity:.3;cursor:default}
+@media (hover:hover){.d-nav button:not(:disabled):hover{background:rgba(124,92,255,.4)}}
+.d-nav button:focus-visible{outline:2px solid var(--pu2,#a78bff);outline-offset:2px}
+
+/* mobile: phones are zoomed down, so counter-zoom the arrows to keep a tappable ~34px size,
+   and pull them in so they always stay inside the screen (never cropped) */
+@media (max-width:640px){
+  .d-nav{right:-42px}
+  .d-nav button{width:34px;height:34px}
+  .d-nav button svg{width:17px;height:17px}
+  .device .d-nav{zoom:1.163}
+  .device.rev-phone .d-nav{zoom:1.351}
+  #qrGrid .device .d-nav{zoom:1.22}
+}
+@media (max-width:420px){
+  .device .d-nav{zoom:1.25}
+  .device.rev-phone .d-nav{zoom:1.47}
+  #qrGrid .device .d-nav{zoom:1.316}
+}
+@media (max-width:360px){
+  .device .d-nav{zoom:1.351}
+  .device.rev-phone .d-nav{zoom:1.613}
+  #qrGrid .device .d-nav{zoom:1.428}
+}
