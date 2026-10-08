@@ -1,0 +1,15 @@
+/* ---- Self-hosted fonts (no Google round-trip, no late swap) ----
+   Fallback faces are metric-matched to the real fonts (size-adjust + ascent/descent overrides)
+   so text occupies the same space before and after the webfont arrives → no layout jump. */
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;src:url(../public/fonts/instrument-serif/instrument-serif-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url(../public/fonts/instrument-serif/instrument-serif-latin-400-italic.woff2) format('woff2')}
+@font-face{font-family:'Inter Tight';font-style:normal;font-weight:400;font-display:swap;src:url(../public/fonts/inter-tight/inter-tight-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Inter Tight';font-style:normal;font-weight:500;font-display:swap;src:url(../public/fonts/inter-tight/inter-tight-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'Inter Tight';font-style:normal;font-weight:600;font-display:swap;src:url(../public/fonts/inter-tight/inter-tight-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Inter Tight';font-style:normal;font-weight:700;font-display:swap;src:url(../public/fonts/inter-tight/inter-tight-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url(../public/fonts/ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:500;font-display:swap;src:url(../public/fonts/ibm-plex-mono/ibm-plex-mono-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'Instrument Serif Fallback';font-style:normal;font-weight:400;src:local('Times New Roman'),local('Times'),local('Liberation Serif');size-adjust:77.6%;ascent-override:127.6%;descent-override:39.9%;line-gap-override:0%}
+@font-face{font-family:'Instrument Serif Fallback';font-style:italic;font-weight:400;src:local('Times New Roman Italic'),local('TimesNewRomanPS-ItalicMT'),local('Times Italic'),local('Liberation Serif Italic');size-adjust:83.2%;ascent-override:119%;descent-override:37.3%;line-gap-override:0%}
+@font-face{font-family:'Inter Tight Fallback';font-weight:400 700;src:local('Arial'),local('Helvetica'),local('Liberation Sans');size-adjust:95%;ascent-override:101.9%;descent-override:25.4%;line-gap-override:0%}
+@font-face{font-family:'IBM Plex Mono Fallback';font-weight:400 500;src:local('Courier New'),local('Courier'),local('Liberation Mono');size-adjust:100%;ascent-override:102.5%;descent-override:27.5%;line-gap-override:0%}

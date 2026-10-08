@@ -1,0 +1,8 @@
+{
+  "name": "pyraxis",
+  "private": true,
+  "version": "1.0.0",
+  "description": "PYRAXIS marketing site. Edit src/, run `npm run build`, commit js/ + css/ + html.",
+  "scripts": { "build": "node build.mjs" },
+  "devDependencies": { "esbuild": "^0.25.0" }
+}
