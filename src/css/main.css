@@ -1561,7 +1561,7 @@ html.finecur:has(.modal:not([hidden])) #cDot,html.finecur:has(.modal:not([hidden
   .ma{color:#5a5470}
 }
 @media(min-width:900px) and (pointer:fine){
-  .model{margin-top:clamp(120px,15vh,170px)}
+  .model{margin-top:clamp(150px,18vh,200px)}
 }
 @media(max-width:899px){
   .hero-lede{margin-top:18px;max-width:31ch}
