@@ -46,7 +46,8 @@ html.finecur,html.finecur *{cursor:none!important}
 #cDot,#cRing{position:fixed;left:0;top:0;z-index:6000;pointer-events:none;will-change:transform;opacity:0}
 body.cur-on #cDot,body.cur-on #cRing{opacity:1}
 /* INVERT DOT: white + difference blend = negative of whatever is underneath (text, images, canvas, video) */
-#cDot{mix-blend-mode:difference}
+#cDot{mix-blend-mode:normal} /* PERF: a permanent page-wide 'difference' blend made the browser re-blend the whole viewport every frame (heavy on integrated GPUs under the particle field). On the black page a plain white dot looks identical; the invert blend is only switched on over links/buttons, where it reads dark on the cream buttons. */
+body[data-cstate="link"] #cDot{mix-blend-mode:difference}
 #cDot .d{width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#fff;will-change:transform;
   transition:width .45s cubic-bezier(.19,1,.22,1),height .45s cubic-bezier(.19,1,.22,1),margin .45s cubic-bezier(.19,1,.22,1),border-radius .45s cubic-bezier(.19,1,.22,1)}
 #cRing .r{width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:1.5px solid var(--pu);box-shadow:0 0 14px rgba(124,92,255,.35),inset 0 0 8px rgba(124,92,255,.15);display:flex;align-items:center;justify-content:center;
@@ -377,11 +378,11 @@ html.js .mnav.open a:nth-child(8){transition-delay:.35s}
 @media(min-width:1000px){
   /* single line: no wrap, tighter track so all 8 + arrows fit var(--wrap) */
   .model{flex-wrap:nowrap;justify-content:space-between;gap:0}
-  .mp{column-gap:7px;padding:4px 0;min-width:0;flex:none}
+  .mp{column-gap:7px;padding:4px 0;min-width:0;flex:0 1 auto}
   .mp .ic{width:19px;height:19px}
   .mp b{font-size:12px;letter-spacing:.08em}
-  .mp small{font-size:12px;color:var(--soft);white-space:nowrap}
-  .ma{margin:0 5px;font-size:12px;flex:none;align-self:center}
+  .mp small{font-size:12px;color:var(--soft);white-space:normal;text-wrap:balance} /* sub-labels wrap only when the row is tight, so all 8 steps + arrows always fit inside the wrap (was ~62px overshoot / clipped under 1200px) */
+  .ma{margin:0 3px;font-size:12px;flex:none;align-self:center}
 }
 @media(max-width:999px){
   .model{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 16px}

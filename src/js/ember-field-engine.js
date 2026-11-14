@@ -800,7 +800,7 @@ void main(){
    v1 (soft, inertial, "cinematic") : SCROLL_FOLLOW=6, GLOBE_SMOOTH=.5,  GLOBE_MAXV=3
    v2 (tight, 1:1 tracking)         : SCROLL_FOLLOW=9, GLOBE_SMOOTH=.12, GLOBE_MAXV=8
    Higher SCROLL_FOLLOW = snappier. Higher GLOBE_SMOOTH = slower, softer globe condense. */
-const SCROLL_FOLLOW=8, GLOBE_SMOOTH=.12, GLOBE_MAXV=8;   /* LAG FIX: the globe condense gates (uGlobe / glass / atmosphere) used to trail the geometry by ~300ms on top of the other two smoothing layers, so the world finished forming noticeably AFTER you stopped scrolling. ~120ms keeps it silky (critically damped, no overshoot) but locked to the scroll. */
+const SCROLL_FOLLOW=14, GLOBE_SMOOTH=.12, GLOBE_MAXV=8;   /* LAG FIX: the globe condense gates (uGlobe / glass / atmosphere) used to trail the geometry by ~300ms on top of the other two smoothing layers, so the world finished forming noticeably AFTER you stopped scrolling. ~120ms keeps it silky (critically damped, no overshoot) but locked to the scroll. */
 
 /* ================= scroll keyframes ================= */
 const CAM=[
@@ -1662,14 +1662,14 @@ function perfGuard(dt){
 /* ================= main loop ================= */
 let cur=window.scrollY||0,lastFrameP=0,lastNow=performance.now(),flyAcc=0;
 let lastTopoO='',curPS=null,curPV=0,lastTgt=cur,scrollMoveT=0;
-const P_SMOOTH=.1,P_MAXV=3.6;
+const P_SMOOTH=.07,P_MAXV=3.6;   /* TAIL FIX: was .1 + follow 8 = ~580ms of glide after the scroll stopped; now ~320ms, still soft */
 /* GLOBE_P_MAXV — speed limit (stages/s) for the stage follower ONLY inside the galaxy→globe zone (curP ~3.5..5.1).
    LAG FIX: this was .55, but normal scrolling through Industries → CTA already runs ~.8+ stages/s, so the follower
    was ALWAYS saturated there: the swarm fell behind the page and kept crawling to the globe for seconds after the
    scroll stopped (the "unwanted time delay"; every other stage stays under its cap, which is why only this one
    hung). The cap is now a pure anti-flash guard for anchor jumps / hard flicks — well above any human scroll, so
    regular scrolling tracks 1:1 — and the zone also uses a slightly softer settle (GLOBE_P_SMOOTH) for the premium feel. */
-const GLOBE_P_MAXV=2.6, GLOBE_P_SMOOTH=.13;
+const GLOBE_P_MAXV=2.6, GLOBE_P_SMOOTH=.10;
 /* PHONE MOCKUPS ON SCREEN: the chat demos paint + lay out while this canvas redraws full-screen behind them,
    and on integrated GPUs that contention shows up as scroll hang. The dust behind the phones is sparse and
    slow, so while any .device is visible (and the intro is done) redraw at ~30fps; full rate everywhere else. */

@@ -70,7 +70,8 @@ function startDesktop(){
   window.__topoMobile=false;
   window.__pxLite=!!lite;
   var ok=glOK();
-  var weak=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
+  /* BOTH signals must say weak: privacy browsers (Brave) spoof one of them downward, which wrongly sent strong PCs to the static mark. The adaptive perf guard in the engine covers genuinely slow machines. */
+  var weak=(navigator.deviceMemory&&navigator.deviceMemory<=2)&&(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
   /* No engine on a desktop (weak GPU, no WebGL) used to leave the hero with NO PYRAXIS mark at all.
      'no-gl' turns on the static mark (css) so the symbol is always there. */
   if(!ok||weak){ document.documentElement.classList.add('no-gl'); if(window.topoStart) window.topoStart(); return; }
