@@ -448,8 +448,8 @@ const GAL={R:new Float32Array(N),TH:new Float32Array(N),Y:new Float32Array(N),OM
     {t0:armTh(G_BAR_ANG+Math.PI,7.4,G_PITCH)-.27,p:G_PITCH*1.15,r0:7.4,r1:10.8,n:.30,w:.32}
   ];
   let totW=0;for(const a of ARMS)totW+=a.n*(a.r1-a.r0);
-  const C_W=[1,1,1],C_LW=[.93,.90,1],C_LV=[.80,.74,1],C_V=[.62,.53,1],
-        C_DV=[.46,.38,.92],C_PINK=[.96,.70,.95],C_BLUE=[.60,.66,1];
+  const C_W=[.97,.94,1],C_LW=[.88,.82,1],C_LV=[.74,.62,1],C_V=[.58,.42,1],
+        C_DV=[.48,.30,.95],C_PINK=[.92,.62,.98],C_BLUE=[.60,.62,1];   /* purple-saturated (hero theme violet) */
   const pk=a=>a[(Math.random()*a.length)|0];
   /* px-size → aSize units (the sprite formula is ~3.7px per unit on desktop);
      thinner swarms on phones get slightly fatter embers so the disc still reads */
@@ -497,7 +497,7 @@ const GAL={R:new Float32Array(N),TH:new Float32Array(N),Y:new Float32Array(N),OM
     const y=gauss()*(.09+.011*r);
     let c,b,sz,al;
     if(Math.random()<.05){c=pk([C_W,C_BLUE,C_LW]);b=1+.3*Math.random();sz=.13+.09*Math.random();al=1;}
-    else{c=pk([C_LV,C_V,C_V,C_V,C_DV,C_PINK,C_BLUE]);b=.75+.6*Math.pow(Math.random(),1.4);
+    else{c=pk([C_LV,C_V,C_V,C_V,C_V,C_DV,C_DV,C_PINK,C_BLUE]);b=.75+.6*Math.pow(Math.random(),1.4);
          sz=.045+Math.pow(Math.random(),2)*.075;al=.6+.4*Math.random();}
     gp(Math.cos(th)*r,y,Math.sin(th)*r,c,b,sz,omArm(r),al);
   });
@@ -544,7 +544,7 @@ const GAL={R:new Float32Array(N),TH:new Float32Array(N),Y:new Float32Array(N),OM
     const th=Math.random()*TAU,y=gauss()*(.10+.012*r);
     let c,b,sz,al;
     if(Math.random()<.05){c=pk([C_LW,C_BLUE]);b=.8+.4*Math.random();sz=.09+.06*Math.random();al=.9;}
-    else{c=pk([C_V,C_DV,C_LV]);b=.35+.5*Math.pow(Math.random(),1.7);
+    else{c=pk([C_V,C_V,C_DV,C_LV]);b=.5+.5*Math.pow(Math.random(),1.5);
          sz=.04+.055*Math.pow(Math.random(),2);al=.3+.55*Math.random();}
     gp(Math.cos(th)*r,y,Math.sin(th)*r,c,b,sz,omDisk(r),al);
   });
@@ -776,7 +776,7 @@ void main(){
   col+=uColA*vGlow*1.05;
   col=mix(col,uAcc*(.75+vGlow*.5),vAcc*.85);
   col=mix(col,vGC*1.0*(1.+vGlow*.4),uGal);       /* galaxy palette */
-  col=mix(col,vec3(1.),core*core*.32*(1.-vGS.y*uGal));          /* restrained sparkle — violet stays violet */
+  col=mix(col,vec3(1.),core*core*mix(.32,.10,uGal)*(1.-vGS.y*uGal));          /* restrained sparkle — violet stays violet */
   col*=1.+.18*uHero;                              /* MARK-ONLY gain — dispersal onward stays default */
   /* GENESIS — the world IS its particles. Landed embers become the skin:
      a dim violet interior floor (texture, not glow — city-light sparkle)
@@ -1306,12 +1306,14 @@ try{
     sp.scale.set(size*G_SC,size*G_SC,1);sp.renderOrder=-1;galGroup.add(sp);
     galFx.push({mat:sp.material,base,obj:sp});
   }
-  fxPlane(galGroup,glowTex(256,[[0,'rgba(125,108,255,.5)'],[.4,'rgba(110,95,240,.15)'],[1,'rgba(100,85,230,0)']]),55,.16);
-  fxPlane(galGroup,glowTex(256,[[0,'rgba(255,244,235,.85)'],[.35,'rgba(225,205,255,.25)'],[1,'rgba(200,180,255,0)']]),24,.18);
-  const barStops=[[0,'rgba(250,244,255,.95)'],[.18,'rgba(220,205,255,.7)'],[.45,'rgba(170,150,255,.22)'],[1,'rgba(150,130,255,0)']];
-  fxPlane(barGroup,glowTex(512,barStops,.5),15,.38);
+  /* REMOVED (blurry grey ellipse): fxPlane(galGroup,glowTex(256,[[0,'rgba(125,108,255,.5)'],[.4,'rgba(110,95,240,.15)'],[1,'rgba(100,85,230,0)']]),55,.16); */
+  /* REMOVED (blurry grey ellipse): fxPlane(galGroup,glowTex(256,[[0,'rgba(255,244,235,.85)'],[.35,'rgba(225,205,255,.25)'],[1,'rgba(200,180,255,0)']]),24,.18); */
+  const barStops=[[0,'rgba(222,208,255,.95)'],[.2,'rgba(176,150,255,.62)'],[.5,'rgba(132,100,246,.20)'],[1,'rgba(112,82,236,0)']];
+  /* REMOVED (blurry grey ellipse): fxPlane(barGroup,glowTex(512,barStops,.5),15,.38); */
   fxSprite(glowTex(256,barStops),4.2,.6);
-  fxSprite(glowTex(128,[[0,'rgba(255,252,250,1)'],[.3,'rgba(240,228,255,.7)'],[1,'rgba(210,190,255,0)']]),1.3,.3);
+  fxSprite(glowTex(128,[[0,'rgba(255,250,255,1)'],[.3,'rgba(224,206,255,.75)'],[1,'rgba(172,142,255,0)']]),1.3,.3);
+  /* PURPLE ENERGY BLOOM — wide, gaussian-smooth, round billboard (no plane → no hard ellipse edge) */
+  fxSprite(glowTex(256,[[0,'rgba(150,115,255,.55)'],[.15,'rgba(146,112,255,.43)'],[.3,'rgba(138,104,250,.26)'],[.5,'rgba(124,90,242,.11)'],[.7,'rgba(112,80,235,.035)'],[.88,'rgba(104,74,230,.006)'],[1,'rgba(100,70,228,0)']]),13,.55);
   galGroup.visible=false;
 
   function updateScale(){
