@@ -510,14 +510,14 @@ const GAL={R:new Float32Array(N),TH:new Float32Array(N),Y:new Float32Array(N),OM
     const c=pk([C_V,C_PINK,C_LV,C_DV]),b=.7+.5*Math.random();
     gp(Math.cos(th)*r,gauss()*.12,Math.sin(th)*r,c,b*.8,.05+.05*Math.random(),omArm(r),.5+.4*Math.random(),0);
   });
-  /* nebulae — star-forming knots */
+  /* arm knots — formerly blurry nebula blobs, now sharp stars */
   layer(.04,()=>{
     const a=ARMS[(Math.random()*ARMS.length)|0];
     const r=a.r0+(a.r1-a.r0)*(.15+.7*Math.random());
     const th=armTh(a.t0,r,a.p)+gauss()*a.w*.4/r;
     const rd=Math.random();
     const c=rd<.55?C_V:(rd<.85?C_PINK:[.55,.5,1]),b=.6+.5*Math.random();
-    gp(Math.cos(th)*r,gauss()*.05,Math.sin(th)*r,c,b*.9,.8+.7*Math.random(),omArm(r),.04+.05*Math.random(),1);
+    gp(Math.cos(th)*r,gauss()*.05,Math.sin(th)*r,c,b*.9,.045+Math.pow(Math.random(),2)*.075,omArm(r),.6+.4*Math.random(),0);   /* was a big soft blurry blob (sz .8-1.5, soft, a~.05) — now a normal sharp arm star; same ember count */
   });
   /* halo scatter + globular clusters */
   const GLOB=[];
@@ -2046,11 +2046,11 @@ function tick(now){
     engine.camera.updateMatrixWorld();
     engine.group.updateMatrixWorld();
 
-    ray.setFromCamera(ndc,engine.camera);
+    ray.setFromCamera(ndcT,engine.camera);   /* RAW cursor, not the slow camera-drift ndc — no stacked lag */
     if(!ray.ray.intersectPlane(PTR_PLANE,ptrW))ray.ray.closestPointToPoint(ORIGIN,ptrW);
     ptrL.copy(ptrW);
     engine.group.worldToLocal(ptrL);
-    u.uPointer.value.lerp(ptrL,Math.min(1,dt*4.5));  /* the dent trails the cursor gracefully */
+    u.uPointer.value.lerp(ptrL,1-Math.exp(-dt*18));  /* single fast, frame-rate-independent follow (~55ms) — was 2 stacked 4.5/s lerps (~400ms lag) */
 
     /* FLY-AWAY DUST — while the cursor is over the mark, break embers off it */
     if(engine.fly){
