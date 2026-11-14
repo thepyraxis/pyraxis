@@ -274,12 +274,14 @@ if(glCanvas&&'MutationObserver' in window){
   }).observe(glCanvas,{attributes:true,attributeFilter:['class']});
 }
 
-var last=0, lastDraw=0, lastScroll=-1e9, lastMT=0, FRAME_MS=MOBILE?80:(LOW?66:50);
+var last=0, lastDraw=0, lastScroll=-1e9, lastMT=0, lastRafT=0, rafEma=16.7, FRAME_MS=MOBILE?80:(LOW?66:50);
 if(MOBILE) addEventListener('scroll',function(){ lastScroll=performance.now(); },{passive:true});
 function frame(t){
   raf=requestAnimationFrame(frame);
   if(!heroOn) return;
   if(glLost) return;  /* GPU context lost: wait for 'webglcontextrestored' */
+  /* smoothed real frame interval — if the GPU can't hold ~45fps, don't ask it for more (that would starve the ember layer) */
+  rafEma=rafEma*.9+Math.min(lastRafT?t-lastRafT:16.7,50)*.1; lastRafT=t;
   /* phones: ~12fps, and hold the frame while the finger is scrolling (plus
      momentum) so the GPU serves the scroll compositor instead — the drift
      is so slow the hold is invisible */
@@ -295,7 +297,7 @@ function frame(t){
        to the cheap idle cap only when nothing interactive is happening. */
     var nowA=performance.now();
     var active=!NO_PTR&&!RM&&(nowA-lastMoveAt<1200||nowA<rippleEnd||Math.abs(target.x-mouse.x)>5e-4||Math.abs(target.y-mouse.y)>5e-4);
-    if(!active){
+    if(!active||rafEma>24){
       if(t-lastDraw<(LITE?50:33)) return;   /* idle: lite ~20fps, desktop ~30fps, as before */
     }
     lastDraw=t;

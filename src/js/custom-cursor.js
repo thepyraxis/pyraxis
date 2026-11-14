@@ -26,6 +26,8 @@ function resolveText(){
   if(elState||document.hidden)return; /* link/view states win */
   var tg=document.elementFromPoint?document.elementFromPoint(MX,MY):null;
   if(tg&&tg.closest&&tg.closest('input,textarea')){setState('text');return;}
+  /* HERO: text-selection is locked there (textAt returns null anyway) — skip the costly caret hit-test that ran every 70ms beside the WebGL layers */
+  if(tg&&tg.closest&&tg.closest('#hero')){setState('default');return;}
   setState(textAt(MX,MY)?'text':'default');
 }
 /* SCROLL-JERK FIX: resolveText runs elementFromPoint + caretRangeFromPoint + getClientRects, a
