@@ -40,7 +40,14 @@
       else if(!e.shiftKey&&document.activeElement===last){ first.focus(); e.preventDefault(); }
     }
   });
-  function phoneOk(v){ var d=v.replace(/\D/g,''); return /^[+\d\s()-]+$/.test(v)&&d.length>=7&&d.length<=15; }
+  var PFX='+91 ';
+  function phoneDigits(v){ return v.indexOf('+91')===0 ? v.slice(3).replace(/\D/g,'') : v.replace(/\D/g,''); }
+  function phoneOk(v){ return /^\d{10}$/.test(phoneDigits(v)); }
+  function fixPhone(inp){
+    var d=phoneDigits(inp.value).slice(0,10), v=PFX+d;
+    if(inp.value!==v){ inp.value=v; }
+    var end=v.length; try{ inp.setSelectionRange(end,end); }catch(_){}
+  }
   function emailOk(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
   function flag(input,note,msg){
     input.classList.toggle('bad',!!msg); input.setAttribute('aria-invalid',msg?'true':'false');
@@ -50,7 +57,7 @@
     e.preventDefault();
     var name=form.elements.name, phone=form.elements.phone, email=form.elements.email;
     var pErr=$('#phoneErr'), eErr=$('#emailErr');
-    var pv=phone.value.trim(), ev=email.value.trim();
+    var pv=phoneDigits(phone.value)?('+91 '+phoneDigits(phone.value)):'', ev=email.value.trim();
     name.classList.remove('bad'); err.hidden=true;
     flag(phone,pErr,''); flag(email,eErr,'');
     var first=null;
@@ -59,7 +66,7 @@
       err.textContent=first?'Please add your name, and a WhatsApp number or email (one is enough).':'Add a WhatsApp number or an email — one is enough, both is fine.';
       err.hidden=false; phone.classList.add('bad'); email.classList.add('bad'); first=first||phone;
     }
-    if(pv&&!phoneOk(pv)){ flag(phone,pErr,'This number doesn’t look right. Please check it and enter the correct number.'); first=first||phone; }
+    if(pv&&!phoneOk(pv)){ flag(phone,pErr,'Enter a 10-digit mobile number, digits only.'); first=first||phone; }
     if(ev&&!emailOk(ev)){ flag(email,eErr,'This email doesn’t look right. Please check it and enter the correct email.'); first=first||email; }
     if(first){ first.focus(); return; }
     var contact=[pv&&'WhatsApp: '+pv, ev&&'Email: '+ev].filter(Boolean).join('\n');
@@ -77,8 +84,27 @@
     doneT.focus();
     window.open(url,'_blank','noopener,noreferrer');
   });
+
+  (function(){
+    var ph=form.elements.phone; if(!ph) return;
+    ph.addEventListener('keydown',function(e){
+      if(e.ctrlKey||e.metaKey||e.altKey) return;
+      var k=e.key, ss=ph.selectionStart, se=ph.selectionEnd;
+      if(k==='Backspace'&&se<=PFX.length&&ss===se){ e.preventDefault(); return; }
+      if(k==='Delete'&&ss<PFX.length){ e.preventDefault(); return; }
+      if(k.length===1&&!/\d/.test(k)){ e.preventDefault(); }
+    });
+    ph.addEventListener('focus',function(){ if(!ph.value) ph.value=PFX; setTimeout(function(){ fixPhone(ph); },0); });
+    ph.addEventListener('click',function(){ if(ph.selectionStart<PFX.length) fixPhone(ph); });
+    ph.addEventListener('paste',function(e){
+      e.preventDefault();
+      var t=(e.clipboardData||window.clipboardData).getData('text')||'';
+      var d=t.replace(/\D/g,''); if(d.length>10&&d.indexOf('91')===0) d=d.slice(2); if(d.length>10&&d[0]==='0') d=d.slice(1);
+      ph.value=PFX+d.slice(0,10); fixPhone(ph);
+    });
+  })();
   form.addEventListener('input',function(e){
-    var t=e.target; if(t.classList) t.classList.remove('bad');
+    var t=e.target; if(t.classList) t.classList.remove('bad'); if(t.name==='phone') fixPhone(t);
     if(t.name==='phone'||t.name==='email'){ var n=$(t.name==='phone'?'#phoneErr':'#emailErr'); if(n) n.hidden=true; }
   });
 })();
