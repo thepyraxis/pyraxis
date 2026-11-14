@@ -19,7 +19,25 @@ var MOBILE=!!window.__topoMobile||(matchMedia('(pointer: coarse)').matches)||inn
    NOTE: RAM/CPU are deliberately NOT used — privacy browsers (Brave) spoof
    them downward and put the same PC in LITE in one browser and FULL in
    another. Only explicit save-data / slow-network signals gate it. */
-var LITE=!!(navigator.connection&&(navigator.connection.saveData||/2g|slow-2g/.test(navigator.connection.effectiveType||'')));
+function softGL(){
+  /* software WebGL (SwiftShader / llvmpipe / "Basic Render") = hardware acceleration is OFF: every GL layer runs on the CPU
+     at ~10-15fps, which reads as stop/go lag. Detect it once and let every layer drop to its LITE path. */
+  if(window.__pxSoft!==undefined) return window.__pxSoft;
+  var r=false;
+  try{
+    var c=document.createElement('canvas'),g=c.getContext('webgl')||c.getContext('experimental-webgl');
+    if(g){
+      var e=g.getExtension('WEBGL_debug_renderer_info');
+      var n=e?String(g.getParameter(e.UNMASKED_RENDERER_WEBGL)||''):'';
+      r=/swiftshader|llvmpipe|softpipe|software|basic render/i.test(n);
+      var lc=g.getExtension('WEBGL_lose_context'); if(lc) lc.loseContext();
+    }
+  }catch(x){}
+  window.__pxSoft=r;
+  if(r&&window.console) console.info('[pyraxis] software WebGL detected (hardware acceleration looks OFF) - using lite rendering');
+  return r;
+}
+var LITE=!!(navigator.connection&&(navigator.connection.saveData||/2g|slow-2g/.test(navigator.connection.effectiveType||'')))||(!MOBILE&&softGL());
 var LOW=LITE;
 /* small Android: very narrow screens or <=3GB RAM / <=4 threads get the
    ultra-lite path — lowest DPR + slowest frame rate. Drift is ~0.02 u/s,

@@ -37,6 +37,24 @@ var engineStarted=false;
    explicit user/network signals gate the tier, so every browser on the
    same machine renders the same field. */
 var lite=(navigator.connection&&(navigator.connection.saveData||/2g|slow-2g/.test(navigator.connection.effectiveType||'')));
+function softGL(){
+  /* software WebGL (SwiftShader / llvmpipe / "Basic Render") = hardware acceleration is OFF: every GL layer runs on the CPU
+     at ~10-15fps, which reads as stop/go lag. Detect it once and let every layer drop to its LITE path. */
+  if(window.__pxSoft!==undefined) return window.__pxSoft;
+  var r=false;
+  try{
+    var c=document.createElement('canvas'),g=c.getContext('webgl')||c.getContext('experimental-webgl');
+    if(g){
+      var e=g.getExtension('WEBGL_debug_renderer_info');
+      var n=e?String(g.getParameter(e.UNMASKED_RENDERER_WEBGL)||''):'';
+      r=/swiftshader|llvmpipe|softpipe|software|basic render/i.test(n);
+      var lc=g.getExtension('WEBGL_lose_context'); if(lc) lc.loseContext();
+    }
+  }catch(x){}
+  window.__pxSoft=r;
+  if(r&&window.console) console.info('[pyraxis] software WebGL detected (hardware acceleration looks OFF) - using lite rendering');
+  return r;
+}
 function glOK(){
   /* right after a device-toggle/resize the GPU process can refuse one context
      request — ask up to 3 times and release the probe context. */
@@ -68,7 +86,7 @@ function startDesktop(){
     }
   }catch(e){}
   window.__topoMobile=false;
-  window.__pxLite=!!lite;
+  window.__pxLite=!!lite||softGL();
   var ok=glOK();
   /* BOTH signals must say weak: privacy browsers (Brave) spoof one of them downward, which wrongly sent strong PCs to the static mark. The adaptive perf guard in the engine covers genuinely slow machines. */
   var weak=(navigator.deviceMemory&&navigator.deviceMemory<=2)&&(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
