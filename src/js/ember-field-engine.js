@@ -762,7 +762,7 @@ void main(){
   /* GALAXY — bokeh / nebula embers swap the sharp spark for a soft disc, and
      every ember takes its own alpha; all gated by uGal so no other stage changes */
   float dd=d*2.;
-  float sa=exp(-dd*dd*3.)*(1.-smoothstep(.8,1.,dd));
+  float sa=exp(-dd*dd*4.)*(1.-smoothstep(.5,1.,dd))*1.2;   /* BOKEH FIX: was exp(-3dd²) with a late cutoff, which left a visible rim (hard-edged grey discs); now falls to ~0 smoothly so the soft embers read as glow, not circles */
   a=mix(a,sa,vGS.y*uGal);
   a*=mix(1.,vGS.x,uGal);
   a*=.68+.32*sin(uTime*(1.8+vSeed*2.6)+vSeed*37.);
