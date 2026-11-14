@@ -274,7 +274,7 @@ if(glCanvas&&'MutationObserver' in window){
   }).observe(glCanvas,{attributes:true,attributeFilter:['class']});
 }
 
-var last=0, lastDraw=0, lastScroll=-1e9, FRAME_MS=MOBILE?80:(LOW?66:50);
+var last=0, lastDraw=0, lastScroll=-1e9, lastMT=0, FRAME_MS=MOBILE?80:(LOW?66:50);
 if(MOBILE) addEventListener('scroll',function(){ lastScroll=performance.now(); },{passive:true});
 function frame(t){
   raf=requestAnimationFrame(frame);
@@ -288,8 +288,18 @@ function frame(t){
     if(performance.now()-lastScroll<250) return;
     lastDraw=t;
   }
-  else if(LITE){ if(t-lastDraw<50) return; lastDraw=t; }  /* lite PCs: ~20fps cap — the contour drift is too slow to show it */
-  else{ if(t-lastDraw<33) return; lastDraw=t; }  /* desktop: 30fps cap — the contour drift is too slow to show it */
+  else{
+    /* MOUSE-SMOOTHNESS FIX: the contour DRIFT is slow enough for 20-30fps, but the mouse lens is not —
+       at a 30fps cap it moved in visible 33ms steps (move-stop-move) and lagged ~400ms. So: render at the
+       display's full rate whenever the cursor is moving/settling or a click ripple is alive, and fall back
+       to the cheap idle cap only when nothing interactive is happening. */
+    var nowA=performance.now();
+    var active=!NO_PTR&&!RM&&(nowA-lastMoveAt<1200||nowA<rippleEnd||Math.abs(target.x-mouse.x)>5e-4||Math.abs(target.y-mouse.y)>5e-4);
+    if(!active){
+      if(t-lastDraw<(LITE?50:33)) return;   /* idle: lite ~20fps, desktop ~30fps, as before */
+    }
+    lastDraw=t;
+  }
   /* fully faded out by scroll: hold the last frame, skip GL work */
   if(!MOBILE&&started&&(window.__topoVis||0)<=0.005) return;
   if(lastT<0)lastT=t;
@@ -297,8 +307,13 @@ function frame(t){
   if(dt<0)dt=0; if(dt>0.1)dt=0.1;  /* background tab / pause: resume, don't leap */
   topoTime+=dt;
   var now=performance.now();
-  mouse.x+=(target.x-mouse.x)*0.085;
-  mouse.y+=(target.y-mouse.y)*0.085;
+  /* frame-rate-independent follow (~80ms): was a fixed 0.085 per RENDERED frame = ~400ms lag at 30fps */
+  var md=lastMT?Math.min(.05,Math.max(.001,(t-lastMT)*0.001)):.016; lastMT=t;
+  var mk=1-Math.exp(-md*12);
+  mouse.x+=(target.x-mouse.x)*mk;
+  mouse.y+=(target.y-mouse.y)*mk;
+  if(Math.abs(target.x-mouse.x)<1e-4) mouse.x=target.x;
+  if(Math.abs(target.y-mouse.y)<1e-4) mouse.y=target.y;
   render(topoTime,mouse.x,mouse.y);
 }
 function play(){ lastT=-1; if(!raf) raf=requestAnimationFrame(frame); }
